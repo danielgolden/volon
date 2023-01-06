@@ -36,7 +36,7 @@ onMounted(() => {
     initializeNotesData();
   }
 
-  // store.loadedData = JSON.parse(localStorage.getItem("volon")!);
+  store.loadedData = JSON.parse(localStorage.getItem("volon")!);
 });
 
 defineExpose({
