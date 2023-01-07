@@ -6,7 +6,7 @@ import { store } from "../store";
 
 // Codemirror EditorView instance ref
 const view = shallowRef();
-const handleReady = (payload) => {
+const handleReady = (payload: any) => {
   view.value = payload.view;
 };
 
@@ -14,7 +14,10 @@ const handleReady = (payload) => {
 const getCodemirrorStates = () => {
   const state = view.value.state;
   const ranges = state.selection.ranges;
-  const selected = ranges.reduce((r, range) => r + range.to - range.from, 0);
+  const selected = ranges.reduce(
+    (r: any, range: any) => r + range.to - range.from,
+    0
+  );
   const cursor = ranges[0].anchor;
   const length = state.doc.length;
   const lines = state.doc.lines;
