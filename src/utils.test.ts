@@ -129,7 +129,7 @@ describe("sortNotesByModificationDate()", async () => {
       const prevNoteLastModifiedTime =
         sortedNotes[index - 1].lastModified.getTime();
 
-      expect(lastModifiedTime).toBeGreaterThan(prevNoteLastModifiedTime);
+      expect(lastModifiedTime).toBeLessThan(prevNoteLastModifiedTime);
     });
   });
 });

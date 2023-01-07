@@ -60,7 +60,7 @@ export const getNotesByContent = (content: string): Note[] => {
 
 export const sortNotesByModificationDate = (notes: Note[]): Note[] => {
   const sortedNotes = notes.sort((currentNote, nextNote) => {
-    return currentNote.lastModified.getTime() - nextNote.lastModified.getTime();
+    return nextNote.lastModified.getTime() - currentNote.lastModified.getTime();
   });
 
   return sortedNotes;
