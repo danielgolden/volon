@@ -15,11 +15,24 @@ const handleInputChange = (currentContent: string) => {
 </script>
 
 <template>
-  <input
-    type="text"
-    v-model="currentQuery"
-    @input="(currentValue) => handleInputChange((currentValue.target as HTMLInputElement)?.value)"
-  />
+  <div class="container">
+    <input
+      class="search-input"
+      type="search"
+      v-model="currentQuery"
+      @input="(currentValue) => handleInputChange((currentValue.target as HTMLInputElement)?.value)"
+    />
+  </div>
 </template>
 
-<style scoped></style>
+<style scoped>
+.container {
+  padding: 20px;
+  border-bottom: 1px solid var(--color-border-primary);
+}
+
+.search-input {
+  width: 100%;
+  height: 37px;
+}
+</style>

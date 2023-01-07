@@ -33,11 +33,6 @@ const parseAllNoteDates = (notes: JSONParsedNote[]): Note[] => {
   });
 };
 
-const handleNewNoteShortcut = () => {
-  store.activeNoteId = null;
-  store.activeNoteContents = "";
-};
-
 onMounted(() => {
   if (!existingNotesDataFound()) {
     initializeNotesData();
@@ -51,10 +46,9 @@ onMounted(() => {
   store.loadedData = processedVolonData;
 
   window.addEventListener("keydown", (event) => {
-    debugger;
     if (event.altKey && event.metaKey && event.code === "KeyN") {
       event.preventDefault();
-      handleNewNoteShortcut();
+      clearActiveNoteState();
     } else if (event.metaKey && event.code === "Backspace") {
       event.preventDefault();
       deleteActiveNote();
@@ -101,5 +95,6 @@ main {
   overflow-y: scroll;
   padding: 8px 24px;
   line-height: 145%;
+  background-color: var(--color-bg-surface-1);
 }
 </style>

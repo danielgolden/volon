@@ -37,7 +37,9 @@ const handleNoteItemClick = (noteId: string | null) => {
         :data-note-id="note.id"
         @click="handleNoteItemClick(note.id)"
       >
-        <span class="note-list-item">{{ note.content.substring(0, 50) }}</span>
+        <span class="note-list-item-preview">{{
+          note.content.substring(0, 50)
+        }}</span>
         <span class="note-list-item-meta">{{ note.lastModified }}</span>
       </li>
     </ul>
@@ -45,13 +47,34 @@ const handleNoteItemClick = (noteId: string | null) => {
 </template>
 
 <style scoped>
+aside {
+  background-color: var(--color-bg-surface-2);
+}
 .note-list {
+  margin: 0;
+  padding: 12px 10px;
   display: flex;
   flex-direction: column;
   gap: 8px;
 }
 .note-list-item {
+  padding: 8px 10px;
   display: flex;
   flex-direction: column;
+  gap: 4px;
+}
+
+.note-list-item-preview {
+  font-size: 14px;
+  width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: var(--color-text-primary);
+}
+
+.note-list-item-meta {
+  font-size: 11px;
+  color: var(--color-text-tertiary);
 }
 </style>
