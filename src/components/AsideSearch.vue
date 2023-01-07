@@ -21,6 +21,7 @@ const handleInputChange = (currentContent: string) => {
       type="search"
       v-model="currentQuery"
       @input="(currentValue) => handleInputChange((currentValue.target as HTMLInputElement)?.value)"
+      placeholder="Search"
     />
   </div>
 </template>
@@ -34,5 +35,23 @@ const handleInputChange = (currentContent: string) => {
 .search-input {
   width: 100%;
   height: 37px;
+  padding: 10px 12px;
+  font-size: 14px;
+  background-color: var(--color-bg-input-enabled);
+  border-radius: 4px;
+  box-shadow: 0 0 0 1px var(--color-bg-input-border-enabled);
+  border: none;
+  color: var(--color-text-secondary);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica,
+    Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+}
+
+.search-input:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px var(--color-bg-input-border-enabled-focused);
+}
+
+.search-input::placeholder {
+  color: var(--color-text-input-enabled-placeholder);
 }
 </style>

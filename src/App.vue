@@ -62,7 +62,12 @@ onMounted(() => {
   <main :class="{ 'aside-active': store.asideActive }">
     <Aside v-if="store.asideActive" />
     <Editor />
-    <vue-markdown class="markdown-preview" :source="store.activeNoteContents" />
+    <div class="markdown-preview-container">
+      <vue-markdown
+        class="markdown-preview"
+        :source="store.activeNoteContents"
+      />
+    </div>
   </main>
 </template>
 
@@ -89,12 +94,19 @@ main {
   filter: drop-shadow(0 0 2em #42b883aa);
 }
 
+.markdown-preview-container {
+  display: flex;
+  justify-content: center;
+  background-color: var(--color-bg-surface-1);
+  border-left: 1px solid var(--color-border-secondary);
+  color: var(--color-text-primary);
+}
+
 .markdown-preview {
-  width: 100%;
+  width: 70ch;
   height: 100vh;
   overflow-y: scroll;
-  padding: 8px 24px;
-  line-height: 145%;
-  background-color: var(--color-bg-surface-1);
+  padding-block: 48px;
+  line-height: 150%;
 }
 </style>

@@ -3,6 +3,7 @@ import { computed } from "vue";
 import { getNoteById, sortNotesByModificationDate } from "../utils";
 import { store } from "../store";
 import AsideSearch from "./AsideSearch.vue";
+import { formatRelative, formatDistance, subDays } from "date-fns";
 
 const searchIsActive = computed(() => {
   return store.matchingNotes !== null;
@@ -31,7 +32,7 @@ const handleNoteItemClick = (noteId: string | null) => {
         v-for="note in notesToBeDisplayed"
         :v-key="note.id"
         :class="{
-          'active-note': store.activeNoteId === note.id,
+          'active-note-list-item': store.activeNoteId === note.id,
           'note-list-item': true,
         }"
         :data-note-id="note.id"
@@ -40,7 +41,9 @@ const handleNoteItemClick = (noteId: string | null) => {
         <span class="note-list-item-preview">{{
           note.content.substring(0, 50)
         }}</span>
-        <span class="note-list-item-meta">{{ note.lastModified }}</span>
+        <span class="note-list-item-meta">{{
+          formatRelative(note.lastModified, new Date())
+        }}</span>
       </li>
     </ul>
   </aside>
@@ -48,9 +51,13 @@ const handleNoteItemClick = (noteId: string | null) => {
 
 <style scoped>
 aside {
+  height: 100%;
+  overflow: hidden;
   background-color: var(--color-bg-surface-2);
 }
 .note-list {
+  height: 100%;
+  overflow-y: auto;
   margin: 0;
   padding: 12px 10px;
   display: flex;
@@ -62,6 +69,12 @@ aside {
   display: flex;
   flex-direction: column;
   gap: 4px;
+  border-radius: 4px;
+}
+
+.note-list-item:hover {
+  background-color: var(--color-bg-interactive-hover);
+  cursor: pointer;
 }
 
 .note-list-item-preview {
@@ -76,5 +89,17 @@ aside {
 .note-list-item-meta {
   font-size: 11px;
   color: var(--color-text-tertiary);
+}
+
+.active-note-list-item {
+  background-color: var(--color-bg-interactive-active);
+}
+
+.active-note-list-item:hover {
+  background-color: var(--color-bg-interactive-active-hover);
+}
+
+.active-note-list-item .note-list-item-meta {
+  color: var(--color-text-secondary);
 }
 </style>
