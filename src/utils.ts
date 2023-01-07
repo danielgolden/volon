@@ -10,35 +10,39 @@ export const getNote = (noteId: string | null) => {
 };
 
 export const getDefaultNotesData = (): LoadedNotesData => {
-  const currentDate = new Date();
   return {
-    newNoteName: ``,
     queryHasMatch: false,
     notes: [
-      {
-        id: uuidv4(),
-        name: "Welcome to Volón",
-        content: "I'm just a sample note",
-        dateCreated: currentDate,
-        lastModified: currentDate,
-      },
-      {
-        id: uuidv4(),
-        name: "How to do other stuff",
-        content: "I'm just a another sample note",
-        dateCreated: currentDate,
-        lastModified: currentDate,
-      },
+      new Note("I'm just a sample note"),
+      new Note("I'm just another sample note"),
     ],
   };
 };
 
-export const newNote = (content?: string): Note => {
-  return {
-    id: uuidv4(),
-    name: "",
-    content: content ?? "",
-    dateCreated: new Date(),
-    lastModified: new Date(),
-  };
+export class Note {
+  id: string | null;
+  content: string;
+  dateCreated: Date;
+  lastModified: Date;
+
+  constructor(content?: string) {
+    const currentDate = new Date();
+
+    this.id = uuidv4();
+    this.content = content ?? "";
+    this.dateCreated = currentDate;
+    this.lastModified = currentDate;
+  }
+}
+
+export const saveCurrentNoteChange = (currentContent: string) => {
+  getNote(store.activeNoteId).content = currentContent;
+  localStorage.setItem("volon", JSON.stringify(store.loadedData));
+};
+
+export const createNewNote = () => {
+  const newNoteData = new Note();
+
+  store.activeNoteId = newNoteData.id;
+  store.loadedData.notes.push(newNoteData);
 };

@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { defineComponent, ref, shallowRef } from "vue";
 import { Codemirror } from "vue-codemirror";
-import { getNote, newNote } from "../utils";
+import { saveCurrentNoteChange, createNewNote } from "../utils";
 import { store } from "../store";
 
 // Codemirror EditorView instance ref
@@ -18,17 +18,6 @@ const getCodemirrorStates = () => {
   const cursor = ranges[0].anchor;
   const length = state.doc.length;
   const lines = state.doc.lines;
-};
-const saveCurrentNoteChange = (currentContent: string) => {
-  getNote(store.activeNoteId).content = currentContent;
-  localStorage.setItem("volon", JSON.stringify(store.loadedData));
-};
-
-const createNewNote = () => {
-  const newNoteData = newNote();
-
-  store.activeNoteId = newNoteData.id;
-  store.loadedData.notes.push(newNoteData);
 };
 
 const handleOnChange = (currentContent: string) => {

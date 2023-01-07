@@ -10,7 +10,6 @@ export const store = reactive({
     notes: [
       {
         id: null,
-        name: "",
         content: "",
         dateCreated: new Date(),
         lastModified: new Date(),
