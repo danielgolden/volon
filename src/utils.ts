@@ -1,11 +1,13 @@
 import { store } from "./store";
 import { v4 as uuidv4 } from "uuid";
 
-export const getNote = (noteId: string | null) => {
+export const getNoteById = (noteId: string | null) => {
   if (noteId === null) throw new Error("noteId parameter must not be null");
 
   const matchedNote = store.loadedData.notes.find((note) => note.id === noteId);
-  if (!matchedNote) throw new Error("No matching note found");
+  if (!matchedNote) {
+    throw new Error("No matching note found");
+  }
   return matchedNote;
 };
 
@@ -36,7 +38,8 @@ export class Note {
 }
 
 export const saveCurrentNoteChange = (currentContent: string) => {
-  getNote(store.activeNoteId).content = currentContent;
+  getNoteById(store.activeNoteId).content = currentContent;
+  getNoteById(store.activeNoteId).lastModified = new Date();
   localStorage.setItem("volon", JSON.stringify(store.loadedData));
 };
 
@@ -45,4 +48,20 @@ export const createNewNote = () => {
 
   store.activeNoteId = newNoteData.id;
   store.loadedData.notes.push(newNoteData);
+};
+
+export const getNotesByContent = (content: string): Note[] => {
+  const matchedNotes = store.loadedData.notes.filter((note) => {
+    return note.content.includes(content);
+  });
+
+  return matchedNotes;
+};
+
+export const sortNotesByModificationDate = (notes: Note[]): Note[] => {
+  const sortedNotes = notes.sort((currentNote, nextNote) => {
+    return currentNote.lastModified.getTime() - nextNote.lastModified.getTime();
+  });
+
+  return sortedNotes;
 };

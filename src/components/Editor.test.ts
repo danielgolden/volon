@@ -1,7 +1,7 @@
 import { mount, VueWrapper } from "@vue/test-utils";
 import App from "../App.vue";
 import Editor from "./Editor.vue";
-import { getDefaultNotesData, getNote } from "../utils";
+import { getDefaultNotesData } from "../utils";
 import { store } from "../store";
 import { describe, it, expect, beforeEach, afterEach } from "vitest";
 

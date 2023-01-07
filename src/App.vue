@@ -4,29 +4,43 @@ import Aside from "./components/Aside.vue";
 import Editor from "./components/Editor.vue";
 import VueMarkdown from "vue-markdown-render";
 import { store } from "./store";
-import { getNote, getDefaultNotesData } from "./utils";
+import { getNoteById, getDefaultNotesData } from "./utils";
+import { parse } from "path";
 
 const existingNotesDataFound = () => !!localStorage.getItem("volon");
 
 const initializeNotesData = () => {
-  JSON.stringify(getDefaultNotesData());
   localStorage.setItem("volon", JSON.stringify(getDefaultNotesData()));
 };
 
-const currentNote = computed(() => {
-  if (!store.activeNoteId) return null;
-  const matchedNote = store.loadedData.notes.find(
-    (note) => note.id === store.activeNoteId
-  );
-  return matchedNote;
-});
+interface JSONParsedNote {
+  id: string | null;
+  content: string;
+  dateCreated: string;
+  lastModified: string;
+}
+
+const parseAllNoteDates = (notes: JSONParsedNote[]): Note[] => {
+  return notes.map((note) => {
+    return {
+      ...note,
+      lastModified: new Date(note.lastModified),
+      dateCreated: new Date(note.dateCreated),
+    };
+  });
+};
 
 onMounted(() => {
   if (!existingNotesDataFound()) {
     initializeNotesData();
   }
 
-  store.loadedData = JSON.parse(localStorage.getItem("volon")!);
+  const volonData = JSON.parse(localStorage.getItem("volon")!);
+  const processedVolonData = {
+    ...volonData,
+    notes: parseAllNoteDates(volonData.notes),
+  };
+  store.loadedData = processedVolonData;
 });
 </script>
 

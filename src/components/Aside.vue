@@ -1,24 +1,34 @@
 <script lang="ts" setup>
-import { ref, shallowRef } from "vue";
-import { Codemirror } from "vue-codemirror";
-import { getNote } from "../utils";
+import { computed } from "vue";
+import { getNoteById, sortNotesByModificationDate } from "../utils";
 import { store } from "../store";
+import AsideSearch from "./AsideSearch.vue";
 
-const currentQuery = ref(``);
+const searchIsActive = computed(() => {
+  return store.matchingNotes !== null;
+});
+
+const notesToBeDisplayed = computed(() => {
+  if (!searchIsActive.value) {
+    return sortNotesByModificationDate(store.loadedData.notes);
+  } else {
+    return sortNotesByModificationDate(store.matchingNotes);
+  }
+});
 const handleNoteItemClick = (noteId: string | null) => {
   if (noteId) {
     store.activeNoteId = noteId;
-    store.activeNoteContents = getNote(store.activeNoteId).content;
+    store.activeNoteContents = getNoteById(store.activeNoteId).content;
   }
 };
 </script>
 
 <template>
   <aside>
-    <input type="text" v-model="currentQuery" />
+    <AsideSearch />
     <ul class="note-list">
       <li
-        v-for="note in store.loadedData.notes"
+        v-for="note in notesToBeDisplayed"
         :v-key="note.id"
         :class="{
           'active-note': store.activeNoteId === note.id,

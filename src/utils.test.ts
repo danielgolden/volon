@@ -6,24 +6,28 @@ import {
   createNewNote,
   Note,
   getDefaultNotesData,
-  getNote,
+  getNoteById,
+  getNotesByContent,
+  sortNotesByModificationDate,
 } from "../src/utils";
 import { describe, it, expect, beforeEach, afterEach } from "vitest";
 
-describe("getNote()", () => {
-  store.loadedData = getDefaultNotesData();
-  store.activeNoteId = store.loadedData.notes[0].id;
+describe("getNoteById()", () => {
+  beforeEach(() => {
+    store.loadedData = getDefaultNotesData();
+    store.activeNoteId = store.loadedData.notes[0].id;
+  });
 
   it("Returns a note when a matching noteId is found", () => {
-    expect(getNote(store.activeNoteId)).toBeInstanceOf(Note);
+    expect(getNoteById(store.activeNoteId)).toBeInstanceOf(Note);
   });
 
   it("Throws an error if the provided noteId is null", () => {
-    expect(() => getNote(null)).toThrow();
+    expect(() => getNoteById(null)).toThrow();
   });
 
   it("Throws an error if no matching note is found", () => {
-    expect(() => getNote("aFakeNoteId")).toThrow();
+    expect(() => getNoteById("aFakeNoteId")).toThrow();
   });
 });
 
@@ -42,16 +46,26 @@ describe("getDefaultNotesData()", () => {
 });
 
 describe("saveCurrentNoteChange()", () => {
-  it("Saves it's argument as the contents of the active note", () => {
+  let testContent = "";
+  beforeEach(() => {
     store.loadedData = getDefaultNotesData();
     store.activeNoteId = store.loadedData.notes[0].id;
 
-    const testContent = "hi, I'm some test content";
-    saveCurrentNoteChange(testContent);
+    testContent = "hi, I'm some test content";
+  });
 
+  it("Saves it's argument as the contents of the active note", () => {
+    saveCurrentNoteChange(testContent);
     const firstNoteContent = store.loadedData.notes[0].content;
 
     expect(firstNoteContent).toBe(testContent);
+  });
+
+  it("Updates the lastModified date", () => {
+    const lastModified = store.loadedData.notes[0].lastModified;
+    saveCurrentNoteChange(testContent);
+
+    expect(lastModified).not.toBe(store.loadedData.notes[0].lastModified);
   });
 });
 
@@ -63,5 +77,59 @@ describe("createNewNote()", () => {
 
     expect(lastNote).toBeInstanceOf(Note);
     expect(lastNote?.content).toBe("");
+  });
+});
+
+describe("getNotesByContent()", () => {
+  beforeEach(() => {
+    store.loadedData = getDefaultNotesData();
+    store.loadedData.notes[0].content = "I'm just some special test data";
+  });
+
+  it("Returns any notes with matching content", () => {
+    const searchQuery = "special";
+
+    getNotesByContent(searchQuery).forEach((note) => {
+      expect(note).toBeInstanceOf(Note);
+      expect(note.content).toContain(searchQuery);
+    });
+  });
+});
+
+describe("sortNotesByModificationDate()", async () => {
+  it("Returns an array with the most recently modified notes a the top", async () => {
+    let firstNote!: Note;
+    let secondNote!: Note;
+    let thirdNote!: Note;
+    let fourthNote!: Note;
+    let fifthNote!: Note;
+
+    const setupNotes = () => {
+      return new Promise((resolve) => {
+        setTimeout(() => (firstNote = new Note("first note")), 10);
+        setTimeout(() => (secondNote = new Note("second note")), 20);
+        setTimeout(() => (thirdNote = new Note("third note")), 30);
+        setTimeout(() => (fourthNote = new Note("fourth note")), 40);
+        setTimeout(() => {
+          fifthNote = new Note("fifth note");
+          resolve("");
+        }, 50);
+      });
+    };
+
+    await setupNotes();
+
+    const testNotes = [fifthNote, thirdNote, firstNote, secondNote, fourthNote];
+    const sortedNotes = sortNotesByModificationDate(testNotes);
+
+    sortedNotes.forEach((note, index) => {
+      if (index === 0) return true;
+
+      const lastModifiedTime = note.lastModified.getTime();
+      const prevNoteLastModifiedTime =
+        sortedNotes[index - 1].lastModified.getTime();
+
+      expect(lastModifiedTime).toBeGreaterThan(prevNoteLastModifiedTime);
+    });
   });
 });
