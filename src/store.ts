@@ -1,8 +1,10 @@
 import { reactive } from "vue";
 
 export const store = reactive({
-  noteContent: "# Hi ther, I'm a note",
-  loadedData: {
+  activeNoteContents: "",
+  asideActive: true,
+  activeNoteId: <string | null>"",
+  loadedData: <LoadedNotesData>{
     newNoteName: "string",
     queryHasMatch: false,
     notes: [

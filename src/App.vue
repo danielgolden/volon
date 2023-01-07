@@ -1,35 +1,25 @@
 <script setup lang="ts">
-import { ref, reactive, onMounted } from "vue";
-import { v4 as uuidv4 } from "uuid";
+import { ref, computed, onMounted } from "vue";
+import Aside from "./components/Aside.vue";
 import Editor from "./components/Editor.vue";
 import VueMarkdown from "vue-markdown-render";
 import { store } from "./store";
+import { getNote, getDefaultNotesData } from "./utils";
 
 const existingNotesDataFound = () => !!localStorage.getItem("volon");
-const currentDate = new Date();
-const defaultNotesData: LoadedNotesData = {
-  newNoteName: ``,
-  queryHasMatch: false,
-  notes: [
-    {
-      id: uuidv4(),
-      name: "Welcome to Volón",
-      content: "I'm just a sample note",
-      dateCreated: currentDate,
-      lastModified: currentDate,
-    },
-    {
-      id: uuidv4(),
-      name: "How to do other stuff",
-      content: "I'm just a another sample note",
-      dateCreated: currentDate,
-      lastModified: currentDate,
-    },
-  ],
-};
+
 const initializeNotesData = () => {
-  localStorage.setItem("volon", JSON.stringify(defaultNotesData));
+  JSON.stringify(getDefaultNotesData());
+  localStorage.setItem("volon", JSON.stringify(getDefaultNotesData()));
 };
+
+const currentNote = computed(() => {
+  if (!store.activeNoteId) return null;
+  const matchedNote = store.loadedData.notes.find(
+    (note) => note.id === store.activeNoteId
+  );
+  return matchedNote;
+});
 
 onMounted(() => {
   if (!existingNotesDataFound()) {
@@ -38,16 +28,13 @@ onMounted(() => {
 
   store.loadedData = JSON.parse(localStorage.getItem("volon")!);
 });
-
-defineExpose({
-  store,
-});
 </script>
 
 <template>
-  <main>
+  <main :class="{ 'aside-active': store.asideActive }">
+    <Aside v-if="store.asideActive" />
     <Editor />
-    <vue-markdown class="markdown-preview" :source="store.noteContent" />
+    <vue-markdown class="markdown-preview" :source="store.activeNoteContents" />
   </main>
 </template>
 
@@ -57,6 +44,10 @@ main {
   width: 100%;
   display: grid;
   grid-template-columns: 1fr 1fr;
+}
+
+.aside-active {
+  grid-template-columns: 350px 1fr 1fr;
 }
 .logo {
   height: 6em;

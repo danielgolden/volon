@@ -1,7 +1,7 @@
 /// <reference types="vite/client" />
 
 interface Note {
-  id: string;
+  id: string | null;
   name: string;
   content: string;
   dateCreated: Date;
