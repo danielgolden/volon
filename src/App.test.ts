@@ -29,6 +29,19 @@ describe("App.vue", () => {
       expect(note.dateCreated).toBeInstanceOf(Date);
     });
   });
+
+  // it("⌘ + alt + n clears the activeNoteId and activeNoteContents", async () => {
+  //   store.activeNoteId = "I'm a fake note ID";
+  //   store.activeNoteContents = "I'm some note contents";
+  //   await wrapper?.trigger("keydown", {
+  //     altKey: true,
+  //     metaKey: true,
+  //     code: "KeyN",
+  //   });
+
+  //   expect(store.activeNoteId).toBe(null);
+  //   expect(store.activeNoteContents).toBe("");
+  // });
 });
 
 describe("parseAllNoteDates()", () => {
@@ -40,8 +53,6 @@ describe("parseAllNoteDates()", () => {
       lastModified: "2023-01-07T15:00:37.494Z",
     };
     const result = wrapper?.vm.parseAllNoteDates([sampleNoteWithStringDates]);
-
-    console.log(result.dateCreated);
 
     expect(result[0].dateCreated).toBeInstanceOf(Date);
     expect(result[0].lastModified).toBeInstanceOf(Date);

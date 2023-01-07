@@ -1,11 +1,14 @@
 <script setup lang="ts">
-import { ref, computed, onMounted } from "vue";
+import { onMounted } from "vue";
 import Aside from "./components/Aside.vue";
 import Editor from "./components/Editor.vue";
 import VueMarkdown from "vue-markdown-render";
 import { store } from "./store";
-import { getNoteById, getDefaultNotesData } from "./utils";
-import { parse } from "path";
+import {
+  getDefaultNotesData,
+  deleteActiveNote,
+  clearActiveNoteState,
+} from "./utils";
 
 const existingNotesDataFound = () => !!localStorage.getItem("volon");
 
@@ -30,6 +33,11 @@ const parseAllNoteDates = (notes: JSONParsedNote[]): Note[] => {
   });
 };
 
+const handleNewNoteShortcut = () => {
+  store.activeNoteId = null;
+  store.activeNoteContents = "";
+};
+
 onMounted(() => {
   if (!existingNotesDataFound()) {
     initializeNotesData();
@@ -41,6 +49,18 @@ onMounted(() => {
     notes: parseAllNoteDates(volonData.notes),
   };
   store.loadedData = processedVolonData;
+
+  window.addEventListener("keydown", (event) => {
+    debugger;
+    if (event.altKey && event.metaKey && event.code === "KeyN") {
+      event.preventDefault();
+      handleNewNoteShortcut();
+    } else if (event.metaKey && event.code === "Backspace") {
+      event.preventDefault();
+      deleteActiveNote();
+      clearActiveNoteState();
+    }
+  });
 });
 </script>
 

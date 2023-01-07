@@ -65,3 +65,27 @@ export const sortNotesByModificationDate = (notes: Note[]): Note[] => {
 
   return sortedNotes;
 };
+
+export const getIndexOfNoteById = (id: string | null) => {
+  if (!id) return null;
+
+  return store.loadedData.notes.findIndex(
+    (note) => note.id === store.activeNoteId
+  );
+};
+
+export const deleteActiveNote = () => {
+  const indexOfActiveNote = getIndexOfNoteById(store.activeNoteId);
+
+  if (indexOfActiveNote === null) {
+    throw new Error(`No note with the ID ${store.activeNoteId} found.`);
+  }
+
+  console.log(indexOfActiveNote);
+  store.loadedData.notes.splice(indexOfActiveNote, 1);
+};
+
+export const clearActiveNoteState = () => {
+  store.activeNoteId = null;
+  store.activeNoteContents = "";
+};

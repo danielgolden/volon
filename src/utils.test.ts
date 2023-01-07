@@ -9,6 +9,9 @@ import {
   getNoteById,
   getNotesByContent,
   sortNotesByModificationDate,
+  getIndexOfNoteById,
+  deleteActiveNote,
+  clearActiveNoteState,
 } from "../src/utils";
 import { describe, it, expect, beforeEach, afterEach } from "vitest";
 
@@ -97,7 +100,7 @@ describe("getNotesByContent()", () => {
 });
 
 describe("sortNotesByModificationDate()", async () => {
-  it("Returns an array with the most recently modified notes a the top", async () => {
+  it("Returns an array with the most recently modified notes at the top", async () => {
     let firstNote!: Note;
     let secondNote!: Note;
     let thirdNote!: Note;
@@ -131,5 +134,39 @@ describe("sortNotesByModificationDate()", async () => {
 
       expect(lastModifiedTime).toBeLessThan(prevNoteLastModifiedTime);
     });
+  });
+});
+
+describe("getIndexOfNoteById()", () => {
+  it("Returns the ID of the matching note", () => {
+    store.loadedData = getDefaultNotesData();
+    store.activeNoteId = store.loadedData.notes[0].id;
+    const idOfFirstNote = store.loadedData.notes[0].id;
+
+    expect(getIndexOfNoteById(idOfFirstNote)).toBe(0);
+  });
+});
+
+describe("deleteActiveNote()", () => {
+  it("Deletes the active note", () => {
+    store.loadedData = getDefaultNotesData();
+    store.activeNoteId = store.loadedData.notes[0].id;
+    const idOfFirstNote = store.loadedData.notes[0].id;
+
+    deleteActiveNote();
+
+    expect(() => getNoteById(idOfFirstNote)).toThrow();
+  });
+});
+
+describe("clearActiveNoteState()", () => {
+  it("sets the active note state back to it's default", () => {
+    store.loadedData = getDefaultNotesData();
+    store.activeNoteId = store.loadedData.notes[0].id;
+
+    clearActiveNoteState();
+
+    expect(store.activeNoteContents).toBe("");
+    expect(store.activeNoteId).toBe(null);
   });
 });
