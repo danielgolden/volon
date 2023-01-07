@@ -16,7 +16,7 @@ const handleNoteItemClick = (noteId: string | null) => {
 <template>
   <aside>
     <input type="text" v-model="currentQuery" />
-    <ul>
+    <ul class="note-list">
       <li
         v-for="note in store.loadedData.notes"
         :v-key="note.id"
@@ -27,15 +27,21 @@ const handleNoteItemClick = (noteId: string | null) => {
         :data-note-id="note.id"
         @click="handleNoteItemClick(note.id)"
       >
-        <span class="note-list-item">{{ note.name }}</span>
+        <span class="note-list-item">{{ note.content.substring(0, 50) }}</span>
         <span class="note-list-item-meta">{{ note.lastModified }}</span>
       </li>
     </ul>
   </aside>
 </template>
 
-<style>
-.cm-editor {
-  height: 100%;
+<style scoped>
+.note-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.note-list-item {
+  display: flex;
+  flex-direction: column;
 }
 </style>
