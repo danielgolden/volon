@@ -97,16 +97,17 @@ main {
 .markdown-preview-container {
   display: flex;
   justify-content: center;
+  padding: 34px 48px;
   background-color: var(--color-bg-surface-1);
   border-left: 1px solid var(--color-border-secondary);
   color: var(--color-text-primary);
 }
 
 .markdown-preview {
-  width: 70ch;
+  max-width: 70ch;
+  width: 100%;
   height: 100vh;
   overflow-y: scroll;
-  padding-block: 48px;
   line-height: 150%;
 }
 </style>

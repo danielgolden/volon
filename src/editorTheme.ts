@@ -22,12 +22,15 @@ export const editorTheme = EditorView.theme(
     },
     ".cm-editor": {
       height: "100%",
+      width: "70ch",
+      flexShrink: 0,
     },
     ".cm-placeholder": {
       color: "var(--color-text-tertiary)",
     },
     ".cm-line": {
-      width: "70ch",
+      maxWidth: "70ch",
+      width: "100%",
     },
   },
   { dark: true }

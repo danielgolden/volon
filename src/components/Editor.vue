@@ -47,6 +47,7 @@ const handleOnChange = (currentContent: string) => {
 
 <style>
 .cm-editor {
+  max-width: 70ch;
   height: 100%;
   background-color: var(--color-bg-surface-1);
 }
