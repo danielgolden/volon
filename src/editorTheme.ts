@@ -11,6 +11,7 @@ export const editorTheme = EditorView.theme(
       maxWidth: "60ch",
       width: "100%",
       display: "flex",
+      padding: "48px",
       flexDirection: "column",
       alignItems: "center",
       fontSize: "20px",

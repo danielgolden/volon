@@ -57,6 +57,8 @@ onMounted(() => {
       clearActiveNoteState();
     }
   });
+
+  window.addEventListener("resize", () => setWindowDimensions());
 });
 </script>
 

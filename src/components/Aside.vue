@@ -63,7 +63,7 @@ aside {
 .note-list {
   overflow-y: auto;
   margin: 0;
-  padding: 10px 10px;
+  padding: 14px 16px;
   display: flex;
   flex-direction: column;
   gap: 4px;

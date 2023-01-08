@@ -28,7 +28,7 @@ const handleInputChange = (currentContent: string) => {
 
 <style scoped>
 .container {
-  padding: 20px;
+  padding: 18px 28px;
   border-bottom: 1px solid var(--color-border-primary);
 }
 
