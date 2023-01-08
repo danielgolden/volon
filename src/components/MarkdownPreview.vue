@@ -17,7 +17,7 @@ import VueMarkdown from "vue-markdown-render";
   display: flex;
   justify-content: center;
   height: 100%;
-  overflow: hidden;
+  overflow-y: scroll;
   background-color: var(--color-bg-surface-1);
   border-left: 1px solid var(--color-border-secondary);
   color: var(--color-text-primary);
@@ -26,9 +26,8 @@ import VueMarkdown from "vue-markdown-render";
 .markdown-preview {
   max-width: 60ch;
   width: 100%;
-  height: var(--doc-height);
+  height: min-content;
   padding: 48px 48px;
-  overflow-y: scroll;
   line-height: 150%;
   font-size: 20px;
 }
@@ -142,7 +141,6 @@ import VueMarkdown from "vue-markdown-render";
   font-size: 20px;
   line-height: 1.5;
   word-wrap: break-word;
-  height: 100%;
 }
 
 .markdown-body .octicon {
