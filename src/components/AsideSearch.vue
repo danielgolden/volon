@@ -34,9 +34,9 @@ const handleInputChange = (currentContent: string) => {
 
 .search-input {
   width: 100%;
-  height: 37px;
+  height: 40px;
   padding: 10px 12px;
-  font-size: 14px;
+  font-size: 16px;
   background-color: var(--color-bg-input-enabled);
   border-radius: 4px;
   box-shadow: 0 0 0 1px var(--color-bg-input-border-enabled);
@@ -53,5 +53,12 @@ const handleInputChange = (currentContent: string) => {
 
 .search-input::placeholder {
   color: var(--color-text-input-enabled-placeholder);
+}
+
+@media (max-width: 1400px) {
+  .search-input {
+    height: 37px;
+    font-size: 14px;
+  }
 }
 </style>

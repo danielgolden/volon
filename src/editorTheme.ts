@@ -13,7 +13,7 @@ export const editorTheme = EditorView.theme(
       display: "flex",
       flexDirection: "column",
       alignItems: "center",
-      fontSize: "16px",
+      fontSize: "20px",
       lineHeight: "150%",
       fontFamily:
         '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol"',

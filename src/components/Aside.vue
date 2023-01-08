@@ -59,10 +59,10 @@ aside {
   height: 100%;
   overflow-y: auto;
   margin: 0;
-  padding: 12px 10px;
+  padding: 10px 10px;
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 4px;
 }
 .note-list-item {
   padding: 8px 10px;
@@ -78,7 +78,7 @@ aside {
 }
 
 .note-list-item-preview {
-  font-size: 14px;
+  font-size: 16px;
   width: 100%;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -87,7 +87,7 @@ aside {
 }
 
 .note-list-item-meta {
-  font-size: 11px;
+  font-size: 13px;
   color: var(--color-text-tertiary);
 }
 
@@ -101,5 +101,15 @@ aside {
 
 .active-note-list-item .note-list-item-meta {
   color: var(--color-text-secondary);
+}
+
+@media (max-width: 1400px) {
+  .note-list-item-preview {
+    font-size: 14px;
+  }
+
+  .note-list-item-meta {
+    font-size: 11px;
+  }
 }
 </style>

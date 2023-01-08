@@ -56,4 +56,10 @@ const handleOnChange = (currentContent: string) => {
   width: 100%;
   justify-content: center;
 }
+
+@media (max-width: 1400px) {
+  .v-codemirror .cm-content {
+    font-size: 16px;
+  }
+}
 </style>
