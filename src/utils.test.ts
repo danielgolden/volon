@@ -12,6 +12,7 @@ import {
   getIndexOfNoteById,
   deleteActiveNote,
   clearActiveNoteState,
+  setWindowDimensions,
 } from "../src/utils";
 import { describe, it, expect, beforeEach, afterEach } from "vitest";
 
@@ -168,5 +169,19 @@ describe("clearActiveNoteState()", () => {
 
     expect(store.activeNoteContents).toBe("");
     expect(store.activeNoteId).toBe(null);
+  });
+});
+
+describe("setWindowDimensions()", () => {
+  it("Saves the window dimensions to css variables", () => {
+    setWindowDimensions();
+
+    const docWidthCSSVar =
+      document.documentElement.style.getPropertyValue("--doc-width");
+    const docHeightCSSVar =
+      document.documentElement.style.getPropertyValue("--doc-height");
+
+    expect(docWidthCSSVar).toBe(`${window.innerWidth}px`);
+    expect(docHeightCSSVar).toBe(`${window.innerHeight}px`);
   });
 });

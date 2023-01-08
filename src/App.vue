@@ -2,12 +2,13 @@
 import { onMounted } from "vue";
 import Aside from "./components/Aside.vue";
 import Editor from "./components/Editor.vue";
-import VueMarkdown from "vue-markdown-render";
+import MarkdownPreview from "./components/MarkdownPreview.vue";
 import { store } from "./store";
 import {
   getDefaultNotesData,
   deleteActiveNote,
   clearActiveNoteState,
+  setWindowDimensions,
 } from "./utils";
 
 const existingNotesDataFound = () => !!localStorage.getItem("volon");
@@ -34,6 +35,7 @@ const parseAllNoteDates = (notes: JSONParsedNote[]): Note[] => {
 };
 
 onMounted(() => {
+  setWindowDimensions();
   if (!existingNotesDataFound()) {
     initializeNotesData();
   }
@@ -62,18 +64,13 @@ onMounted(() => {
   <main :class="{ 'aside-active': store.asideActive }">
     <Aside v-if="store.asideActive" />
     <Editor />
-    <div class="markdown-preview-container">
-      <vue-markdown
-        class="markdown-preview"
-        :source="store.activeNoteContents"
-      />
-    </div>
+    <MarkdownPreview />
   </main>
 </template>
 
 <style scoped>
 main {
-  height: 100vh;
+  height: var(--doc-height);
   width: 100%;
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -82,32 +79,10 @@ main {
 .aside-active {
   grid-template-columns: 350px 1fr 1fr;
 }
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.vue:hover {
-  filter: drop-shadow(0 0 2em #42b883aa);
-}
 
-.markdown-preview-container {
-  display: flex;
-  justify-content: center;
-  padding: 34px 48px;
-  background-color: var(--color-bg-surface-1);
-  border-left: 1px solid var(--color-border-secondary);
-  color: var(--color-text-primary);
-}
-
-.markdown-preview {
-  max-width: 70ch;
-  width: 100%;
-  height: 100vh;
-  overflow-y: scroll;
-  line-height: 150%;
+@media (max-width: 1400px) {
+  .aside-active {
+    grid-template-columns: 300px 1fr 1fr;
+  }
 }
 </style>

@@ -8,7 +8,7 @@ export const editorTheme = EditorView.theme(
       overflow: "hidden",
     },
     ".cm-content": {
-      maxWidth: "70ch",
+      maxWidth: "60ch",
       width: "100%",
       display: "flex",
       flexDirection: "column",
@@ -18,18 +18,18 @@ export const editorTheme = EditorView.theme(
       fontFamily:
         '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol"',
       caretColor: "var(--color-text-primary)",
-      padding: "48px",
       color: "var(--color-text-primary)",
     },
     ".cm-editor": {
       height: "100%",
       width: "100%",
+      padding: "48px",
     },
     ".cm-placeholder": {
       color: "var(--color-text-tertiary)",
     },
     ".cm-line": {
-      maxWidth: "70ch",
+      maxWidth: "60ch",
       width: "100%",
     },
     ".c1.cm-focused": {

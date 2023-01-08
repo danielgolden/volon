@@ -47,6 +47,7 @@ const handleOnChange = (currentContent: string) => {
 
 <style>
 .cm-editor {
+  padding: 48px;
   align-items: center;
   height: 100%;
   background-color: var(--color-bg-surface-1);

@@ -38,9 +38,12 @@ const handleNoteItemClick = (noteId: string | null) => {
         :data-note-id="note.id"
         @click="handleNoteItemClick(note.id)"
       >
-        <span class="note-list-item-preview">{{
-          note.content.substring(0, 50)
-        }}</span>
+        <span class="note-list-item-preview">
+          {{ note.content.substring(0, 50) }}
+          <em v-if="note.content.length === 0" class="empty-list-item-preview"
+            >Empty note</em
+          >
+        </span>
         <span class="note-list-item-meta">{{
           formatRelative(note.lastModified, new Date())
         }}</span>
@@ -51,12 +54,13 @@ const handleNoteItemClick = (noteId: string | null) => {
 
 <style scoped>
 aside {
+  display: grid;
   height: 100%;
   overflow: hidden;
+  grid-template-rows: min-content 1fr;
   background-color: var(--color-bg-surface-2);
 }
 .note-list {
-  height: 100%;
   overflow-y: auto;
   margin: 0;
   padding: 10px 10px;

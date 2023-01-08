@@ -81,11 +81,17 @@ export const deleteActiveNote = () => {
     throw new Error(`No note with the ID ${store.activeNoteId} found.`);
   }
 
-  console.log(indexOfActiveNote);
   store.loadedData.notes.splice(indexOfActiveNote, 1);
 };
 
 export const clearActiveNoteState = () => {
   store.activeNoteId = null;
   store.activeNoteContents = "";
+};
+
+export const setWindowDimensions = () => {
+  const doc = document.documentElement;
+
+  doc.style.setProperty("--doc-height", `${window.innerHeight}px`);
+  doc.style.setProperty("--doc-width", `${window.innerWidth}px`);
 };
