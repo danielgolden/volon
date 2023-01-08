@@ -36,7 +36,7 @@ const handleOnChange = (currentContent: string) => {
 <template>
   <codemirror
     v-model="store.activeNoteContents"
-    placeholder="Take notes..."
+    placeholder="Jot something down..."
     :autofocus="true"
     :tab-size="2"
     :spellcheck="true"
@@ -47,6 +47,7 @@ const handleOnChange = (currentContent: string) => {
 
 <style>
 .cm-editor {
+  grid-area: editor;
   align-items: center;
   height: 100%;
   background-color: var(--color-bg-surface-1);

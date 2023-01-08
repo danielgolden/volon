@@ -13,6 +13,7 @@ import {
   deleteActiveNote,
   clearActiveNoteState,
   setWindowDimensions,
+  navigateToNoteByRelativeIndex,
 } from "../src/utils";
 import { describe, it, expect, beforeEach, afterEach } from "vitest";
 
@@ -183,5 +184,39 @@ describe("setWindowDimensions()", () => {
 
     expect(docWidthCSSVar).toBe(`${window.innerWidth}px`);
     expect(docHeightCSSVar).toBe(`${window.innerHeight}px`);
+  });
+});
+
+describe("navigateToNoteByRelativeIndex()", () => {
+  beforeEach(() => {
+    store.loadedData.notes = [
+      new Note("I'm the first note"),
+      new Note("I'm the second note"),
+      new Note("And I'm the third and last note"),
+    ];
+  });
+  it("Navigates to a new note in the incoming list relative to the incoming index", () => {
+    store.activeNoteId = getNotesByContent("second")[0].id;
+
+    navigateToNoteByRelativeIndex(store.loadedData.notes, 1);
+    expect(store.activeNoteId).toBe(store.loadedData.notes[2].id);
+    navigateToNoteByRelativeIndex(store.loadedData.notes, -2);
+    expect(store.activeNoteId).toBe(store.loadedData.notes[0].id);
+  });
+
+  it("Doesn't allow navigation before first note nor past last note", () => {
+    store.activeNoteId = getNotesByContent("first")[0].id;
+    navigateToNoteByRelativeIndex(store.loadedData.notes, -1);
+    expect(store.activeNoteId).toBe(store.loadedData.notes[0].id);
+
+    store.activeNoteId = getNotesByContent("last")[0].id;
+    navigateToNoteByRelativeIndex(store.loadedData.notes, 1);
+    expect(store.activeNoteId).toBe(store.loadedData.notes[2].id);
+  });
+
+  it("Allows navigation from first to another note", () => {
+    store.activeNoteId = getNotesByContent("first")[0].id;
+    navigateToNoteByRelativeIndex(store.loadedData.notes, 1);
+    expect(store.activeNoteId).toBe(store.loadedData.notes[1].id);
   });
 });

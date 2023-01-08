@@ -66,12 +66,13 @@ export const sortNotesByModificationDate = (notes: Note[]): Note[] => {
   return sortedNotes;
 };
 
-export const getIndexOfNoteById = (id: string | null) => {
+export const getIndexOfNoteById = (
+  id: string | null,
+  noteList: Note[] = store.loadedData.notes
+) => {
   if (!id) return null;
 
-  return store.loadedData.notes.findIndex(
-    (note) => note.id === store.activeNoteId
-  );
+  return noteList.findIndex((note) => note.id === store.activeNoteId);
 };
 
 export const deleteActiveNote = () => {
@@ -94,4 +95,29 @@ export const setWindowDimensions = () => {
 
   doc.style.setProperty("--doc-height", `${window.innerHeight}px`);
   doc.style.setProperty("--doc-width", `${window.innerWidth}px`);
+};
+
+export const navigateToNoteByRelativeIndex = (
+  noteList: Note[],
+  relativeIndex: number
+) => {
+  const indexOfActiveNote = getIndexOfNoteById(store.activeNoteId, noteList);
+  const indexOfLastItemInNoteList = noteList.length - 1;
+  const noteIsFirstInList = indexOfActiveNote === 0;
+  const noteIsLastInList = indexOfActiveNote === indexOfLastItemInNoteList;
+
+  if (noteIsFirstInList && relativeIndex < 0) return;
+  if (noteIsLastInList && relativeIndex > 0) return;
+  if (indexOfActiveNote === null) return;
+
+  store.activeNoteId = noteList[indexOfActiveNote + relativeIndex].id;
+  store.activeNoteContents = getNoteById(store.activeNoteId).content;
+};
+
+export const navigateToPreviousNote = (noteList: Note[]) => {
+  navigateToNoteByRelativeIndex(noteList, -1);
+};
+
+export const navigateToNextNote = (noteList: Note[]) => {
+  navigateToNoteByRelativeIndex(noteList, 1);
 };

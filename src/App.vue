@@ -55,6 +55,9 @@ onMounted(() => {
       event.preventDefault();
       deleteActiveNote();
       clearActiveNoteState();
+    } else if (event.metaKey && event.shiftKey && event.code === "KeyP") {
+      event.preventDefault();
+      store.markdownPreviewActive = !store.markdownPreviewActive;
     }
   });
 
@@ -63,10 +66,15 @@ onMounted(() => {
 </script>
 
 <template>
-  <main :class="{ 'aside-active': store.asideActive }">
+  <main
+    :class="{
+      'aside-active': store.asideActive,
+      'markdown-preview-active': store.markdownPreviewActive,
+    }"
+  >
     <Aside v-if="store.asideActive" />
     <Editor />
-    <MarkdownPreview />
+    <MarkdownPreview v-if="store.markdownPreviewActive" />
   </main>
 </template>
 
@@ -80,6 +88,11 @@ main {
 
 .aside-active {
   grid-template-columns: 350px 1fr 1fr;
+  grid-template-areas: "aside editor editor";
+}
+
+.markdown-preview-active {
+  grid-template-areas: "aside editor markdown-preview";
 }
 
 @media (max-width: 1400px) {

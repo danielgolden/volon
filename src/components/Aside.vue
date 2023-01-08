@@ -1,6 +1,11 @@
 <script lang="ts" setup>
 import { computed } from "vue";
-import { getNoteById, sortNotesByModificationDate } from "../utils";
+import {
+  getNoteById,
+  sortNotesByModificationDate,
+  navigateToPreviousNote,
+  navigateToNextNote,
+} from "../utils";
 import { store } from "../store";
 import AsideSearch from "./AsideSearch.vue";
 import { formatRelative, formatDistance, subDays } from "date-fns";
@@ -27,7 +32,12 @@ const handleNoteItemClick = (noteId: string | null) => {
 <template>
   <aside>
     <AsideSearch />
-    <ul class="note-list">
+    <ul
+      class="note-list"
+      tabindex="0"
+      @keydown.up="navigateToPreviousNote(notesToBeDisplayed)"
+      @keydown.down="navigateToNextNote(notesToBeDisplayed)"
+    >
       <li
         v-for="note in notesToBeDisplayed"
         :v-key="note.id"
@@ -39,7 +49,7 @@ const handleNoteItemClick = (noteId: string | null) => {
         @click="handleNoteItemClick(note.id)"
       >
         <span class="note-list-item-preview">
-          {{ note.content.split(`\n`)[0].replace("#", "").substring(0, 50) }}
+          {{ note.content.split(`\n`)[0].replaceAll("#", "").substring(0, 50) }}
           <em v-if="note.content.length === 0" class="empty-list-item-preview"
             >Empty note</em
           >
@@ -55,6 +65,7 @@ const handleNoteItemClick = (noteId: string | null) => {
 <style scoped>
 aside {
   display: grid;
+  grid-area: aside;
   height: 100%;
   overflow: hidden;
   grid-template-rows: min-content 1fr;

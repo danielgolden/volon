@@ -41,7 +41,7 @@ const handleInputChange = (currentContent: string) => {
   border-radius: 4px;
   box-shadow: 0 0 0 1px var(--color-bg-input-border-enabled);
   border: none;
-  color: var(--color-text-secondary);
+  color: var(--color-text-primary);
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica,
     Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
 }

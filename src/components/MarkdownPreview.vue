@@ -15,6 +15,7 @@ import VueMarkdown from "vue-markdown-render";
 <style>
 .markdown-preview-container {
   display: flex;
+  grid-area: markdown-preview;
   justify-content: center;
   height: 100%;
   overflow-y: scroll;
