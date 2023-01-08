@@ -58,6 +58,10 @@ const handleOnChange = (currentContent: string) => {
   justify-content: center;
 }
 
+.cm-editor.cm-focused {
+  outline: none;
+}
+
 @media (max-width: 1400px) {
   .v-codemirror .cm-content {
     font-size: 16px;

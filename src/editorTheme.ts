@@ -32,7 +32,7 @@ export const editorTheme = EditorView.theme(
       maxWidth: "60ch",
       width: "100%",
     },
-    ".c1.cm-focused": {
+    ".cm-focused": {
       outline: "none",
     },
     ".cm-scoller": {

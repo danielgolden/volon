@@ -39,7 +39,7 @@ const handleNoteItemClick = (noteId: string | null) => {
         @click="handleNoteItemClick(note.id)"
       >
         <span class="note-list-item-preview">
-          {{ note.content.substring(0, 50) }}
+          {{ note.content.split(`\n`)[0].replace("#", "").substring(0, 50) }}
           <em v-if="note.content.length === 0" class="empty-list-item-preview"
             >Empty note</em
           >
