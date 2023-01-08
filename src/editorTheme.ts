@@ -8,6 +8,7 @@ export const editorTheme = EditorView.theme(
       overflow: "hidden",
     },
     ".cm-content": {
+      maxWidth: "70ch",
       width: "100%",
       display: "flex",
       flexDirection: "column",
@@ -22,14 +23,19 @@ export const editorTheme = EditorView.theme(
     },
     ".cm-editor": {
       height: "100%",
-      width: "70ch",
-      flexShrink: 0,
+      width: "100%",
     },
     ".cm-placeholder": {
       color: "var(--color-text-tertiary)",
     },
     ".cm-line": {
       maxWidth: "70ch",
+      width: "100%",
+    },
+    ".c1.cm-focused": {
+      outline: "none",
+    },
+    ".cm-scoller": {
       width: "100%",
     },
   },

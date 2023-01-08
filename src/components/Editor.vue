@@ -47,8 +47,13 @@ const handleOnChange = (currentContent: string) => {
 
 <style>
 .cm-editor {
-  max-width: 70ch;
+  align-items: center;
   height: 100%;
   background-color: var(--color-bg-surface-1);
+}
+
+.cm-scroller {
+  width: 100%;
+  justify-content: center;
 }
 </style>
