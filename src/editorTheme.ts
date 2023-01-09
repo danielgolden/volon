@@ -38,6 +38,12 @@ export const editorTheme = EditorView.theme(
     ".cm-scoller": {
       width: "100%",
     },
+    ".cm-cursor": {
+      borderLeftColor: "var(--color-text-primary)",
+    },
+    "&.cm-focused .cm-selectionBackground, ::selection": {
+      backgroundColor: "var(--color-text-selection)",
+    },
   },
   { dark: true }
 );
