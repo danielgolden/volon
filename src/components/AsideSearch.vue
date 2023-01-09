@@ -10,7 +10,7 @@ const handleInputChange = (currentContent: string) => {
   if (currentContent === "") {
     store.matchingNotes = null;
   } else {
-    store.matchingNotes = getNotesByContent("currentContent");
+    store.matchingNotes = getNotesByContent(currentContent);
   }
 };
 

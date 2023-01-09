@@ -94,10 +94,18 @@ describe("getNotesByContent()", () => {
   it("Returns any notes with matching content", () => {
     const searchQuery = "special";
 
-    getNotesByContent(searchQuery).forEach((note) => {
+    expect(getNotesByContent(searchQuery).length).toBeGreaterThan(0);
+
+    getNotesByContent("whaat").forEach((note) => {
       expect(note).toBeInstanceOf(Note);
       expect(note.content).toContain(searchQuery);
     });
+  });
+
+  it("Ignores letter casing", () => {
+    const searchQuery = "SpEcIaL";
+
+    expect(getNotesByContent(searchQuery)).not.toStrictEqual([]);
   });
 });
 

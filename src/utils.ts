@@ -62,7 +62,7 @@ export const createNewNote = (contents: string = "") => {
 
 export const getNotesByContent = (content: string): Note[] => {
   const matchedNotes = store.loadedData.notes.filter((note) => {
-    return note.content.includes(content);
+    return note.content.toLowerCase().includes(content.toLowerCase());
   });
 
   return matchedNotes;
