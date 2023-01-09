@@ -1,9 +1,10 @@
 <script lang="ts" setup>
-import { ref } from "vue";
+import { ref, onMounted } from "vue";
 import { getNotesByContent } from "../utils";
 import { store } from "../store";
 
 const currentQuery = ref(``);
+const searchInput = ref();
 
 const handleInputChange = (currentContent: string) => {
   if (currentContent === "") {
@@ -12,29 +13,54 @@ const handleInputChange = (currentContent: string) => {
     store.matchingNotes = getNotesByContent(currentContent);
   }
 };
+
+onMounted(() => {
+  document.addEventListener("keydown", (event) => {
+    if (event.metaKey && event.code === "KeyK") {
+      event.preventDefault();
+      searchInput.value.focus();
+    }
+  });
+});
 </script>
 
 <template>
   <div class="container">
+    <span class="keyboard-shortcut-indicator">⌘K</span>
     <input
       class="search-input"
-      type="search"
+      type="text"
       v-model="currentQuery"
       @input="(currentValue) => handleInputChange((currentValue.target as HTMLInputElement)?.value)"
       placeholder="Search"
+      ref="searchInput"
     />
   </div>
 </template>
 
 <style scoped>
 .container {
-  padding: 18px 22px;
+  position: relative;
+  margin: 18px 22px;
   border-bottom: 1px solid var(--color-border-primary);
+}
+
+.keyboard-shortcut-indicator {
+  position: absolute;
+  top: 9px;
+  right: 8px;
+  font-size: 12px;
+  padding: 3px 5px;
+  border-radius: 3px;
+  letter-spacing: 1.5px;
+  color: var(--color-text-input-enabled-indicator);
+  /* border: 1px solid var(--color-border-tertiary); */
+  background-color: var(--color-bg-input-enabled-indicator);
 }
 
 .search-input {
   width: 100%;
-  height: 40px;
+  height: 41px;
   padding: 10px 12px;
   font-size: 16px;
   background-color: var(--color-bg-input-enabled);
@@ -57,7 +83,7 @@ const handleInputChange = (currentContent: string) => {
 
 @media (max-width: 1400px) {
   .search-input {
-    height: 37px;
+    height: 38px;
     font-size: 14px;
   }
 }

@@ -14,6 +14,7 @@ export const getNoteById = (noteId: string | null) => {
 export const getDefaultNotesData = (): LoadedNotesData => {
   return {
     queryHasMatch: false,
+    markdownPreviewActive: true,
     notes: [
       new Note("I'm just a sample note"),
       new Note("I'm just another sample note"),
@@ -40,6 +41,10 @@ export class Note {
 export const saveCurrentNoteChange = (currentContent: string) => {
   getNoteById(store.activeNoteId).content = currentContent;
   getNoteById(store.activeNoteId).lastModified = new Date();
+  localStorage.setItem("volon", JSON.stringify(store.loadedData));
+};
+
+export const saveAllNoteData = () => {
   localStorage.setItem("volon", JSON.stringify(store.loadedData));
 };
 

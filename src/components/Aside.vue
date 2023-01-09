@@ -18,7 +18,7 @@ const notesToBeDisplayed = computed(() => {
   if (!searchIsActive.value) {
     return sortNotesByModificationDate(store.loadedData.notes);
   } else {
-    return sortNotesByModificationDate(store.matchingNotes);
+    return sortNotesByModificationDate(store.matchingNotes!);
   }
 });
 const handleNoteItemClick = (noteId: string | null) => {
@@ -72,6 +72,7 @@ aside {
   background-color: var(--color-bg-surface-2);
 }
 .note-list {
+  border-top: 1px solid var(--color-border-primary);
   overflow-y: auto;
   margin: 0;
   padding: 14px 12px;

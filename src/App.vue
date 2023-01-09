@@ -9,6 +9,7 @@ import {
   deleteActiveNote,
   clearActiveNoteState,
   setWindowDimensions,
+  saveAllNoteData,
 } from "./utils";
 
 const existingNotesDataFound = () => !!localStorage.getItem("volon");
@@ -34,8 +35,7 @@ const parseAllNoteDates = (notes: JSONParsedNote[]): Note[] => {
   });
 };
 
-onMounted(() => {
-  setWindowDimensions();
+const loadExistingData = () => {
   if (!existingNotesDataFound()) {
     initializeNotesData();
   }
@@ -46,6 +46,11 @@ onMounted(() => {
     notes: parseAllNoteDates(volonData.notes),
   };
   store.loadedData = processedVolonData;
+};
+
+onMounted(() => {
+  setWindowDimensions();
+  loadExistingData();
 
   window.addEventListener("keydown", (event) => {
     if (event.altKey && event.metaKey && event.code === "KeyN") {
@@ -57,7 +62,9 @@ onMounted(() => {
       clearActiveNoteState();
     } else if (event.metaKey && event.shiftKey && event.code === "KeyP") {
       event.preventDefault();
-      store.markdownPreviewActive = !store.markdownPreviewActive;
+      store.loadedData.markdownPreviewActive =
+        !store.loadedData.markdownPreviewActive;
+      saveAllNoteData();
     }
   });
 
@@ -69,12 +76,12 @@ onMounted(() => {
   <main
     :class="{
       'aside-active': store.asideActive,
-      'markdown-preview-active': store.markdownPreviewActive,
+      'markdown-preview-active': store.loadedData.markdownPreviewActive,
     }"
   >
     <Aside v-if="store.asideActive" />
     <Editor />
-    <MarkdownPreview v-if="store.markdownPreviewActive" />
+    <MarkdownPreview v-if="store.loadedData.markdownPreviewActive" />
   </main>
 </template>
 
