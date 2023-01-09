@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { ref, onMounted } from "vue";
-import { getNotesByContent } from "../utils";
+import { getNotesByContent, createNewNote, saveAllNoteData } from "../utils";
 import { store } from "../store";
 
 const currentQuery = ref(``);
@@ -11,6 +11,32 @@ const handleInputChange = (currentContent: string) => {
     store.matchingNotes = null;
   } else {
     store.matchingNotes = getNotesByContent(currentContent);
+  }
+};
+
+// TODO: Write a test for this!
+const handleSearchKeydownEnter = () => {
+  if (store.matchingNotes === null) return;
+  const noMatchingNoteFound = store.matchingNotes?.length === 0;
+  const codeMirror = store.elementRefs.codeMirror;
+
+  if (noMatchingNoteFound) {
+    createNewNote(`# ${currentQuery.value} \n`);
+    handleInputChange("");
+    currentQuery.value = "";
+    saveAllNoteData();
+
+    if (codeMirror) {
+      setTimeout(() => {
+        codeMirror.dispatch({
+          selection: {
+            anchor: store.activeNoteContents.length,
+            head: store.activeNoteContents.length,
+          },
+        });
+        codeMirror.focus();
+      }, 10);
+    }
   }
 };
 
@@ -32,7 +58,8 @@ onMounted(() => {
       type="text"
       v-model="currentQuery"
       @input="(currentValue) => handleInputChange((currentValue.target as HTMLInputElement)?.value)"
-      placeholder="Search"
+      @keydown.enter="handleSearchKeydownEnter"
+      placeholder="Search or create..."
       ref="searchInput"
     />
   </div>
@@ -68,8 +95,7 @@ onMounted(() => {
   box-shadow: 0 0 0 1px var(--color-bg-input-border-enabled);
   border: none;
   color: var(--color-text-primary);
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica,
-    Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+  font-family: var(--font-family-primary);
 }
 
 .search-input:focus {

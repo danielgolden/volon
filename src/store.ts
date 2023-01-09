@@ -5,6 +5,9 @@ export const store = reactive({
   asideActive: true,
   matchingNotes: <Note[] | null>null,
   activeNoteId: <string | null>"",
+  elementRefs: {
+    codeMirror: null,
+  },
   loadedData: <LoadedNotesData>{
     markdownPreviewActive: true,
     queryHasMatch: false,

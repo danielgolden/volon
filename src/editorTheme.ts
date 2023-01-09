@@ -16,8 +16,7 @@ export const editorTheme = EditorView.theme(
       alignItems: "center",
       fontSize: "20px",
       lineHeight: "150%",
-      fontFamily:
-        '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol"',
+      fontFamily: "var(--font-family-primary)",
       caretColor: "var(--color-text-primary)",
       color: "var(--color-text-primary)",
     },

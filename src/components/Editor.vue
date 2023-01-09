@@ -8,6 +8,7 @@ import { store } from "../store";
 const view = shallowRef();
 const handleReady = (payload: any) => {
   view.value = payload.view;
+  store.elementRefs.codeMirror = view.value;
 };
 
 // Status is available at all times via Codemirror EditorView

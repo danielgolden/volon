@@ -29,7 +29,6 @@ import VueMarkdown from "vue-markdown-render";
   width: 100%;
   height: min-content;
   padding: 48px 48px;
-  line-height: 150%;
   font-size: 20px;
 }
 
@@ -137,8 +136,7 @@ import VueMarkdown from "vue-markdown-render";
   -ms-text-size-adjust: 100%;
   -webkit-text-size-adjust: 100%;
   color: var(--color-fg-default);
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial,
-    sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
+  font-family: var(--font-family-primary);
   font-size: 20px;
   line-height: 1.5;
   word-wrap: break-word;
@@ -389,6 +387,7 @@ import VueMarkdown from "vue-markdown-render";
   margin-bottom: 16px;
   font-weight: 600;
   line-height: 1.25;
+  font-family: var(--font-family-secondary);
 }
 
 .markdown-body h2 {

@@ -1,5 +1,12 @@
+@import url("https://use.typekit.net/qnl0kni.css");
+
 :root {
   color-scheme: light dark;
+  --font-family-system: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji",
+    "Segoe UI Symbol";
+  --font-family-primary: acumin-pro, var(--font-family-system);
+  --font-family-secondary: var(--font-family-primary);
 }
 
 @media (prefers-color-scheme: light) {
@@ -66,7 +73,7 @@
   :root {
     --color-accent: #264777;
 
-    --color-bg-surface-1: #1e242b;
+    --color-bg-surface-1: #1e232b;
     --color-bg-surface-2: #171b20;
     --color-bg-surface-3: #363636;
 
@@ -96,7 +103,7 @@
 
     --color-bg-input-enabled: #252d3a;
     --color-text-input-enabled: #7f8ea0;
-    --color-text-input-enabled-placeholder: #778393;
+    --color-text-input-enabled-placeholder: #6d7e95;
     --color-text-input-enabled-indicator: #7f8ea0;
     --color-bg-input-border-enabled: #323b4a;
     --color-bg-input-border-enabled-focused: #516179;
@@ -136,10 +143,19 @@ body {
   margin: 0;
 }
 
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: var(--font-family-primary);
+  font-weight: 700;
+}
+
 #app {
   position: absolute;
   inset: 0;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica,
-    Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+  font-family: var(--font-family-primary);
   overflow: hidden;
 }

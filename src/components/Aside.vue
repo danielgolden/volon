@@ -9,6 +9,7 @@ import {
 import { store } from "../store";
 import AsideSearch from "./AsideSearch.vue";
 import { formatRelative, formatDistance, subDays } from "date-fns";
+import { relative } from "path";
 
 const searchIsActive = computed(() => {
   return store.matchingNotes !== null;
@@ -26,6 +27,13 @@ const handleNoteItemClick = (noteId: string | null) => {
     store.activeNoteId = noteId;
     store.activeNoteContents = getNoteById(store.activeNoteId).content;
   }
+};
+const formatRelativeDate = (relativeDate: string) => {
+  const capitalizedFirstLetter = relativeDate[0].toUpperCase();
+  const dateWithCapitalizedFirstChar =
+    capitalizedFirstLetter + relativeDate.substring(1);
+
+  return dateWithCapitalizedFirstChar.replace("AM", "am").replace("PM", "pm");
 };
 </script>
 
@@ -55,7 +63,7 @@ const handleNoteItemClick = (noteId: string | null) => {
           >
         </span>
         <span class="note-list-item-meta">{{
-          formatRelative(note.lastModified, new Date())
+          formatRelativeDate(formatRelative(note.lastModified, new Date()))
         }}</span>
       </li>
     </ul>
@@ -84,7 +92,7 @@ aside {
   padding: 8px 10px;
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 2px;
   border-radius: 4px;
 }
 
