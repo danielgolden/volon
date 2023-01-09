@@ -1,10 +1,13 @@
 <script lang="ts" setup>
-import { ref, onMounted } from "vue";
+import { ref, onMounted, computed } from "vue";
 import { getNotesByContent, createNewNote, saveAllNoteData } from "../utils";
 import { store } from "../store";
 
 const currentQuery = ref(``);
 const searchInput = ref();
+const keyboardShortcutIndicatorVisible = computed(() => {
+  return currentQuery.value.length < 36;
+});
 
 const handleInputChange = (currentContent: string) => {
   if (currentContent === "") {
@@ -54,7 +57,13 @@ onMounted(() => {
 
 <template>
   <div class="container">
-    <span class="keyboard-shortcut-indicator">⌘K</span>
+    <span
+      :class="{
+        'keyboard-shortcut-indicator': true,
+        'hidden-keyboard-indicator': !keyboardShortcutIndicatorVisible,
+      }"
+      >⌘K</span
+    >
     <input
       class="search-input"
       type="text"
@@ -85,6 +94,11 @@ onMounted(() => {
   color: var(--color-text-input-enabled-indicator);
   /* border: 1px solid var(--color-border-tertiary); */
   background-color: var(--color-bg-input-enabled-indicator);
+  transition: opacity 150ms var(--ease-in-out-cubic);
+}
+
+.hidden-keyboard-indicator {
+  opacity: 0;
 }
 
 .search-input {
