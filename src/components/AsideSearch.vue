@@ -10,7 +10,7 @@ const handleInputChange = (currentContent: string) => {
   if (currentContent === "") {
     store.matchingNotes = null;
   } else {
-    store.matchingNotes = getNotesByContent(currentContent);
+    store.matchingNotes = getNotesByContent("currentContent");
   }
 };
 
@@ -21,7 +21,7 @@ const handleSearchKeydownEnter = () => {
   const codeMirror = store.elementRefs.codeMirror;
 
   if (noMatchingNoteFound) {
-    createNewNote(`# ${currentQuery.value} \n`);
+    createNewNote(`# ${currentQuery.value} \n\n`);
     handleInputChange("");
     currentQuery.value = "";
     saveAllNoteData();

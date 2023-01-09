@@ -38,3 +38,35 @@ describe("handleInputChange()", async () => {
     expect(store.matchingNotes).toBe(null);
   });
 });
+
+describe("handleSearchKeydownEnter()", () => {
+  it("Creates a new note with the currentQuery as the header", async () => {
+    const searchQuery = "I'm a new note title/search query";
+    store.matchingNotes = [];
+
+    // @ts-ignore: Property 'currentQuery' does not exist on type 'ComponentPublicInstance ts(2339)
+    wrapper.vm.currentQuery = searchQuery;
+    await wrapper?.find("input").trigger("keydown.enter");
+
+    const lastNoteIndex = store.loadedData.notes.length - 1;
+
+    expect(store.loadedData.notes[lastNoteIndex].content).toContain(
+      searchQuery
+    );
+  });
+
+  it("Won't create a new note if the search returned a match", async () => {
+    const searchQuery = "I'm a new note title/search query";
+    store.matchingNotes = null;
+
+    // @ts-ignore: Property 'currentQuery' does not exist on type 'ComponentPublicInstance ts(2339)
+    wrapper.vm.currentQuery = "I'm a new note title/search query";
+    const noteCount = store.loadedData.notes.length;
+    await wrapper?.find("input").trigger("keydown.enter");
+    const lastNoteIndex = store.loadedData.notes.length - 1;
+
+    expect(store.loadedData.notes[lastNoteIndex].content).not.toContain(
+      searchQuery
+    );
+  });
+});
