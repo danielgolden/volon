@@ -20,6 +20,7 @@ describe("handleInputChange()", async () => {
     store.loadedData.notes[0].content = "I'm unique note content";
 
     const searchQuery = "unique";
+    // @ts-ignore: Property 'handleInputChange' does not exist on type 'ComponentPublicInstance ts(2339)
     const handleInputChange = wrapper?.vm.handleInputChange;
 
     handleInputChange(searchQuery);
@@ -30,6 +31,7 @@ describe("handleInputChange()", async () => {
   });
 
   it('Sets store.matchingNotes to null if the searchQuery is ""', () => {
+    // @ts-ignore: Property 'handleInputChange' does not exist on type 'ComponentPublicInstance ts(2339)
     const handleInputChange = wrapper?.vm.handleInputChange;
     handleInputChange("");
 

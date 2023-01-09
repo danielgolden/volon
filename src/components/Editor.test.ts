@@ -21,7 +21,7 @@ afterEach(() => {
 describe("handleOnChange()", () => {
   it("If a note is active, handleOnChange will modify the current note", () => {
     store.activeNoteId = store.loadedData.notes[0].id;
-
+    // @ts-ignore: Property 'handleOnChange' does not exist on type 'ComponentPublicInstance ts(2339)
     const handleOnChange = editorWrapper?.vm.handleOnChange;
     const testContent = "some test content";
 
@@ -32,6 +32,7 @@ describe("handleOnChange()", () => {
 
   it("If no note is active, handleOnChange creates a new note with the new content", () => {
     store.activeNoteId = null;
+    // @ts-ignore: Property 'handleOnChange' does not exist on type 'ComponentPublicInstance ts(2339)
     const handleOnChange = editorWrapper?.vm.handleOnChange;
     const testContent = "some test content";
 

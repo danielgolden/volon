@@ -28,12 +28,14 @@ const handleSearchKeydownEnter = () => {
 
     if (codeMirror) {
       setTimeout(() => {
+        // @ts-ignore: Property 'dispatch' does not exist on type 'never'.ts(2339)
         codeMirror.dispatch({
           selection: {
             anchor: store.activeNoteContents.length,
             head: store.activeNoteContents.length,
           },
         });
+        // @ts-ignore: Property 'focus' does not exist on type 'never'.ts(2339)
         codeMirror.focus();
       }, 10);
     }

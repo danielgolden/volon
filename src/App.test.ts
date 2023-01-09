@@ -52,6 +52,7 @@ describe("parseAllNoteDates()", () => {
       dateCreated: "2023-01-07T15:00:37.494Z",
       lastModified: "2023-01-07T15:00:37.494Z",
     };
+    // @ts-ignore: Property 'parseAllNoteDates' does not exist on type 'ComponentPublicInstance ts(2339)
     const result = wrapper?.vm.parseAllNoteDates([sampleNoteWithStringDates]);
 
     expect(result[0].dateCreated).toBeInstanceOf(Date);
