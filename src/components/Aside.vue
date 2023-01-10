@@ -86,13 +86,13 @@ aside {
   padding: 14px 12px;
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 2px;
 }
 .note-list-item {
   padding: 8px 10px;
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  gap: 1px;
   border-radius: 4px;
 }
 

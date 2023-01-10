@@ -128,5 +128,9 @@ onMounted(() => {
     height: 38px;
     font-size: 14px;
   }
+
+  .keyboard-shortcut-indicator {
+    top: 7.5px;
+  }
 }
 </style>
