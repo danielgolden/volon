@@ -1,8 +1,43 @@
 <script lang="ts" setup>
-import { defineComponent, ref, shallowRef } from "vue";
-import { Codemirror } from "vue-codemirror";
-import { saveCurrentNoteChange, createNewNote } from "../utils";
+import { watch, onMounted, ref, shallowRef } from "vue";
+import { saveCurrentNoteChange, createNewNote, getNoteById } from "../utils";
 import { store } from "../store";
+import { defaultKeymap } from "@codemirror/commands";
+import { EditorState } from "@codemirror/state";
+import {
+  EditorView,
+  drawSelection,
+  keymap,
+  ViewUpdate,
+} from "@codemirror/view";
+import { markdown, markdownLanguage } from "@codemirror/lang-markdown";
+import { syntaxHighlighting, HighlightStyle } from "@codemirror/language";
+import { tags } from "@lezer/highlight";
+import { editorTheme } from "../editorTheme";
+
+const codemirrorContainer = ref<Element | null>(null);
+let myCodemirrorView = new EditorView();
+const codemirrorState = ref(myCodemirrorView.state);
+
+const highlightStyle = HighlightStyle.define([
+  { tag: tags.strikethrough, class: "md-strikethrough" },
+  {
+    tag: [
+      tags.heading1,
+      tags.heading2,
+      tags.heading3,
+      tags.heading4,
+      tags.heading5,
+      tags.heading6,
+    ],
+    class: "md-header",
+  },
+  { tag: tags.emphasis, fontStyle: "italic", class: "md-emphasis" },
+  { tag: tags.strong, fontWeight: "600", class: "md-strong" },
+  { tag: tags.monospace, class: "md-monospace" },
+  { tag: tags.meta, class: "md-meta" },
+  { tag: tags.link, class: "md-link" },
+]);
 
 // Codemirror EditorView instance ref
 const view = shallowRef();
@@ -24,7 +59,15 @@ const getCodemirrorStates = () => {
   const lines = state.doc.lines;
 };
 
-const handleOnChange = (currentContent: string) => {
+const handleOnChange = (viewUpdate: ViewUpdate) => {
+  if (!viewUpdate.docChanged) return;
+  if (store.activeNoteId === null) return;
+  const currentNotesSavedContents = getNoteById(store.activeNoteId).content;
+  const currentContent = viewUpdate.view.state.doc.toString();
+  const noteContentsDiffersFromSaved =
+    currentNotesSavedContents !== currentContent;
+  if (!noteContentsDiffersFromSaved) return;
+
   if (store.activeNoteId) {
     saveCurrentNoteChange(currentContent);
   } else {
@@ -32,10 +75,60 @@ const handleOnChange = (currentContent: string) => {
     saveCurrentNoteChange(currentContent);
   }
 };
+
+const handleCommandV = () => {
+  console.log("pasted attempted!");
+  return false;
+};
+
+onMounted(() => {
+  const codeMirrorOptions = {
+    doc: store.activeNoteContents,
+    extensions: [
+      markdown({
+        base: markdownLanguage,
+      }),
+      editorTheme,
+      EditorView.lineWrapping,
+      EditorView.updateListener.of((update) => handleOnChange(update)),
+      EditorState.allowMultipleSelections.of(true),
+      syntaxHighlighting(highlightStyle),
+      drawSelection(),
+      keymap.of([
+        ...defaultKeymap,
+        { key: "Mod-v", run: handleCommandV, preventDefault: true },
+      ]),
+    ],
+    allowMultipleSelections: true,
+    parent: codemirrorContainer.value!,
+    placeholder: "do a thing",
+  };
+
+  let myCodemirrorView = new EditorView(codeMirrorOptions);
+
+  watch(
+    () => store.activeNoteId,
+    (newNoteId) => {
+      codemirrorState.value = myCodemirrorView.state;
+    }
+  );
+  watch(
+    () => store.activeNoteContents,
+    (newNoteContents) => {
+      myCodemirrorView.dispatch({
+        changes: {
+          from: 0,
+          to: codemirrorState.value.doc.length,
+          insert: store.activeNoteContents,
+        },
+      });
+    }
+  );
+});
 </script>
 
 <template>
-  <codemirror
+  <!-- <codemirror
     v-model="store.activeNoteContents"
     placeholder="Jot something down..."
     :autofocus="true"
@@ -43,10 +136,15 @@ const handleOnChange = (currentContent: string) => {
     :spellcheck="true"
     @ready="handleReady"
     @change="(currentContent) => handleOnChange(currentContent)"
-  />
+  /> -->
+  <div class="codemirror-container" ref="codemirrorContainer"></div>
 </template>
 
 <style>
+.codemirror-container {
+  display: content;
+}
+
 .cm-editor {
   grid-area: editor;
   align-items: center;
