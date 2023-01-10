@@ -69,7 +69,7 @@ import VueMarkdown from "vue-markdown-render";
     --color-prettylights-syntax-brackethighlighter-angle: #8b949e;
     --color-prettylights-syntax-sublimelinter-gutter-mark: #484f58;
     --color-prettylights-syntax-constant-other-reference-link: #a5d6ff;
-    --color-fg-default: #c9d1d9;
+    --color-fg-default: var(--color-text-primary);
     --color-fg-muted: var(--color-text-secondary);
     --color-fg-subtle: #484f58;
     --color-canvas-default: #0d1117;
