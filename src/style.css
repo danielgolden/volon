@@ -7,6 +7,7 @@
     "Segoe UI Symbol";
   --font-family-primary: acumin-pro, var(--font-family-system);
   --font-family-secondary: var(--font-family-primary);
+  --font-family-monospace: source-code-pro, monospace;
 
   --ease-in-quad: cubic-bezier(0.55, 0.085, 0.68, 0.53);
   --ease-in-cubic: cubic-bezier(0.55, 0.055, 0.675, 0.19);

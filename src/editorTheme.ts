@@ -8,7 +8,7 @@ export const editorTheme = EditorView.theme(
       overflow: "hidden",
     },
     ".cm-content": {
-      maxWidth: "60ch",
+      maxWidth: "70ch",
       width: "100%",
       display: "flex",
       padding: "48px",
@@ -29,7 +29,6 @@ export const editorTheme = EditorView.theme(
       color: "var(--color-text-tertiary)",
     },
     ".cm-line": {
-      maxWidth: "60ch",
       width: "100%",
     },
     ".cm-focused": {

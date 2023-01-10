@@ -25,7 +25,7 @@ import VueMarkdown from "vue-markdown-render";
 }
 
 .markdown-preview {
-  max-width: 60ch;
+  max-width: 70ch;
   width: 100%;
   height: min-content;
   padding: 48px 48px;
