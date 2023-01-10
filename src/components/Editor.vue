@@ -63,9 +63,48 @@ const handleOnChange = (currentContent: string) => {
   outline: none;
 }
 
+/*-- Custom syntax highlighting --*/
+.md-header {
+  font-weight: 600;
+}
+
+.md-emphasis {
+  font-style: italic;
+}
+
+.md-storng {
+  font-weight: 600;
+}
+
+.md-strikethrough {
+  text-decoration: line-through;
+}
+
+.md-monospace {
+  font-family: var(--font-family-monospace);
+  font-size: 18px;
+  opacity: 0.7;
+  line-height: 100%;
+}
+
+.md-meta {
+  font-weight: 400;
+  color: var(--color-text-secondary);
+  font-style: normal;
+  text-decoration: none;
+}
+
+.md-link {
+  color: var(--color-text-secondary);
+}
+
 @media (max-width: 1400px) {
   .v-codemirror .cm-content {
     font-size: 16px;
+  }
+
+  .md-monospace {
+    font-size: 14px;
   }
 }
 </style>

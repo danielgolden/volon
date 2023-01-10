@@ -4,9 +4,9 @@ import { getNotesByContent, createNewNote, saveAllNoteData } from "../utils";
 import { store } from "../store";
 
 const currentQuery = ref(``);
-const searchInput = ref();
+const searchInput = ref<HTMLInputElement | null>(null);
 const keyboardShortcutIndicatorVisible = computed(() => {
-  return currentQuery.value.length < 36;
+  return currentQuery.value.length < 32;
 });
 
 const handleInputChange = (currentContent: string) => {
@@ -47,9 +47,10 @@ const handleSearchKeydownEnter = () => {
 
 onMounted(() => {
   document.addEventListener("keydown", (event) => {
+    if (searchInput === null) return;
     if (event.metaKey && event.code === "KeyK") {
       event.preventDefault();
-      searchInput.value.focus();
+      searchInput.value?.focus();
     }
   });
 });

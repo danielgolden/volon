@@ -11,7 +11,7 @@ import { tags } from "@lezer/highlight";
 import { editorTheme } from "./editorTheme";
 
 const highlightStyle = HighlightStyle.define([
-  { tag: tags.strikethrough, textDecoration: "line-through" },
+  { tag: tags.strikethrough, class: "md-strikethrough" },
   {
     tag: [
       tags.heading1,
@@ -21,23 +21,13 @@ const highlightStyle = HighlightStyle.define([
       tags.heading5,
       tags.heading6,
     ],
-    fontWeight: "600",
+    class: "md-header",
   },
-  { tag: tags.emphasis, fontStyle: "italic" },
-  { tag: tags.strong, fontWeight: "600" },
-  // { tag: tags.link, color: "var(--color-text-tertiary)" },
-  {
-    tag: tags.monospace,
-    fontFamily: `var(--font-family-monospace)`,
-    fontSize: "14px",
-    opacity: ".7",
-    lineHeight: "100%",
-  },
-  { tag: tags.meta, color: "var(--color-text-secondary)", fontWeight: "400" },
-  {
-    tag: tags.link,
-    color: "var(--color-text-secondary)",
-  },
+  { tag: tags.emphasis, fontStyle: "italic", class: "md-emphasis" },
+  { tag: tags.strong, fontWeight: "600", class: "md-strong" },
+  { tag: tags.monospace, class: "md-monospace" },
+  { tag: tags.meta, class: "md-meta" },
+  { tag: tags.link, class: "md-link" },
 ]);
 
 const codeMirrorOptions = {
