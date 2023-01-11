@@ -65,6 +65,7 @@ onMounted(() => {
     if (event.metaKey && event.code === "KeyK") {
       event.preventDefault();
       searchInput.value?.focus();
+      searchInput.value?.select();
     }
   });
 });
