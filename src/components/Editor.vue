@@ -76,7 +76,10 @@ const resetCodemirrorView = () => {
       drawSelection(),
       keymap.of([
         ...defaultKeymap,
-        { key: "Mod-v", run: handleCommandV },
+        {
+          key: "Mod-v",
+          run: handleCommandV,
+        },
         indentWithTab,
       ]),
     ],
@@ -111,31 +114,33 @@ watch(
   }
 );
 
-const handleCommandV = async () => {
-  const firstSelection = myCodemirrorView.state.selection.ranges.at(0);
-  const clipBoardText = await navigator.clipboard.readText();
-  const isURL =
-    clipBoardText.startsWith("https://") ||
-    clipBoardText.startsWith("http://") ||
-    clipBoardText.startsWith("www");
+const handleCommandV = () => {
+  const controlledPaste = async () => {
+    const firstSelection = myCodemirrorView.state.selection.ranges.at(0);
+    const clipBoardText = await navigator.clipboard.readText();
+    const isURL =
+      clipBoardText.startsWith("https://") ||
+      clipBoardText.startsWith("http://") ||
+      clipBoardText.startsWith("www");
 
-  if (firstSelection && isURL) {
-    const selectionText = myCodemirrorView.state.doc
-      .toString()
-      .substring(firstSelection.from, firstSelection.to);
-    myCodemirrorView.dispatch(
-      myCodemirrorView.state.replaceSelection(
-        `[${selectionText}](${clipBoardText})`
-      )
-    );
+    if (firstSelection && isURL) {
+      const selectionText = myCodemirrorView.state.doc
+        .toString()
+        .substring(firstSelection.from, firstSelection.to);
+      myCodemirrorView.dispatch(
+        myCodemirrorView.state.replaceSelection(
+          `[${selectionText}](${clipBoardText})`
+        )
+      );
+    } else {
+      myCodemirrorView.dispatch(
+        myCodemirrorView.state.replaceSelection(clipBoardText)
+      );
+    }
+  };
 
-    return true;
-  } else {
-    myCodemirrorView.dispatch(
-      myCodemirrorView.state.replaceSelection(clipBoardText)
-    );
-  }
-  return false;
+  controlledPaste();
+  return true;
 };
 </script>
 
