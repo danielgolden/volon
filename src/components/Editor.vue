@@ -2,65 +2,24 @@
 import { watch, onMounted, ref, shallowRef } from "vue";
 import { saveCurrentNoteChange, createNewNote } from "../utils";
 import { store } from "../store";
-import { defaultKeymap } from "@codemirror/commands";
+import { defaultKeymap, indentWithTab } from "@codemirror/commands";
 import { EditorState } from "@codemirror/state";
+import { markdown, markdownLanguage } from "@codemirror/lang-markdown";
+import { syntaxHighlighting, HighlightStyle } from "@codemirror/language";
+import { tags } from "@lezer/highlight";
+import { editorTheme } from "../editorTheme";
 import {
   EditorView,
   drawSelection,
   keymap,
   ViewUpdate,
+  placeholder,
 } from "@codemirror/view";
-import { markdown, markdownLanguage } from "@codemirror/lang-markdown";
-import { syntaxHighlighting, HighlightStyle } from "@codemirror/language";
-import { tags } from "@lezer/highlight";
-import { editorTheme } from "../editorTheme";
 
 const emit = defineEmits(["update:modelValue"]);
 const props = defineProps(["modelValue"]);
-
 const codemirrorContainer = ref<Element | null>(null);
 let myCodemirrorView = new EditorView();
-const codemirrorState = ref(myCodemirrorView.state);
-
-const highlightStyle = HighlightStyle.define([
-  { tag: tags.strikethrough, class: "md-strikethrough" },
-  {
-    tag: [
-      tags.heading1,
-      tags.heading2,
-      tags.heading3,
-      tags.heading4,
-      tags.heading5,
-      tags.heading6,
-    ],
-    class: "md-header",
-  },
-  { tag: tags.emphasis, fontStyle: "italic", class: "md-emphasis" },
-  { tag: tags.strong, fontWeight: "600", class: "md-strong" },
-  { tag: tags.monospace, class: "md-monospace" },
-  { tag: tags.meta, class: "md-meta" },
-  { tag: tags.link, class: "md-link" },
-]);
-
-// Codemirror EditorView instance ref
-const view = shallowRef();
-const handleReady = (payload: any) => {
-  view.value = payload.view;
-  store.elementRefs.codeMirror = view.value;
-};
-
-// Status is available at all times via Codemirror EditorView
-const getCodemirrorStates = () => {
-  const state = view.value.state;
-  const ranges = state.selection.ranges;
-  const selected = ranges.reduce(
-    (r: any, range: any) => r + range.to - range.from,
-    0
-  );
-  const cursor = ranges[0].anchor;
-  const length = state.doc.length;
-  const lines = state.doc.lines;
-};
 
 const handleOnChange = (update: ViewUpdate) => {
   if (!update.docChanged) return;
@@ -76,13 +35,28 @@ const handleOnChange = (update: ViewUpdate) => {
   }
 };
 
-const handleCommandV = () => {
-  console.log("pasted attempted!");
-  return false;
-};
-
 const resetCodemirrorView = () => {
   myCodemirrorView.destroy();
+
+  const highlightStyle = HighlightStyle.define([
+    { tag: tags.strikethrough, class: "md-strikethrough" },
+    {
+      tag: [
+        tags.heading1,
+        tags.heading2,
+        tags.heading3,
+        tags.heading4,
+        tags.heading5,
+        tags.heading6,
+      ],
+      class: "md-header",
+    },
+    { tag: tags.emphasis, fontStyle: "italic", class: "md-emphasis" },
+    { tag: tags.strong, fontWeight: "600", class: "md-strong" },
+    { tag: tags.monospace, class: "md-monospace" },
+    { tag: tags.meta, class: "md-meta" },
+    { tag: tags.link, class: "md-link" },
+  ]);
 
   const codeMirrorOptions = {
     doc: props.modelValue,
@@ -91,6 +65,7 @@ const resetCodemirrorView = () => {
         base: markdownLanguage,
       }),
       editorTheme,
+      placeholder("Jot something down..."),
       EditorView.lineWrapping,
       EditorState.allowMultipleSelections.of(true),
       EditorView.updateListener.of((update) => handleOnChange(update)),
@@ -98,7 +73,8 @@ const resetCodemirrorView = () => {
       drawSelection(),
       keymap.of([
         ...defaultKeymap,
-        { key: "Mod-v", run: handleCommandV, preventDefault: true },
+        { key: "Mod-v", run: handleCommandV },
+        indentWithTab,
       ]),
     ],
     allowMultipleSelections: true,
@@ -107,36 +83,34 @@ const resetCodemirrorView = () => {
   };
 
   myCodemirrorView = new EditorView(codeMirrorOptions);
+  myCodemirrorView.focus();
 };
 
 onMounted(() => {
   resetCodemirrorView();
 });
 
+// When the activeNoteId changes, reset the view for the incoming note
 watch(
   () => store.activeNoteId,
-  (newNoteContents) => {
+  () => {
     resetCodemirrorView();
   }
 );
+
+const handleCommandV = () => {
+  console.log("pasted attempted!");
+  return false;
+};
 </script>
 
 <template>
-  <!-- <codemirror
-    v-model="store.activeNoteContents"
-    placeholder="Jot something down..."
-    :autofocus="true"
-    :tab-size="2"
-    :spellcheck="true"
-    @ready="handleReady"
-    @change="(currentContent) => handleOnChange(currentContent)"
-  /> -->
   <div class="codemirror-container" ref="codemirrorContainer"></div>
 </template>
 
 <style>
 .codemirror-container {
-  display: content;
+  display: contents;
 }
 
 .cm-editor {
