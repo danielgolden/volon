@@ -5,6 +5,9 @@ import { getDefaultNotesData } from "../utils";
 import { store } from "../store";
 import { describe, it, expect, beforeEach, afterEach } from "vitest";
 
+// TODO: Figure out how to test keyboard shortcuts with vue test utils or another library.
+// The best lead I have so far: https://testing-library.com/docs/user-event/keyboard
+
 let editorWrapper: VueWrapper | null = null;
 let appWrapper: VueWrapper | null = null;
 beforeEach(() => {
@@ -24,7 +27,7 @@ afterEach(() => {
 });
 
 describe("The editor's responses to change", () => {
-  it("If a note is active, handleOnChange will modify the current note", async () => {
+  it("If a note is active, it will modify the current note", async () => {
     store.activeNoteId = store.loadedData.notes[0].id;
     // @ts-ignore: Property 'handleOnChange' does not exist on type 'ComponentPublicInstance ts(2339)
     const testContent = "some test content";
@@ -36,6 +39,30 @@ describe("The editor's responses to change", () => {
 
     expect(store.loadedData.notes[0].content).toBe(testContent);
   });
+
+  // it("Pastes a markdown link when there's a link in the clipboard and there's a selection", async () => {
+  //   store.activeNoteId = store.loadedData.notes[0].id;
+
+  //   // @ts-ignore: Property 'myCodemirrorView' does not exist on type 'ComponentPublicInstance ts(2339)
+  //   const myCodemirrorView = editorWrapper?.vm.myCodemirrorView;
+  //   const testContent = "some test content";
+
+  //   // Add `testContent` to the beginning of the editor
+  //   await myCodemirrorView.dispatch({
+  //     changes: { from: 0, insert: testContent },
+  //   });
+  //   const codeMirrorContentsLength = myCodemirrorView.state.doc.length;
+
+  //   // Select all content in the editor
+  //   myCodemirrorView.focus();
+  //   myCodemirrorView.dispatch({
+  //     selection: { anchor: 0, head: codeMirrorContentsLength },
+  //   });
+
+  //   myCodemirrorView.dom.trigger("keydown", { keyCode: 65 });
+
+  //   expect(store.loadedData.notes[0].content).toBe(testContent);
+  // })
 
   // it("onChange the editor saves the changes to the current note", async () => {
   //   await editorWrapper?.get(".cm-content").trigger("keydown", { keyCode: 65 });

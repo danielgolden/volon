@@ -116,17 +116,17 @@ watch(
 
 const handleCommandV = () => {
   const controlledPaste = async () => {
-    const firstSelection = myCodemirrorView.state.selection.ranges.at(0);
+    const firstSelection = myCodemirrorView.state.selection.ranges.at(0)!;
+    const selectionText = myCodemirrorView.state.doc
+      .toString()
+      .substring(firstSelection.from, firstSelection.to);
     const clipBoardText = await navigator.clipboard.readText();
     const isURL =
       clipBoardText.startsWith("https://") ||
       clipBoardText.startsWith("http://") ||
       clipBoardText.startsWith("www");
 
-    if (firstSelection && isURL) {
-      const selectionText = myCodemirrorView.state.doc
-        .toString()
-        .substring(firstSelection.from, firstSelection.to);
+    if (selectionText && isURL) {
       myCodemirrorView.dispatch(
         myCodemirrorView.state.replaceSelection(
           `[${selectionText}](${clipBoardText})`
