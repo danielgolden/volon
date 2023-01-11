@@ -22,7 +22,6 @@
     "date-fns": "^2.29.3",
     "uuid": "^9.0.0",
     "vue": "^3.2.45",
-    "vue-codemirror": "^6.1.1",
     "vue-markdown-render": "^2.0.0"
   },
   "devDependencies": {

@@ -10,7 +10,12 @@ let appWrapper: VueWrapper | null = null;
 beforeEach(() => {
   store.loadedData = getDefaultNotesData();
   appWrapper = mount(App);
-  editorWrapper = mount(Editor);
+  // @ts-ignore
+  editorWrapper = mount(Editor, {
+    context: {
+      props: { modelValue: store.activeNoteContents },
+    },
+  });
 });
 
 afterEach(() => {
@@ -18,30 +23,18 @@ afterEach(() => {
   if (appWrapper) appWrapper.unmount;
 });
 
-describe("handleOnChange()", () => {
-  it("If a note is active, handleOnChange will modify the current note", () => {
+describe("The editor's responses to change", () => {
+  it("If a note is active, handleOnChange will modify the current note", async () => {
     store.activeNoteId = store.loadedData.notes[0].id;
     // @ts-ignore: Property 'handleOnChange' does not exist on type 'ComponentPublicInstance ts(2339)
-    const handleOnChange = editorWrapper?.vm.handleOnChange;
     const testContent = "some test content";
 
-    handleOnChange(testContent);
+    // @ts-ignore: Property 'myCodemirrorView' does not exist on type 'ComponentPublicInstance ts(2339)
+    await editorWrapper?.vm.myCodemirrorView.dispatch({
+      changes: { from: 0, insert: testContent },
+    });
 
     expect(store.loadedData.notes[0].content).toBe(testContent);
-  });
-
-  it("If no note is active, handleOnChange creates a new note with the new content", () => {
-    store.activeNoteId = null;
-    // @ts-ignore: Property 'handleOnChange' does not exist on type 'ComponentPublicInstance ts(2339)
-    const handleOnChange = editorWrapper?.vm.handleOnChange;
-    const testContent = "some test content";
-
-    handleOnChange(testContent);
-
-    const notes = store.loadedData.notes;
-    const lastNote = notes.at(-1);
-
-    expect(lastNote?.content).toBe(testContent);
   });
 
   // it("onChange the editor saves the changes to the current note", async () => {

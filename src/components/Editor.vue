@@ -1,52 +1,131 @@
 <script lang="ts" setup>
-import { defineComponent, ref, shallowRef } from "vue";
-import { Codemirror } from "vue-codemirror";
+import { watch, onMounted, ref, shallowRef } from "vue";
 import { saveCurrentNoteChange, createNewNote } from "../utils";
 import { store } from "../store";
+import { defaultKeymap, indentWithTab } from "@codemirror/commands";
+import { EditorState } from "@codemirror/state";
+import { markdown, markdownLanguage } from "@codemirror/lang-markdown";
+import { syntaxHighlighting, HighlightStyle } from "@codemirror/language";
+import { tags } from "@lezer/highlight";
+import { editorTheme } from "../editorTheme";
+import {
+  EditorView,
+  drawSelection,
+  keymap,
+  ViewUpdate,
+  placeholder,
+} from "@codemirror/view";
 
-// Codemirror EditorView instance ref
-const view = shallowRef();
-const handleReady = (payload: any) => {
-  view.value = payload.view;
-  store.elementRefs.codeMirror = view.value;
-};
+const emit = defineEmits(["update:modelValue"]);
+const props = defineProps(["modelValue"]);
+const codemirrorContainer = ref<Element | null>(null);
+let myCodemirrorView = new EditorView();
+const codeMirrorTriggeredNoteCreation = ref(false);
 
-// Status is available at all times via Codemirror EditorView
-const getCodemirrorStates = () => {
-  const state = view.value.state;
-  const ranges = state.selection.ranges;
-  const selected = ranges.reduce(
-    (r: any, range: any) => r + range.to - range.from,
-    0
-  );
-  const cursor = ranges[0].anchor;
-  const length = state.doc.length;
-  const lines = state.doc.lines;
-};
+const handleOnChange = (update: ViewUpdate) => {
+  if (!update.docChanged) return;
+  const currentContent = update.view.state.doc.toString();
 
-const handleOnChange = (currentContent: string) => {
   if (store.activeNoteId) {
+    emit("update:modelValue", currentContent);
     saveCurrentNoteChange(currentContent);
   } else {
     createNewNote();
+    emit("update:modelValue", currentContent);
     saveCurrentNoteChange(currentContent);
+
+    codeMirrorTriggeredNoteCreation.value = true;
   }
+};
+
+const resetCodemirrorView = () => {
+  myCodemirrorView.destroy();
+
+  const highlightStyle = HighlightStyle.define([
+    { tag: tags.strikethrough, class: "md-strikethrough" },
+    {
+      tag: [
+        tags.heading1,
+        tags.heading2,
+        tags.heading3,
+        tags.heading4,
+        tags.heading5,
+        tags.heading6,
+      ],
+      class: "md-header",
+    },
+    { tag: tags.emphasis, fontStyle: "italic", class: "md-emphasis" },
+    { tag: tags.strong, fontWeight: "600", class: "md-strong" },
+    { tag: tags.monospace, class: "md-monospace" },
+    { tag: tags.meta, class: "md-meta" },
+    { tag: tags.link, class: "md-link" },
+  ]);
+
+  const codeMirrorOptions = {
+    doc: props.modelValue,
+    extensions: [
+      markdown({
+        base: markdownLanguage,
+      }),
+      editorTheme,
+      placeholder("Jot something down..."),
+      EditorView.lineWrapping,
+      EditorState.allowMultipleSelections.of(true),
+      EditorView.updateListener.of((update) => handleOnChange(update)),
+      syntaxHighlighting(highlightStyle),
+      drawSelection(),
+      keymap.of([
+        ...defaultKeymap,
+        { key: "Mod-v", run: handleCommandV },
+        indentWithTab,
+      ]),
+    ],
+    allowMultipleSelections: true,
+    parent: codemirrorContainer.value!,
+    placeholder: "do a thing",
+  };
+
+  myCodemirrorView = new EditorView(codeMirrorOptions);
+  store.elementRefs.codeMirror = myCodemirrorView;
+};
+
+onMounted(() => {
+  resetCodemirrorView();
+});
+
+// When the activeNoteId changes, reset the view for the incoming note
+watch(
+  () => store.activeNoteId,
+  () => {
+    resetCodemirrorView();
+    if (codeMirrorTriggeredNoteCreation.value || store.searchJustCreatedNote) {
+      const codeMirrorContentsLength = myCodemirrorView.state.doc.length;
+      myCodemirrorView.focus();
+      myCodemirrorView.dispatch({
+        selection: { anchor: codeMirrorContentsLength },
+      });
+
+      store.searchJustCreatedNote = false;
+      codeMirrorTriggeredNoteCreation.value = false;
+    }
+  }
+);
+
+const handleCommandV = () => {
+  console.log("pasted attempted!");
+  return false;
 };
 </script>
 
 <template>
-  <codemirror
-    v-model="store.activeNoteContents"
-    placeholder="Jot something down..."
-    :autofocus="true"
-    :tab-size="2"
-    :spellcheck="true"
-    @ready="handleReady"
-    @change="(currentContent) => handleOnChange(currentContent)"
-  />
+  <div class="codemirror-container" ref="codemirrorContainer"></div>
 </template>
 
 <style>
+.codemirror-container {
+  display: contents;
+}
+
 .cm-editor {
   grid-area: editor;
   align-items: center;
