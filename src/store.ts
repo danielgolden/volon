@@ -1,3 +1,4 @@
+import { EditorView } from "@codemirror/view";
 import { reactive } from "vue";
 
 export const store = reactive({
@@ -5,8 +6,9 @@ export const store = reactive({
   asideActive: true,
   matchingNotes: <Note[] | null>null,
   activeNoteId: <string | null>"",
+  searchJustCreatedNote: false,
   elementRefs: {
-    codeMirror: null,
+    codeMirror: <null | EditorView>null,
   },
   loadedData: <LoadedNotesData>{
     markdownPreviewActive: true,

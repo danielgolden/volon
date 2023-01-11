@@ -20,6 +20,7 @@ const emit = defineEmits(["update:modelValue"]);
 const props = defineProps(["modelValue"]);
 const codemirrorContainer = ref<Element | null>(null);
 let myCodemirrorView = new EditorView();
+const codeMirrorTriggeredNoteCreation = ref(false);
 
 const handleOnChange = (update: ViewUpdate) => {
   if (!update.docChanged) return;
@@ -32,6 +33,8 @@ const handleOnChange = (update: ViewUpdate) => {
     createNewNote();
     emit("update:modelValue", currentContent);
     saveCurrentNoteChange(currentContent);
+
+    codeMirrorTriggeredNoteCreation.value = true;
   }
 };
 
@@ -83,7 +86,7 @@ const resetCodemirrorView = () => {
   };
 
   myCodemirrorView = new EditorView(codeMirrorOptions);
-  myCodemirrorView.focus();
+  store.elementRefs.codeMirror = myCodemirrorView;
 };
 
 onMounted(() => {
@@ -95,6 +98,16 @@ watch(
   () => store.activeNoteId,
   () => {
     resetCodemirrorView();
+    if (codeMirrorTriggeredNoteCreation.value || store.searchJustCreatedNote) {
+      const codeMirrorContentsLength = myCodemirrorView.state.doc.length;
+      myCodemirrorView.focus();
+      myCodemirrorView.dispatch({
+        selection: { anchor: codeMirrorContentsLength },
+      });
+
+      store.searchJustCreatedNote = false;
+      codeMirrorTriggeredNoteCreation.value = false;
+    }
   }
 );
 
