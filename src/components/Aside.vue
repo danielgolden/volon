@@ -102,7 +102,8 @@ aside {
 }
 
 .note-list-item-preview {
-  font-size: 16px;
+  font-size: 17px;
+  font-weight: 500;
   width: 100%;
   overflow: hidden;
   text-overflow: ellipsis;
