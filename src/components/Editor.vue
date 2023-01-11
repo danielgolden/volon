@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { watch, onMounted, ref, shallowRef } from "vue";
-import { saveCurrentNoteChange, createNewNote, getNoteById } from "../utils";
+import { saveCurrentNoteChange, createNewNote } from "../utils";
 import { store } from "../store";
 import { defaultKeymap } from "@codemirror/commands";
 import { EditorState } from "@codemirror/state";
@@ -14,6 +14,9 @@ import { markdown, markdownLanguage } from "@codemirror/lang-markdown";
 import { syntaxHighlighting, HighlightStyle } from "@codemirror/language";
 import { tags } from "@lezer/highlight";
 import { editorTheme } from "../editorTheme";
+
+const emit = defineEmits(["update:modelValue"]);
+const props = defineProps(["modelValue"]);
 
 const codemirrorContainer = ref<Element | null>(null);
 let myCodemirrorView = new EditorView();
@@ -59,19 +62,16 @@ const getCodemirrorStates = () => {
   const lines = state.doc.lines;
 };
 
-const handleOnChange = (viewUpdate: ViewUpdate) => {
-  if (!viewUpdate.docChanged) return;
-  if (store.activeNoteId === null) return;
-  const currentNotesSavedContents = getNoteById(store.activeNoteId).content;
-  const currentContent = viewUpdate.view.state.doc.toString();
-  const noteContentsDiffersFromSaved =
-    currentNotesSavedContents !== currentContent;
-  if (!noteContentsDiffersFromSaved) return;
+const handleOnChange = (update: ViewUpdate) => {
+  if (!update.docChanged) return;
+  const currentContent = update.view.state.doc.toString();
 
   if (store.activeNoteId) {
+    emit("update:modelValue", currentContent);
     saveCurrentNoteChange(currentContent);
   } else {
     createNewNote();
+    emit("update:modelValue", currentContent);
     saveCurrentNoteChange(currentContent);
   }
 };
@@ -81,17 +81,19 @@ const handleCommandV = () => {
   return false;
 };
 
-onMounted(() => {
+const resetCodemirrorView = () => {
+  myCodemirrorView.destroy();
+
   const codeMirrorOptions = {
-    doc: store.activeNoteContents,
+    doc: props.modelValue,
     extensions: [
       markdown({
         base: markdownLanguage,
       }),
       editorTheme,
       EditorView.lineWrapping,
-      EditorView.updateListener.of((update) => handleOnChange(update)),
       EditorState.allowMultipleSelections.of(true),
+      EditorView.updateListener.of((update) => handleOnChange(update)),
       syntaxHighlighting(highlightStyle),
       drawSelection(),
       keymap.of([
@@ -104,27 +106,19 @@ onMounted(() => {
     placeholder: "do a thing",
   };
 
-  let myCodemirrorView = new EditorView(codeMirrorOptions);
+  myCodemirrorView = new EditorView(codeMirrorOptions);
+};
 
-  watch(
-    () => store.activeNoteId,
-    (newNoteId) => {
-      codemirrorState.value = myCodemirrorView.state;
-    }
-  );
-  watch(
-    () => store.activeNoteContents,
-    (newNoteContents) => {
-      myCodemirrorView.dispatch({
-        changes: {
-          from: 0,
-          to: codemirrorState.value.doc.length,
-          insert: store.activeNoteContents,
-        },
-      });
-    }
-  );
+onMounted(() => {
+  resetCodemirrorView();
 });
+
+watch(
+  () => store.activeNoteId,
+  (newNoteContents) => {
+    resetCodemirrorView();
+  }
+);
 </script>
 
 <template>

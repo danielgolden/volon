@@ -80,7 +80,7 @@ onMounted(() => {
     }"
   >
     <Aside v-if="store.asideActive" />
-    <Editor />
+    <Editor v-model="store.activeNoteContents" />
     <MarkdownPreview v-if="store.loadedData.markdownPreviewActive" />
   </main>
 </template>
