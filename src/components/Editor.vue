@@ -111,8 +111,30 @@ watch(
   }
 );
 
-const handleCommandV = () => {
-  console.log("pasted attempted!");
+const handleCommandV = async () => {
+  const firstSelection = myCodemirrorView.state.selection.ranges.at(0);
+  const clipBoardText = await navigator.clipboard.readText();
+  const isURL =
+    clipBoardText.startsWith("https://") ||
+    clipBoardText.startsWith("http://") ||
+    clipBoardText.startsWith("www");
+
+  if (firstSelection && isURL) {
+    const selectionText = myCodemirrorView.state.doc
+      .toString()
+      .substring(firstSelection.from, firstSelection.to);
+    myCodemirrorView.dispatch(
+      myCodemirrorView.state.replaceSelection(
+        `[${selectionText}](${clipBoardText})`
+      )
+    );
+
+    return true;
+  } else {
+    myCodemirrorView.dispatch(
+      myCodemirrorView.state.replaceSelection(clipBoardText)
+    );
+  }
   return false;
 };
 </script>
