@@ -5,7 +5,11 @@ import { store } from "../store";
 import { defaultKeymap, indentWithTab } from "@codemirror/commands";
 import { EditorState } from "@codemirror/state";
 import { markdown, markdownLanguage } from "@codemirror/lang-markdown";
-import { syntaxHighlighting, HighlightStyle } from "@codemirror/language";
+import {
+  syntaxHighlighting,
+  HighlightStyle,
+  indentUnit,
+} from "@codemirror/language";
 import { tags } from "@lezer/highlight";
 import { editorTheme } from "../editorTheme";
 import {
@@ -74,6 +78,7 @@ const resetCodemirrorView = () => {
       EditorView.updateListener.of((update) => handleOnChange(update)),
       syntaxHighlighting(highlightStyle),
       drawSelection(),
+      indentUnit.of("    "),
       keymap.of([
         ...defaultKeymap,
         {
