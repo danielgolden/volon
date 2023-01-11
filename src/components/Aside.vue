@@ -39,7 +39,7 @@ const formatRelativeDate = (relativeDate: string) => {
 
 <template>
   <aside>
-    <AsideSearch />
+    <AsideSearch :noteList="notesToBeDisplayed" />
     <ul
       class="note-list"
       tabindex="0"

@@ -1,13 +1,21 @@
 import { mount, VueWrapper } from "@vue/test-utils";
 import AsideSearch from "./AsideSearch.vue";
 import { store } from "../store";
-import { getDefaultNotesData } from "../utils";
+import { getDefaultNotesData, getNoteById, Note } from "../utils";
 import { describe, it, expect, beforeEach, afterEach } from "vitest";
 
 let wrapper: VueWrapper | null = null;
 beforeEach(() => {
   store.loadedData = getDefaultNotesData();
-  wrapper = mount(AsideSearch);
+  wrapper = mount(AsideSearch, {
+    props: {
+      noteList: [
+        new Note("I'm the first"),
+        new Note("I'm the second"),
+        new Note("I'm the third and last"),
+      ],
+    },
+  });
 });
 
 afterEach(() => {
@@ -61,12 +69,79 @@ describe("handleSearchKeydownEnter()", () => {
 
     // @ts-ignore: Property 'currentQuery' does not exist on type 'ComponentPublicInstance ts(2339)
     wrapper.vm.currentQuery = "I'm a new note title/search query";
-    const noteCount = store.loadedData.notes.length;
     await wrapper?.find("input").trigger("keydown.enter");
     const lastNoteIndex = store.loadedData.notes.length - 1;
 
     expect(store.loadedData.notes[lastNoteIndex].content).not.toContain(
       searchQuery
     );
+  });
+
+  it("Will clear the input on enter press if a note has been selected", async () => {
+    store.loadedData.notes = wrapper?.props("noteList");
+    store.matchingNotes = wrapper?.props("noteList")[0];
+
+    // @ts-ignore: Property 'currentQuery' does not exist on type 'ComponentPublicInstance ts(2339)
+    wrapper.vm.currentQuery = "e";
+    await wrapper?.find("input").trigger("keydown.down");
+    await wrapper?.find("input").trigger("keydown.enter");
+
+    // @ts-ignore: Property 'currentQuery' does not exist on type 'ComponentPublicInstance ts(2339)
+    expect(wrapper?.vm.currentQuery).toBe("");
+  });
+
+  it("Will not clear the input on enter press, if no note has been selected and a match is found", async () => {
+    store.loadedData.notes = wrapper?.props("noteList");
+    store.matchingNotes = wrapper?.props("noteList")[0];
+
+    // @ts-ignore: Property 'currentQuery' does not exist on type 'ComponentPublicInstance ts(2339)
+    wrapper.vm.currentQuery = "e";
+    await wrapper?.find("input").trigger("keydown.enter");
+
+    // @ts-ignore: Property 'currentQuery' does not exist on type 'ComponentPublicInstance ts(2339)
+    expect(wrapper?.vm.currentQuery).toBe("e");
+  });
+});
+
+describe("handleDownArrowPress()", () => {
+  it("Navigates to the next note if available", async () => {
+    store.loadedData.notes = wrapper?.props("noteList");
+    store.matchingNotes = wrapper?.props("noteList");
+    store.activeNoteId = wrapper?.props("noteList")[0].id;
+
+    // @ts-ignore: Property 'currentQuery' does not exist on type 'ComponentPublicInstance ts(2339)
+    wrapper.vm.currentQuery = "e";
+    await wrapper?.find("input").trigger("keydown.down");
+
+    // @ts-ignore: Property 'currentQuery' does not exist on type 'ComponentPublicInstance ts(2339)
+    expect(store.activeNoteId).toBe(store.matchingNotes[1].id);
+  });
+
+  it("Navigates to the first note if none is selected", async () => {
+    store.loadedData.notes = wrapper?.props("noteList");
+    store.matchingNotes = wrapper?.props("noteList");
+    store.activeNoteId = null;
+
+    // @ts-ignore: Property 'currentQuery' does not exist on type 'ComponentPublicInstance ts(2339)
+    wrapper.vm.currentQuery = "e";
+    await wrapper?.find("input").trigger("keydown.down");
+
+    // @ts-ignore: Property 'currentQuery' does not exist on type 'ComponentPublicInstance ts(2339)
+    expect(store.activeNoteId).toBe(store.matchingNotes[0].id);
+  });
+});
+
+describe("handleDownPreviousPress()", () => {
+  it("Navigates to the previous note if available", async () => {
+    store.loadedData.notes = wrapper?.props("noteList");
+    store.matchingNotes = wrapper?.props("noteList");
+    store.activeNoteId = wrapper?.props("noteList")[1].id;
+
+    // @ts-ignore: Property 'currentQuery' does not exist on type 'ComponentPublicInstance ts(2339)
+    wrapper.vm.currentQuery = "e";
+    await wrapper?.find("input").trigger("keydown.up");
+
+    // @ts-ignore: Property 'currentQuery' does not exist on type 'ComponentPublicInstance ts(2339)
+    expect(store.activeNoteId).toBe(store.matchingNotes[0].id);
   });
 });

@@ -1,9 +1,17 @@
 <script lang="ts" setup>
 import { ref, onMounted, computed } from "vue";
-import { getNotesByContent, createNewNote, saveAllNoteData } from "../utils";
+import {
+  getNotesByContent,
+  createNewNote,
+  saveAllNoteData,
+  navigateToNextNote,
+  navigateToPreviousNote,
+} from "../utils";
 import { store } from "../store";
 
+const props = defineProps(["noteList"]);
 const currentQuery = ref(``);
+const noteWasSelectedDuringSearch = ref(false);
 const searchInput = ref<HTMLInputElement | null>(null);
 const keyboardShortcutIndicatorVisible = computed(() => {
   return currentQuery.value.length < 32;
@@ -17,11 +25,9 @@ const handleInputChange = (currentContent: string) => {
   }
 };
 
-// TODO: Write a test for this!
 const handleSearchKeydownEnter = () => {
   if (store.matchingNotes === null) return;
   const noMatchingNoteFound = store.matchingNotes?.length === 0;
-  const codeMirror = store.elementRefs.codeMirror;
 
   if (noMatchingNoteFound) {
     createNewNote(`# ${currentQuery.value} \n`);
@@ -29,7 +35,28 @@ const handleSearchKeydownEnter = () => {
     currentQuery.value = "";
     saveAllNoteData();
     store.searchJustCreatedNote = true;
+  } else if (noteWasSelectedDuringSearch.value) {
+    handleInputChange("");
+    currentQuery.value = "";
   }
+};
+
+const handleDownArrowPress = (e: Event) => {
+  e.preventDefault();
+  noteWasSelectedDuringSearch.value = true;
+
+  if (!store.activeNoteId) {
+    store.activeNoteId = props.noteList[0].id;
+    store.activeNoteContents = props.noteList[0].content;
+  } else {
+    navigateToNextNote(props.noteList);
+  }
+};
+
+const handleUpArrowPress = (e: Event) => {
+  e.preventDefault();
+  noteWasSelectedDuringSearch.value = true;
+  navigateToPreviousNote(props.noteList);
 };
 
 onMounted(() => {
@@ -58,6 +85,8 @@ onMounted(() => {
       v-model="currentQuery"
       @input="(currentValue) => handleInputChange((currentValue.target as HTMLInputElement)?.value)"
       @keydown.enter="handleSearchKeydownEnter"
+      @keydown.down="(e) => handleDownArrowPress(e)"
+      @keydown.up="(e) => handleUpArrowPress(e)"
       placeholder="Search or create..."
       ref="searchInput"
     />
