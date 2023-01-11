@@ -127,6 +127,16 @@ aside {
 .active-note-list-item .note-list-item-meta {
   color: var(--color-text-secondary);
 }
+/* 
+@media (prefers-color-scheme: light) {
+  .active-note-list-item .note-list-item-preview {
+    color: var(--color-text-primary-interactive-inverted);
+  }
+
+  .active-note-list-item .note-list-item-meta {
+    color: var(--color-text-secondary-interactive-inverted);
+  }
+} */
 
 @media (max-width: 1400px) {
   .note-list-item-preview {

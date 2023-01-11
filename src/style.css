@@ -33,19 +33,21 @@
 
 @media (prefers-color-scheme: light) {
   :root {
+    --font-smoothing: normal;
     --color-accent: #216ddf;
 
     --color-bg-surface-1: #fff;
     --color-bg-surface-2: #f3f3f3;
     --color-bg-surface-3: #fff; /*-- menus, popovers, etc. --*/
 
-    --color-text-primary: #575757;
-    --color-text-secondary: #646464;
-    --color-text-tertiary: #9a9ea4;
+    --color-text-primary: #222830;
+    --color-text-secondary: #7e8186;
+    --color-text-tertiary: #989898;
     --color-text-selection: #2b3a51;
     --color-text-interactive: var(--color-accent);
     --color-text-destructive: #9a1c1c;
-    --color-text-interactive-inverted: #fff;
+    --color-text-primary-interactive-inverted: #fff;
+    --color-text-secondary-interactive-inverted: #8593a9;
     --color-text-attention-info: #216ddf;
     --color-text-attention-success: #2a6744;
     --color-text-attention-failure: #9a1c1c;
@@ -64,9 +66,12 @@
     --color-bg-indicator-inactive-hover: #cbcbcb;
 
     --color-bg-input-enabled: #fff;
-    --color-text-input-enabled-placeholder: #7f8ea0;
-    --color-bg-input-border-enabled: #323b4a;
-    --color-bg-input-border-enabled-focused: var(--color-accent);
+    --color-text-input-enabled-placeholder: #8c8c8c;
+    --color-bg-input-border-enabled: transparent;
+    --color-bg-input-border-enabled-focused: #92979e;
+    --color-text-input-enabled-indicator: #afafaf;
+    --color-border-input-enabled-indicator: #d5d5d5;
+    --color-bg-input-enabled-indicator: #999;
 
     --color-icon-primary: #464b55;
     --color-icon-primary-inverted: #fff;
@@ -74,10 +79,10 @@
     --color-icon-tertiary: #bdc1c5;
     --color-icon-interactive-inverted: #9fc7f8;
 
-    --color-bg-interactive: #252d3a;
-    --color-bg-interactive-hover: #e7e7e7;
-    --color-bg-interactive-active: var(--color-accent);
-    --color-bg-interactive-active-hover: var(--color-accent);
+    --color-bg-interactive: #1c304d;
+    --color-bg-interactive-hover: #ebebeb;
+    --color-bg-interactive-active: #d9d9d9;
+    --color-bg-interactive-active-hover: var(--color-bg-interactive-active);
 
     --color-bg-button: transparent;
     --color-bg-button-hover: rgba(0 0 0 / 8%);
@@ -94,6 +99,7 @@
 
 @media (prefers-color-scheme: dark) {
   :root {
+    --font-smoothing: antialiased;
     --color-accent: #264777;
 
     --color-bg-surface-1: #1e242d;
@@ -165,7 +171,7 @@
 html,
 body {
   margin: 0;
-  -webkit-font-smoothing: antialiased;
+  -webkit-font-smoothing: var(--font-smoothing);
 }
 
 h1,

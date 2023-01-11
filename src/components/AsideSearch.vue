@@ -98,7 +98,6 @@ onMounted(() => {
 .container {
   position: relative;
   margin: 18px 22px;
-  border-bottom: 1px solid var(--color-border-primary);
 }
 
 .keyboard-shortcut-indicator {
@@ -115,6 +114,13 @@ onMounted(() => {
   transition: opacity 150ms var(--ease-in-out-cubic);
 }
 
+@media (prefers-color-scheme: light) {
+  .keyboard-shortcut-indicator {
+    box-shadow: inset 0 0 0 1px var(--color-border-input-enabled-indicator);
+    background-color: transparent;
+    transition: opacity 150ms var(--ease-in-out-cubic);
+  }
+}
 .hidden-keyboard-indicator {
   opacity: 0;
 }
@@ -130,6 +136,13 @@ onMounted(() => {
   border: none;
   color: var(--color-text-primary);
   font-family: var(--font-family-primary);
+}
+
+@media (prefers-color-scheme: light) {
+  .search-input {
+    box-shadow: 0 3px 5px var(--color-box-shadow),
+      0 1px 2px var(--color-box-shadow);
+  }
 }
 
 .search-input:focus {
