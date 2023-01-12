@@ -1,15 +1,39 @@
 <script lang="ts" setup>
 import { store } from "../store";
-import VueMarkdown from "vue-markdown-render";
+import DOMPurify from "dompurify";
+import { marked } from "marked";
+
+// Override the output of <li> checkboxes to add the classes I want
+// TODO: Write tests for this
+const renderer = {
+  listitem(text: string, task: boolean, checked: boolean) {
+    const escapedText = text
+      .replace(/^<input disabled="" type="checkbox">/g, "")
+      .replace(/^<input checked="" disabled="" type="checkbox">/g, "");
+    const checkedAttribute = checked ? "checked" : "";
+    const checkboxInput = task
+      ? `<input type="checkbox" ${checkedAttribute} disabled="" class="task-list-item-checkbox">`
+      : "";
+    const className = task ? `class="task-list-item"` : "";
+
+    return `
+        <li ${className}>
+          ${checkboxInput}
+          ${escapedText}
+        </li>`;
+  },
+};
+
+marked.use({ renderer });
 </script>
 
 <template>
-  <div class="markdown-preview-container">
-    <vue-markdown
-      class="markdown-preview markdown-body"
-      :source="store.activeNoteContents"
-    />
-  </div>
+  <section class="markdown-preview-container">
+    <div
+      class="markdown-preview"
+      v-html="DOMPurify.sanitize(marked.parse(store.activeNoteContents))"
+    ></div>
+  </section>
 </template>
 
 <style>
@@ -37,7 +61,7 @@ import VueMarkdown from "vue-markdown-render";
 /*-----------------------------------------------------*/
 
 @media (prefers-color-scheme: dark) {
-  .markdown-body {
+  .markdown-preview {
     color-scheme: dark;
     --color-prettylights-syntax-comment: #8b949e;
     --color-prettylights-syntax-constant: #79c0ff;
@@ -85,7 +109,7 @@ import VueMarkdown from "vue-markdown-render";
 }
 
 @media (prefers-color-scheme: light) {
-  .markdown-body {
+  .markdown-preview {
     color-scheme: light;
     --color-prettylights-syntax-comment: #6e7781;
     --color-prettylights-syntax-constant: #0550ae;
@@ -132,7 +156,7 @@ import VueMarkdown from "vue-markdown-render";
   }
 }
 
-.markdown-body {
+.markdown-preview {
   -ms-text-size-adjust: 100%;
   -webkit-text-size-adjust: 100%;
   color: var(--color-fg-default);
@@ -142,18 +166,18 @@ import VueMarkdown from "vue-markdown-render";
   word-wrap: break-word;
 }
 
-.markdown-body .octicon {
+.markdown-preview .octicon {
   display: inline-block;
   fill: currentColor;
   vertical-align: text-bottom;
 }
 
-.markdown-body h1:hover .anchor .octicon-link:before,
-.markdown-body h2:hover .anchor .octicon-link:before,
-.markdown-body h3:hover .anchor .octicon-link:before,
-.markdown-body h4:hover .anchor .octicon-link:before,
-.markdown-body h5:hover .anchor .octicon-link:before,
-.markdown-body h6:hover .anchor .octicon-link:before {
+.markdown-preview h1:hover .anchor .octicon-link:before,
+.markdown-preview h2:hover .anchor .octicon-link:before,
+.markdown-preview h3:hover .anchor .octicon-link:before,
+.markdown-preview h4:hover .anchor .octicon-link:before,
+.markdown-preview h5:hover .anchor .octicon-link:before,
+.markdown-preview h6:hover .anchor .octicon-link:before {
   width: 16px;
   height: 16px;
   content: " ";
@@ -163,46 +187,46 @@ import VueMarkdown from "vue-markdown-render";
   mask-image: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' version='1.1' aria-hidden='true'><path fill-rule='evenodd' d='M7.775 3.275a.75.75 0 001.06 1.06l1.25-1.25a2 2 0 112.83 2.83l-2.5 2.5a2 2 0 01-2.83 0 .75.75 0 00-1.06 1.06 3.5 3.5 0 004.95 0l2.5-2.5a3.5 3.5 0 00-4.95-4.95l-1.25 1.25zm-4.69 9.64a2 2 0 010-2.83l2.5-2.5a2 2 0 012.83 0 .75.75 0 001.06-1.06 3.5 3.5 0 00-4.95 0l-2.5 2.5a3.5 3.5 0 004.95 4.95l1.25-1.25a.75.75 0 00-1.06-1.06l-1.25 1.25a2 2 0 01-2.83 0z'></path></svg>");
 }
 
-.markdown-body details,
-.markdown-body figcaption,
-.markdown-body figure {
+.markdown-preview details,
+.markdown-preview figcaption,
+.markdown-preview figure {
   display: block;
 }
 
-.markdown-body summary {
+.markdown-preview summary {
   display: list-item;
 }
 
-.markdown-body [hidden] {
+.markdown-preview [hidden] {
   display: none !important;
 }
 
-.markdown-body a {
+.markdown-preview a {
   background-color: transparent;
   color: var(--color-accent-fg);
   text-decoration: none;
 }
 
-.markdown-body a:active,
-.markdown-body a:hover {
+.markdown-preview a:active,
+.markdown-preview a:hover {
   outline-width: 0;
 }
 
-.markdown-body abbr[title] {
+.markdown-preview abbr[title] {
   border-bottom: none;
   text-decoration: underline dotted;
 }
 
-.markdown-body b,
-.markdown-body strong {
+.markdown-preview b,
+.markdown-preview strong {
   font-weight: 600;
 }
 
-.markdown-body dfn {
+.markdown-preview dfn {
   font-style: italic;
 }
 
-.markdown-body h1 {
+.markdown-preview h1 {
   margin: 0.67em 0;
   font-weight: 600;
   padding-bottom: 0.3em;
@@ -210,51 +234,51 @@ import VueMarkdown from "vue-markdown-render";
   border-bottom: 1px solid var(--color-border-muted);
 }
 
-.markdown-body mark {
+.markdown-preview mark {
   background-color: var(--color-attention-subtle);
   color: var(--color-text-primary);
 }
 
-.markdown-body small {
+.markdown-preview small {
   font-size: 90%;
 }
 
-.markdown-body sub,
-.markdown-body sup {
+.markdown-preview sub,
+.markdown-preview sup {
   font-size: 75%;
   line-height: 0;
   position: relative;
   vertical-align: baseline;
 }
 
-.markdown-body sub {
+.markdown-preview sub {
   bottom: -0.25em;
 }
 
-.markdown-body sup {
+.markdown-preview sup {
   top: -0.5em;
 }
 
-.markdown-body img {
+.markdown-preview img {
   border-style: none;
   max-width: 100%;
   box-sizing: content-box;
   background-color: var(--color-canvas-default);
 }
 
-.markdown-body code,
-.markdown-body kbd,
-.markdown-body pre,
-.markdown-body samp {
+.markdown-preview code,
+.markdown-preview kbd,
+.markdown-preview pre,
+.markdown-preview samp {
   font-family: monospace, monospace;
   font-size: 1em;
 }
 
-.markdown-body figure {
+.markdown-preview figure {
   margin: 1em 40px;
 }
 
-.markdown-body hr {
+.markdown-preview hr {
   box-sizing: content-box;
   overflow: hidden;
   background: transparent;
@@ -266,7 +290,7 @@ import VueMarkdown from "vue-markdown-render";
   border: 0;
 }
 
-.markdown-body input {
+.markdown-preview input {
   font: inherit;
   margin: 0;
   overflow: visible;
@@ -275,72 +299,72 @@ import VueMarkdown from "vue-markdown-render";
   line-height: inherit;
 }
 
-.markdown-body [type="button"],
-.markdown-body [type="reset"],
-.markdown-body [type="submit"] {
+.markdown-preview [type="button"],
+.markdown-preview [type="reset"],
+.markdown-preview [type="submit"] {
   -webkit-appearance: button;
 }
 
-.markdown-body [type="button"]::-moz-focus-inner,
-.markdown-body [type="reset"]::-moz-focus-inner,
-.markdown-body [type="submit"]::-moz-focus-inner {
+.markdown-preview [type="button"]::-moz-focus-inner,
+.markdown-preview [type="reset"]::-moz-focus-inner,
+.markdown-preview [type="submit"]::-moz-focus-inner {
   border-style: none;
   padding: 0;
 }
 
-.markdown-body [type="button"]:-moz-focusring,
-.markdown-body [type="reset"]:-moz-focusring,
-.markdown-body [type="submit"]:-moz-focusring {
+.markdown-preview [type="button"]:-moz-focusring,
+.markdown-preview [type="reset"]:-moz-focusring,
+.markdown-preview [type="submit"]:-moz-focusring {
   outline: 1px dotted ButtonText;
 }
 
-.markdown-body [type="checkbox"],
-.markdown-body [type="radio"] {
+.markdown-preview [type="checkbox"],
+.markdown-preview [type="radio"] {
   box-sizing: border-box;
   padding: 0;
 }
 
-.markdown-body [type="number"]::-webkit-inner-spin-button,
-.markdown-body [type="number"]::-webkit-outer-spin-button {
+.markdown-preview [type="number"]::-webkit-inner-spin-button,
+.markdown-preview [type="number"]::-webkit-outer-spin-button {
   height: auto;
 }
 
-.markdown-body [type="search"] {
+.markdown-preview [type="search"] {
   -webkit-appearance: textfield;
   outline-offset: -2px;
 }
 
-.markdown-body [type="search"]::-webkit-search-cancel-button,
-.markdown-body [type="search"]::-webkit-search-decoration {
+.markdown-preview [type="search"]::-webkit-search-cancel-button,
+.markdown-preview [type="search"]::-webkit-search-decoration {
   -webkit-appearance: none;
 }
 
-.markdown-body ::-webkit-input-placeholder {
+.markdown-preview ::-webkit-input-placeholder {
   color: inherit;
   opacity: 0.54;
 }
 
-.markdown-body ::-webkit-file-upload-button {
+.markdown-preview ::-webkit-file-upload-button {
   -webkit-appearance: button;
   font: inherit;
 }
 
-.markdown-body a:hover {
+.markdown-preview a:hover {
   text-decoration: underline;
 }
 
-.markdown-body hr::before {
+.markdown-preview hr::before {
   display: table;
   content: "";
 }
 
-.markdown-body hr::after {
+.markdown-preview hr::after {
   display: table;
   clear: both;
   content: "";
 }
 
-.markdown-body table {
+.markdown-preview table {
   border-spacing: 0;
   border-collapse: collapse;
   display: block;
@@ -349,20 +373,20 @@ import VueMarkdown from "vue-markdown-render";
   overflow: auto;
 }
 
-.markdown-body td,
-.markdown-body th {
+.markdown-preview td,
+.markdown-preview th {
   padding: 0;
 }
 
-.markdown-body details summary {
+.markdown-preview details summary {
   cursor: pointer;
 }
 
-.markdown-body details:not([open]) > *:not(summary) {
+.markdown-preview details:not([open]) > *:not(summary) {
   display: none !important;
 }
 
-.markdown-body kbd {
+.markdown-preview kbd {
   display: inline-block;
   padding: 3px 5px;
   font: 11px ui-monospace, SFMono-Regular, SF Mono, Menlo, Consolas,
@@ -377,12 +401,12 @@ import VueMarkdown from "vue-markdown-render";
   box-shadow: inset 0 -1px 0 var(--color-neutral-muted);
 }
 
-.markdown-body h1,
-.markdown-body h2,
-.markdown-body h3,
-.markdown-body h4,
-.markdown-body h5,
-.markdown-body h6 {
+.markdown-preview h1,
+.markdown-preview h2,
+.markdown-preview h3,
+.markdown-preview h4,
+.markdown-preview h5,
+.markdown-preview h6 {
   margin-top: 24px;
   margin-bottom: 16px;
   font-weight: 600;
@@ -390,77 +414,77 @@ import VueMarkdown from "vue-markdown-render";
   font-family: var(--font-family-secondary);
 }
 
-.markdown-body h2 {
+.markdown-preview h2 {
   font-weight: 600;
   padding-bottom: 0.3em;
   font-size: 1.5em;
   border-bottom: 1px solid var(--color-border-muted);
 }
 
-.markdown-body h3 {
+.markdown-preview h3 {
   font-weight: 600;
   font-size: 1.25em;
 }
 
-.markdown-body h4 {
+.markdown-preview h4 {
   font-weight: 600;
   font-size: 1em;
 }
 
-.markdown-body h5 {
+.markdown-preview h5 {
   font-weight: 600;
   font-size: 0.875em;
 }
 
-.markdown-body h6 {
+.markdown-preview h6 {
   font-weight: 600;
   font-size: 0.85em;
   color: var(--color-fg-muted);
 }
 
-.markdown-body p {
+.markdown-preview p {
   margin-top: 0;
   margin-bottom: 10px;
 }
 
-.markdown-body blockquote {
+.markdown-preview blockquote {
   margin: 0;
   padding: 0 1em;
   color: var(--color-fg-muted);
   border-left: 0.25em solid var(--color-border-default);
 }
 
-.markdown-body ul,
-.markdown-body ol {
+.markdown-preview ul,
+.markdown-preview ol {
   margin-top: 0;
   margin-bottom: 0;
   padding-left: 2em;
 }
 
-.markdown-body ol ol,
-.markdown-body ul ol {
+.markdown-preview ol ol,
+.markdown-preview ul ol {
   list-style-type: lower-roman;
 }
 
-.markdown-body ul ul ol,
-.markdown-body ul ol ol,
-.markdown-body ol ul ol,
-.markdown-body ol ol ol {
+.markdown-preview ul ul ol,
+.markdown-preview ul ol ol,
+.markdown-preview ol ul ol,
+.markdown-preview ol ol ol {
   list-style-type: lower-alpha;
 }
 
-.markdown-body dd {
+.markdown-preview dd {
   margin-left: 0;
 }
 
-.markdown-body tt,
-.markdown-body code {
+.markdown-preview tt,
+.markdown-preview code {
   font-family: ui-monospace, SFMono-Regular, SF Mono, Menlo, Consolas,
     Liberation Mono, monospace;
   font-size: 12px;
 }
 
-.markdown-body pre {
+.markdown-preview pre {
   margin-top: 0;
   margin-bottom: 0;
   font-family: ui-monospace, SFMono-Regular, SF Mono, Menlo, Consolas,
@@ -469,150 +493,150 @@ import VueMarkdown from "vue-markdown-render";
   word-wrap: normal;
 }
 
-.markdown-body .octicon {
+.markdown-preview .octicon {
   display: inline-block;
   overflow: visible !important;
   vertical-align: text-bottom;
   fill: currentColor;
 }
 
-.markdown-body ::placeholder {
+.markdown-preview ::placeholder {
   color: var(--color-fg-subtle);
   opacity: 1;
 }
 
-.markdown-body input::-webkit-outer-spin-button,
-.markdown-body input::-webkit-inner-spin-button {
+.markdown-preview input::-webkit-outer-spin-button,
+.markdown-preview input::-webkit-inner-spin-button {
   margin: 0;
   -webkit-appearance: none;
   appearance: none;
 }
 
-.markdown-body .pl-c {
+.markdown-preview .pl-c {
   color: var(--color-prettylights-syntax-comment);
 }
 
-.markdown-body .pl-c1,
-.markdown-body .pl-s .pl-v {
+.markdown-preview .pl-c1,
+.markdown-preview .pl-s .pl-v {
   color: var(--color-prettylights-syntax-constant);
 }
 
-.markdown-body .pl-e,
-.markdown-body .pl-en {
+.markdown-preview .pl-e,
+.markdown-preview .pl-en {
   color: var(--color-prettylights-syntax-entity);
 }
 
-.markdown-body .pl-smi,
-.markdown-body .pl-s .pl-s1 {
+.markdown-preview .pl-smi,
+.markdown-preview .pl-s .pl-s1 {
   color: var(--color-prettylights-syntax-storage-modifier-import);
 }
 
-.markdown-body .pl-ent {
+.markdown-preview .pl-ent {
   color: var(--color-prettylights-syntax-entity-tag);
 }
 
-.markdown-body .pl-k {
+.markdown-preview .pl-k {
   color: var(--color-prettylights-syntax-keyword);
 }
 
-.markdown-body .pl-s,
-.markdown-body .pl-pds,
-.markdown-body .pl-s .pl-pse .pl-s1,
-.markdown-body .pl-sr,
-.markdown-body .pl-sr .pl-cce,
-.markdown-body .pl-sr .pl-sre,
-.markdown-body .pl-sr .pl-sra {
+.markdown-preview .pl-s,
+.markdown-preview .pl-pds,
+.markdown-preview .pl-s .pl-pse .pl-s1,
+.markdown-preview .pl-sr,
+.markdown-preview .pl-sr .pl-cce,
+.markdown-preview .pl-sr .pl-sre,
+.markdown-preview .pl-sr .pl-sra {
   color: var(--color-prettylights-syntax-string);
 }
 
-.markdown-body .pl-v,
-.markdown-body .pl-smw {
+.markdown-preview .pl-v,
+.markdown-preview .pl-smw {
   color: var(--color-prettylights-syntax-variable);
 }
 
-.markdown-body .pl-bu {
+.markdown-preview .pl-bu {
   color: var(--color-prettylights-syntax-brackethighlighter-unmatched);
 }
 
-.markdown-body .pl-ii {
+.markdown-preview .pl-ii {
   color: var(--color-prettylights-syntax-invalid-illegal-text);
   background-color: var(--color-prettylights-syntax-invalid-illegal-bg);
 }
 
-.markdown-body .pl-c2 {
+.markdown-preview .pl-c2 {
   color: var(--color-prettylights-syntax-carriage-return-text);
   background-color: var(--color-prettylights-syntax-carriage-return-bg);
 }
 
-.markdown-body .pl-sr .pl-cce {
+.markdown-preview .pl-sr .pl-cce {
   font-weight: bold;
   color: var(--color-prettylights-syntax-string-regexp);
 }
 
-.markdown-body .pl-ml {
+.markdown-preview .pl-ml {
   color: var(--color-prettylights-syntax-markup-list);
 }
 
-.markdown-body .pl-mh,
-.markdown-body .pl-mh .pl-en,
-.markdown-body .pl-ms {
+.markdown-preview .pl-mh,
+.markdown-preview .pl-mh .pl-en,
+.markdown-preview .pl-ms {
   font-weight: bold;
   color: var(--color-prettylights-syntax-markup-heading);
 }
 
-.markdown-body .pl-mi {
+.markdown-preview .pl-mi {
   font-style: italic;
   color: var(--color-prettylights-syntax-markup-italic);
 }
 
-.markdown-body .pl-mb {
+.markdown-preview .pl-mb {
   font-weight: bold;
   color: var(--color-prettylights-syntax-markup-bold);
 }
 
-.markdown-body .pl-md {
+.markdown-preview .pl-md {
   color: var(--color-prettylights-syntax-markup-deleted-text);
   background-color: var(--color-prettylights-syntax-markup-deleted-bg);
 }
 
-.markdown-body .pl-mi1 {
+.markdown-preview .pl-mi1 {
   color: var(--color-prettylights-syntax-markup-inserted-text);
   background-color: var(--color-prettylights-syntax-markup-inserted-bg);
 }
 
-.markdown-body .pl-mc {
+.markdown-preview .pl-mc {
   color: var(--color-prettylights-syntax-markup-changed-text);
   background-color: var(--color-prettylights-syntax-markup-changed-bg);
 }
 
-.markdown-body .pl-mi2 {
+.markdown-preview .pl-mi2 {
   color: var(--color-prettylights-syntax-markup-ignored-text);
   background-color: var(--color-prettylights-syntax-markup-ignored-bg);
 }
 
-.markdown-body .pl-mdr {
+.markdown-preview .pl-mdr {
   font-weight: bold;
   color: var(--color-prettylights-syntax-meta-diff-range);
 }
 
-.markdown-body .pl-ba {
+.markdown-preview .pl-ba {
   color: var(--color-prettylights-syntax-brackethighlighter-angle);
 }
 
-.markdown-body .pl-sg {
+.markdown-preview .pl-sg {
   color: var(--color-prettylights-syntax-sublimelinter-gutter-mark);
 }
 
-.markdown-body .pl-corl {
+.markdown-preview .pl-corl {
   text-decoration: underline;
   color: var(--color-prettylights-syntax-constant-other-reference-link);
 }
 
-.markdown-body [data-catalyst] {
+.markdown-preview [data-catalyst] {
   display: block;
 }
 
-.markdown-body g-emoji {
+.markdown-preview g-emoji {
   font-family: "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
   font-size: 1em;
   font-style: normal !important;
@@ -621,166 +645,166 @@ import VueMarkdown from "vue-markdown-render";
   vertical-align: -0.075em;
 }
 
-.markdown-body g-emoji img {
+.markdown-preview g-emoji img {
   width: 1em;
   height: 1em;
 }
 
-.markdown-body::before {
+.markdown-preview::before {
   display: table;
   content: "";
 }
 
-.markdown-body::after {
+.markdown-preview::after {
   display: table;
   clear: both;
   content: "";
 }
 
-.markdown-body > *:first-child {
+.markdown-preview > *:first-child {
   margin-top: 0 !important;
 }
 
-.markdown-body > *:last-child {
+.markdown-preview > *:last-child {
   margin-bottom: 0 !important;
 }
 
-.markdown-body a:not([href]) {
+.markdown-preview a:not([href]) {
   color: inherit;
   text-decoration: none;
 }
 
-.markdown-body .absent {
+.markdown-preview .absent {
   color: var(--color-danger-fg);
 }
 
-.markdown-body .anchor {
+.markdown-preview .anchor {
   float: left;
   padding-right: 4px;
   margin-left: -20px;
   line-height: 1;
 }
 
-.markdown-body .anchor:focus {
+.markdown-preview .anchor:focus {
   outline: none;
 }
 
-.markdown-body p,
-.markdown-body blockquote,
-.markdown-body ul,
-.markdown-body ol,
-.markdown-body dl,
-.markdown-body table,
-.markdown-body pre,
-.markdown-body details {
+.markdown-preview p,
+.markdown-preview blockquote,
+.markdown-preview ul,
+.markdown-preview ol,
+.markdown-preview dl,
+.markdown-preview table,
+.markdown-preview pre,
+.markdown-preview details {
   margin-top: 0;
   margin-bottom: 16px;
 }
 
-.markdown-body blockquote > :first-child {
+.markdown-preview blockquote > :first-child {
   margin-top: 0;
 }
 
-.markdown-body blockquote > :last-child {
+.markdown-preview blockquote > :last-child {
   margin-bottom: 0;
 }
 
-.markdown-body sup > a::before {
+.markdown-preview sup > a::before {
   content: "[";
 }
 
-.markdown-body sup > a::after {
+.markdown-preview sup > a::after {
   content: "]";
 }
 
-.markdown-body h1 .octicon-link,
-.markdown-body h2 .octicon-link,
-.markdown-body h3 .octicon-link,
-.markdown-body h4 .octicon-link,
-.markdown-body h5 .octicon-link,
-.markdown-body h6 .octicon-link {
+.markdown-preview h1 .octicon-link,
+.markdown-preview h2 .octicon-link,
+.markdown-preview h3 .octicon-link,
+.markdown-preview h4 .octicon-link,
+.markdown-preview h5 .octicon-link,
+.markdown-preview h6 .octicon-link {
   color: var(--color-fg-default);
   vertical-align: middle;
   visibility: hidden;
 }
 
-.markdown-body h1:hover .anchor,
-.markdown-body h2:hover .anchor,
-.markdown-body h3:hover .anchor,
-.markdown-body h4:hover .anchor,
-.markdown-body h5:hover .anchor,
-.markdown-body h6:hover .anchor {
+.markdown-preview h1:hover .anchor,
+.markdown-preview h2:hover .anchor,
+.markdown-preview h3:hover .anchor,
+.markdown-preview h4:hover .anchor,
+.markdown-preview h5:hover .anchor,
+.markdown-preview h6:hover .anchor {
   text-decoration: none;
 }
 
-.markdown-body h1:hover .anchor .octicon-link,
-.markdown-body h2:hover .anchor .octicon-link,
-.markdown-body h3:hover .anchor .octicon-link,
-.markdown-body h4:hover .anchor .octicon-link,
-.markdown-body h5:hover .anchor .octicon-link,
-.markdown-body h6:hover .anchor .octicon-link {
+.markdown-preview h1:hover .anchor .octicon-link,
+.markdown-preview h2:hover .anchor .octicon-link,
+.markdown-preview h3:hover .anchor .octicon-link,
+.markdown-preview h4:hover .anchor .octicon-link,
+.markdown-preview h5:hover .anchor .octicon-link,
+.markdown-preview h6:hover .anchor .octicon-link {
   visibility: visible;
 }
 
-.markdown-body h1 tt,
-.markdown-body h1 code,
-.markdown-body h2 tt,
-.markdown-body h2 code,
-.markdown-body h3 tt,
-.markdown-body h3 code,
-.markdown-body h4 tt,
-.markdown-body h4 code,
-.markdown-body h5 tt,
-.markdown-body h5 code,
-.markdown-body h6 tt,
-.markdown-body h6 code {
+.markdown-preview h1 tt,
+.markdown-preview h1 code,
+.markdown-preview h2 tt,
+.markdown-preview h2 code,
+.markdown-preview h3 tt,
+.markdown-preview h3 code,
+.markdown-preview h4 tt,
+.markdown-preview h4 code,
+.markdown-preview h5 tt,
+.markdown-preview h5 code,
+.markdown-preview h6 tt,
+.markdown-preview h6 code {
   padding: 0 0.2em;
   font-size: inherit;
 }
 
-.markdown-body ul.no-list,
-.markdown-body ol.no-list {
+.markdown-preview ul.no-list,
+.markdown-preview ol.no-list {
   padding: 0;
   list-style-type: none;
 }
 
-.markdown-body ol[type="1"] {
+.markdown-preview ol[type="1"] {
   list-style-type: decimal;
 }
 
-.markdown-body ol[type="a"] {
+.markdown-preview ol[type="a"] {
   list-style-type: lower-alpha;
 }
 
-.markdown-body ol[type="i"] {
+.markdown-preview ol[type="i"] {
   list-style-type: lower-roman;
 }
 
-.markdown-body div > ol:not([type]) {
+.markdown-preview div > ol:not([type]) {
   list-style-type: decimal;
 }
 
-.markdown-body ul ul,
-.markdown-body ul ol,
-.markdown-body ol ol,
-.markdown-body ol ul {
+.markdown-preview ul ul,
+.markdown-preview ul ol,
+.markdown-preview ol ol,
+.markdown-preview ol ul {
   margin-top: 0;
   margin-bottom: 0;
 }
 
-.markdown-body li > p {
+.markdown-preview li > p {
   margin-top: 16px;
 }
 
-.markdown-body li + li {
+.markdown-preview li + li {
   margin-top: 0.25em;
 }
 
-.markdown-body dl {
+.markdown-preview dl {
   padding: 0;
 }
 
-.markdown-body dl dt {
+.markdown-preview dl dt {
   padding: 0;
   margin-top: 16px;
   font-size: 1em;
@@ -788,54 +812,54 @@ import VueMarkdown from "vue-markdown-render";
   font-weight: 600;
 }
 
-.markdown-body dl dd {
+.markdown-preview dl dd {
   padding: 0 16px;
   margin-bottom: 16px;
 }
 
-.markdown-body table th {
+.markdown-preview table th {
   font-weight: 600;
 }
 
-.markdown-body table th,
-.markdown-body table td {
+.markdown-preview table th,
+.markdown-preview table td {
   padding: 6px 13px;
   border: 1px solid var(--color-border-default);
 }
 
-.markdown-body table tr {
+.markdown-preview table tr {
   background-color: var(--color-canvas-default);
   border-top: 1px solid var(--color-border-muted);
 }
 
-.markdown-body table tr:nth-child(2n) {
+.markdown-preview table tr:nth-child(2n) {
   background-color: var(--color-canvas-subtle);
 }
 
-.markdown-body table img {
+.markdown-preview table img {
   background-color: transparent;
 }
 
-.markdown-body img[align="right"] {
+.markdown-preview img[align="right"] {
   padding-left: 20px;
 }
 
-.markdown-body img[align="left"] {
+.markdown-preview img[align="left"] {
   padding-right: 20px;
 }
 
-.markdown-body .emoji {
+.markdown-preview .emoji {
   max-width: none;
   vertical-align: text-top;
   background-color: transparent;
 }
 
-.markdown-body span.frame {
+.markdown-preview span.frame {
   display: block;
   overflow: hidden;
 }
 
-.markdown-body span.frame > span {
+.markdown-preview span.frame > span {
   display: block;
   float: left;
   width: auto;
@@ -845,81 +869,81 @@ import VueMarkdown from "vue-markdown-render";
   border: 1px solid var(--color-border-default);
 }
 
-.markdown-body span.frame span img {
+.markdown-preview span.frame span img {
   display: block;
   float: left;
 }
 
-.markdown-body span.frame span span {
+.markdown-preview span.frame span span {
   display: block;
   padding: 5px 0 0;
   clear: both;
   color: var(--color-fg-default);
 }
 
-.markdown-body span.align-center {
+.markdown-preview span.align-center {
   display: block;
   overflow: hidden;
   clear: both;
 }
 
-.markdown-body span.align-center > span {
+.markdown-preview span.align-center > span {
   display: block;
   margin: 13px auto 0;
   overflow: hidden;
   text-align: center;
 }
 
-.markdown-body span.align-center span img {
+.markdown-preview span.align-center span img {
   margin: 0 auto;
   text-align: center;
 }
 
-.markdown-body span.align-right {
+.markdown-preview span.align-right {
   display: block;
   overflow: hidden;
   clear: both;
 }
 
-.markdown-body span.align-right > span {
+.markdown-preview span.align-right > span {
   display: block;
   margin: 13px 0 0;
   overflow: hidden;
   text-align: right;
 }
 
-.markdown-body span.align-right span img {
+.markdown-preview span.align-right span img {
   margin: 0;
   text-align: right;
 }
 
-.markdown-body span.float-left {
+.markdown-preview span.float-left {
   display: block;
   float: left;
   margin-right: 13px;
   overflow: hidden;
 }
 
-.markdown-body span.float-left span {
+.markdown-preview span.float-left span {
   margin: 13px 0 0;
 }
 
-.markdown-body span.float-right {
+.markdown-preview span.float-right {
   display: block;
   float: right;
   margin-left: 13px;
   overflow: hidden;
 }
 
-.markdown-body span.float-right > span {
+.markdown-preview span.float-right > span {
   display: block;
   margin: 13px auto 0;
   overflow: hidden;
   text-align: right;
 }
 
-.markdown-body code,
-.markdown-body tt {
+.markdown-preview code,
+.markdown-preview tt {
   padding: 0.2em 0.4em;
   margin: 0;
   font-size: 85%;
@@ -927,20 +951,20 @@ import VueMarkdown from "vue-markdown-render";
   border-radius: 6px;
 }
 
-.markdown-body code br,
-.markdown-body tt br {
+.markdown-preview code br,
+.markdown-preview tt br {
   display: none;
 }
 
-.markdown-body del code {
+.markdown-preview del code {
   text-decoration: inherit;
 }
 
-.markdown-body pre code {
+.markdown-preview pre code {
   font-size: 100%;
 }
 
-.markdown-body pre > code {
+.markdown-preview pre > code {
   padding: 0;
   margin: 0;
   word-break: normal;
@@ -949,17 +973,17 @@ import VueMarkdown from "vue-markdown-render";
   border: 0;
 }
 
-.markdown-body .highlight {
+.markdown-preview .highlight {
   margin-bottom: 16px;
 }
 
-.markdown-body .highlight pre {
+.markdown-preview .highlight pre {
   margin-bottom: 0;
   word-break: normal;
 }
 
-.markdown-body .highlight pre,
-.markdown-body pre {
+.markdown-preview .highlight pre,
+.markdown-preview pre {
   padding: 16px;
   overflow: auto;
   font-size: 85%;
@@ -968,8 +992,8 @@ import VueMarkdown from "vue-markdown-render";
   border-radius: 6px;
 }
 
-.markdown-body pre code,
-.markdown-body pre tt {
+.markdown-preview pre code,
+.markdown-preview pre tt {
   display: inline;
   max-width: auto;
   padding: 0;
@@ -981,8 +1005,8 @@ import VueMarkdown from "vue-markdown-render";
   border: 0;
 }
 
-.markdown-body .csv-data td,
-.markdown-body .csv-data th {
+.markdown-preview .csv-data td,
+.markdown-preview .csv-data th {
   padding: 5px;
   overflow: hidden;
   font-size: 12px;
@@ -991,38 +1015,38 @@ import VueMarkdown from "vue-markdown-render";
   white-space: nowrap;
 }
 
-.markdown-body .csv-data .blob-num {
+.markdown-preview .csv-data .blob-num {
   padding: 10px 8px 9px;
   text-align: right;
   background: var(--color-canvas-default);
   border: 0;
 }
 
-.markdown-body .csv-data tr {
+.markdown-preview .csv-data tr {
   border-top: 0;
 }
 
-.markdown-body .csv-data th {
+.markdown-preview .csv-data th {
   font-weight: 600;
   background: var(--color-canvas-subtle);
   border-top: 0;
 }
 
-.markdown-body .footnotes {
+.markdown-preview .footnotes {
   font-size: 12px;
   color: var(--color-fg-muted);
   border-top: 1px solid var(--color-border-default);
 }
 
-.markdown-body .footnotes ol {
+.markdown-preview .footnotes ol {
   padding-left: 16px;
 }
 
-.markdown-body .footnotes li {
+.markdown-preview .footnotes li {
   position: relative;
 }
 
-.markdown-body .footnotes li:target::before {
+.markdown-preview .footnotes li:target::before {
   position: absolute;
   top: -8px;
   right: -8px;
@@ -1034,49 +1058,50 @@ import VueMarkdown from "vue-markdown-render";
   border-radius: 6px;
 }
 
-.markdown-body .footnotes li:target {
+.markdown-preview .footnotes li:target {
   color: var(--color-fg-default);
 }
 
-.markdown-body .footnotes .data-footnote-backref g-emoji {
+.markdown-preview .footnotes .data-footnote-backref g-emoji {
   font-family: monospace;
 }
 
-.markdown-body .task-list-item {
+.markdown-preview .task-list-item {
   list-style-type: none;
+  padding-left: 0.5em;
 }
 
-.markdown-body .task-list-item label {
+.markdown-preview .task-list-item label {
   font-weight: 400;
 }
 
-.markdown-body .task-list-item.enabled label {
+.markdown-preview .task-list-item.enabled label {
   cursor: pointer;
 }
 
-.markdown-body .task-list-item + .task-list-item {
+.markdown-preview .task-list-item + .task-list-item {
   margin-top: 3px;
 }
 
-.markdown-body .task-list-item .handle {
+.markdown-preview .task-list-item .handle {
   display: none;
 }
 
-.markdown-body .task-list-item-checkbox {
+.markdown-preview .task-list-item-checkbox {
   margin: 0 0.2em 0.25em -1.6em;
   vertical-align: middle;
 }
 
-.markdown-body .contains-task-list:dir(rtl) .task-list-item-checkbox {
+.markdown-preview .contains-task-list:dir(rtl) .task-list-item-checkbox {
   margin: 0 -1.6em 0.25em 0.2em;
 }
 
-.markdown-body ::-webkit-calendar-picker-indicator {
+.markdown-preview ::-webkit-calendar-picker-indicator {
   filter: invert(50%);
 }
 
 @media (max-width: 1400px) {
-  .markdown-body {
+  .markdown-preview {
     font-size: 16px;
   }
 }
