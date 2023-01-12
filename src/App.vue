@@ -65,6 +65,9 @@ onMounted(() => {
       store.loadedData.markdownPreviewActive =
         !store.loadedData.markdownPreviewActive;
       saveAllNoteData();
+    } else if (event.metaKey && event.code === "Slash") {
+      event.preventDefault();
+      store.asideActive = !store.asideActive;
     }
   });
 
@@ -90,15 +93,22 @@ main {
   height: var(--doc-height);
   width: 100%;
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 1fr;
+  grid-template-areas: "editor";
 }
 
 .aside-active {
-  grid-template-columns: 350px 1fr 1fr;
-  grid-template-areas: "aside editor editor";
+  grid-template-columns: 350px 1fr;
+  grid-template-areas: "aside editor";
 }
 
 .markdown-preview-active {
+  grid-template-columns: 1fr 1fr;
+  grid-template-areas: "editor markdown-preview";
+}
+
+.aside-active.markdown-preview-active {
+  grid-template-columns: 350px 1fr 1fr;
   grid-template-areas: "aside editor markdown-preview";
 }
 
