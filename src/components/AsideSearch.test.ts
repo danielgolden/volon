@@ -63,21 +63,22 @@ describe("handleSearchKeydownEnter()", () => {
     );
   });
 
-  it("Won't create a new note if the search returned a match", async () => {
+  it("Creates a new note, even if a match as been found for the query", async () => {
     const searchQuery = "I'm a new note title/search query";
-    store.matchingNotes = null;
+    store.matchingNotes = wrapper?.props("noteList")[0];
 
     // @ts-ignore: Property 'currentQuery' does not exist on type 'ComponentPublicInstance ts(2339)
-    wrapper.vm.currentQuery = "I'm a new note title/search query";
+    wrapper.vm.currentQuery = searchQuery;
     await wrapper?.find("input").trigger("keydown.enter");
+
     const lastNoteIndex = store.loadedData.notes.length - 1;
 
-    expect(store.loadedData.notes[lastNoteIndex].content).not.toContain(
+    expect(store.loadedData.notes[lastNoteIndex].content).toContain(
       searchQuery
     );
   });
 
-  it("Will clear the input on enter press if a note has been selected", async () => {
+  it("Will clear the input if a note has been selected", async () => {
     store.loadedData.notes = wrapper?.props("noteList");
     store.matchingNotes = wrapper?.props("noteList")[0];
 
@@ -88,18 +89,6 @@ describe("handleSearchKeydownEnter()", () => {
 
     // @ts-ignore: Property 'currentQuery' does not exist on type 'ComponentPublicInstance ts(2339)
     expect(wrapper?.vm.currentQuery).toBe("");
-  });
-
-  it("Will not clear the input on enter press, if no note has been selected and a match is found", async () => {
-    store.loadedData.notes = wrapper?.props("noteList");
-    store.matchingNotes = wrapper?.props("noteList")[0];
-
-    // @ts-ignore: Property 'currentQuery' does not exist on type 'ComponentPublicInstance ts(2339)
-    wrapper.vm.currentQuery = "e";
-    await wrapper?.find("input").trigger("keydown.enter");
-
-    // @ts-ignore: Property 'currentQuery' does not exist on type 'ComponentPublicInstance ts(2339)
-    expect(wrapper?.vm.currentQuery).toBe("e");
   });
 });
 

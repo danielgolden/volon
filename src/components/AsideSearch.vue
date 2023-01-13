@@ -25,19 +25,21 @@ const handleInputChange = (currentContent: string) => {
   }
 };
 
-const handleSearchKeydownEnter = () => {
+const handleSearchKeydownEnter = (e: Event) => {
   if (store.matchingNotes === null) return;
   const noMatchingNoteFound = store.matchingNotes?.length === 0;
 
-  if (noMatchingNoteFound) {
+  if (noteWasSelectedDuringSearch.value) {
+    handleInputChange("");
+    currentQuery.value = "";
+    e.preventDefault();
+    store.elementRefs.codeMirror?.focus();
+  } else {
     createNewNote(`# ${currentQuery.value} \n`);
     handleInputChange("");
     currentQuery.value = "";
     saveAllNoteData();
     store.searchJustCreatedNote = true;
-  } else if (noteWasSelectedDuringSearch.value) {
-    handleInputChange("");
-    currentQuery.value = "";
   }
 };
 
@@ -85,7 +87,7 @@ onMounted(() => {
       type="text"
       v-model="currentQuery"
       @input="(currentValue) => handleInputChange((currentValue.target as HTMLInputElement)?.value)"
-      @keydown.enter="handleSearchKeydownEnter"
+      @keydown.enter="(e) => handleSearchKeydownEnter(e)"
       @keydown.down="(e) => handleDownArrowPress(e)"
       @keydown.up="(e) => handleUpArrowPress(e)"
       placeholder="Search or create..."
