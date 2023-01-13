@@ -1088,6 +1088,8 @@ marked.use({ renderer });
 }
 
 .markdown-preview .task-list-item-checkbox {
+  scale: 1.175;
+  translate: -1px 1.22px;
   margin: 0 0.2em 0.25em -1.6em;
   vertical-align: middle;
 }
