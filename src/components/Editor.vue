@@ -59,7 +59,7 @@ const resetCodemirrorView = () => {
       class: "md-header",
     },
     { tag: tags.emphasis, fontStyle: "italic", class: "md-emphasis" },
-    { tag: tags.strong, fontWeight: "700", class: "md-strong" },
+    { tag: tags.strong, fontWeight: "600", class: "md-strong" },
     { tag: tags.monospace, class: "md-monospace" },
     { tag: tags.meta, class: "md-meta" },
     { tag: tags.link, class: "md-link" },
@@ -176,7 +176,7 @@ const handleCommandV = () => {
 
 /*-- Custom syntax highlighting --*/
 .md-header {
-  font-weight: 700;
+  font-weight: 600;
 }
 
 .md-emphasis {
@@ -184,7 +184,7 @@ const handleCommandV = () => {
 }
 
 .md-storng {
-  font-weight: 700;
+  font-weight: 600;
 }
 
 .md-strikethrough {
