@@ -10,6 +10,7 @@ import {
   clearActiveNoteState,
   setWindowDimensions,
   saveAllNoteData,
+  downloadBackupOfData,
 } from "./utils";
 
 const existingNotesDataFound = () => !!localStorage.getItem("volon");
@@ -68,6 +69,9 @@ onMounted(() => {
     } else if (event.metaKey && event.code === "Slash") {
       event.preventDefault();
       store.asideActive = !store.asideActive;
+    } else if (event.metaKey && event.shiftKey && event.code === "KeyS") {
+      event.preventDefault();
+      downloadBackupOfData();
     }
   });
 

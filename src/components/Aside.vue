@@ -8,8 +8,7 @@ import {
 } from "../utils";
 import { store } from "../store";
 import AsideSearch from "./AsideSearch.vue";
-import { formatRelative, formatDistance, subDays } from "date-fns";
-import { relative } from "path";
+import { formatRelative } from "date-fns";
 
 const searchIsActive = computed(() => {
   return store.matchingNotes !== null;

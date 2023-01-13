@@ -1,5 +1,6 @@
 import { store } from "./store";
 import { v4 as uuidv4 } from "uuid";
+import { format } from "date-fns";
 
 export const getNoteById = (noteId: string | null) => {
   if (noteId === null) throw new Error("noteId parameter must not be null");
@@ -130,4 +131,18 @@ export const navigateToPreviousNote = (noteList: Note[]) => {
 
 export const navigateToNextNote = (noteList: Note[]) => {
   navigateToNoteByRelativeIndex(noteList, 1);
+};
+
+export const downloadBackupOfData = () => {
+  const dataToSave = store.loadedData;
+  const hiddenDownloadLink = document.createElement("a");
+  hiddenDownloadLink.href =
+    "data:text/json;charset=utf-8," +
+    encodeURIComponent(JSON.stringify(dataToSave));
+  hiddenDownloadLink.target = "_blank";
+  hiddenDownloadLink.download = `Volón Notes Backup (${format(
+    new Date(),
+    "MM/dd/yyyy"
+  )}).json`;
+  hiddenDownloadLink.click();
 };
