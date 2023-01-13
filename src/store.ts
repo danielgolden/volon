@@ -3,9 +3,10 @@ import { reactive } from "vue";
 
 export const store = reactive({
   activeNoteContents: "",
-  asideActive: true,
-  matchingNotes: <Note[] | null>null,
   activeNoteId: <string | null>"",
+  asideActive: true,
+  commandPaletteActive: false,
+  matchingNotes: <Note[] | null>null,
   searchJustCreatedNote: false,
   elementRefs: {
     codeMirror: <null | EditorView>null,

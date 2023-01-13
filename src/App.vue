@@ -3,6 +3,7 @@ import { onMounted } from "vue";
 import Aside from "./components/Aside.vue";
 import Editor from "./components/Editor.vue";
 import MarkdownPreview from "./components/MarkdownPreview.vue";
+import CommandPalette from "./components/CommandPalette.vue";
 import { store } from "./store";
 import {
   getDefaultNotesData,
@@ -86,6 +87,7 @@ onMounted(() => {
       'markdown-preview-active': store.loadedData.markdownPreviewActive,
     }"
   >
+    <CommandPalette v-show="store.commandPaletteActive" />
     <Aside v-if="store.asideActive" />
     <Editor v-model="store.activeNoteContents" />
     <MarkdownPreview v-if="store.loadedData.markdownPreviewActive" />
@@ -94,9 +96,10 @@ onMounted(() => {
 
 <style scoped>
 main {
+  display: grid;
   height: var(--doc-height);
   width: 100%;
-  display: grid;
+  position: relative;
   grid-template-columns: 1fr;
   grid-template-areas: "editor";
 }
