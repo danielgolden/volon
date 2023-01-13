@@ -200,7 +200,7 @@ const handleCommandV = () => {
 
 .md-meta {
   font-weight: 400;
-  color: var(--color-text-md-meta);
+  color: var(--color-text-secondary);
   font-style: normal;
   text-decoration: none;
 }
