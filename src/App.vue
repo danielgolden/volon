@@ -118,6 +118,9 @@ main {
 
 @media (max-width: 1400px) {
   .aside-active {
+    grid-template-columns: 300px 1fr;
+  }
+  .aside-active.markdown-preview-active {
     grid-template-columns: 300px 1fr 1fr;
   }
 }
