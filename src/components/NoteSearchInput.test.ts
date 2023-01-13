@@ -1,5 +1,5 @@
 import { mount, VueWrapper } from "@vue/test-utils";
-import AsideSearch from "./AsideSearch.vue";
+import NoteSearchInput from "./NoteSearchInput.vue";
 import { store } from "../store";
 import { getDefaultNotesData, getNoteById, Note } from "../utils";
 import { describe, it, expect, beforeEach, afterEach } from "vitest";
@@ -7,7 +7,7 @@ import { describe, it, expect, beforeEach, afterEach } from "vitest";
 let wrapper: VueWrapper | null = null;
 beforeEach(() => {
   store.loadedData = getDefaultNotesData();
-  wrapper = mount(AsideSearch, {
+  wrapper = mount(NoteSearchInput, {
     props: {
       noteList: [
         new Note("I'm the first"),
