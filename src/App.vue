@@ -87,10 +87,10 @@ onMounted(() => {
       'markdown-preview-active': store.loadedData.markdownPreviewActive,
     }"
   >
-    <CommandPalette v-show="store.commandPaletteActive" />
     <Aside v-if="store.asideActive" />
     <Editor v-model="store.activeNoteContents" />
     <MarkdownPreview v-if="store.loadedData.markdownPreviewActive" />
+    <CommandPalette v-show="store.commandPaletteActive" />
   </main>
 </template>
 
