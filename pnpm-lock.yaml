@@ -17,6 +17,7 @@ specifiers:
   date-fns: ^2.29.3
   dompurify: ^2.4.3
   jsdom: ^20.0.3
+  lorem-ipsum: ^2.0.8
   marked: ^4.2.5
   typescript: ^4.9.3
   uuid: ^9.0.0
@@ -47,6 +48,7 @@ devDependencies:
   '@vitejs/plugin-vue': 4.0.0_vite@4.0.4+vue@3.2.45
   '@vue/test-utils': 2.2.7_vue@3.2.45
   jsdom: 20.0.3
+  lorem-ipsum: 2.0.8
   typescript: 4.9.4
   vite: 4.0.4
   vitest: 0.26.3_jsdom@20.0.3
@@ -686,6 +688,11 @@ packages:
       delayed-stream: 1.0.0
     dev: true
 
+  /commander/9.5.0:
+    resolution: {integrity: sha512-KRs7WVDKg86PWiuAqhDrAQnTXZKraVcCc6vFdL14qrZ/DcWwuRo7VoiYXalXO7S5GKpqYiVEwCbgFDfxNHKJBQ==}
+    engines: {node: ^12.20.0 || >=14}
+    dev: true
+
   /crelt/1.0.5:
     resolution: {integrity: sha512-+BO9wPPi+DWTDcNYhr/W90myha8ptzftZT+LwcmUbbok0rcP/fequmFYCw8NMoH7pkAZQzU78b3kYrlua5a9eA==}
     dev: false
@@ -978,6 +985,14 @@ packages:
   /local-pkg/0.4.2:
     resolution: {integrity: sha512-mlERgSPrbxU3BP4qBqAvvwlgW4MTg78iwJdGGnv7kibKjWcJksrG3t6LB5lXI93wXRDvG4NpUgJFmTG4T6rdrg==}
     engines: {node: '>=14'}
+    dev: true
+
+  /lorem-ipsum/2.0.8:
+    resolution: {integrity: sha512-5RIwHuCb979RASgCJH0VKERn9cQo/+NcAi2BMe9ddj+gp7hujl6BI+qdOG4nVsLDpwWEJwTVYXNKP6BGgbcoGA==}
+    engines: {node: '>= 8.x', npm: '>= 5.x'}
+    hasBin: true
+    dependencies:
+      commander: 9.5.0
     dev: true
 
   /loupe/2.3.6:

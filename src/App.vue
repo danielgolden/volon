@@ -69,6 +69,7 @@ onMounted(() => {
       saveAllNoteData();
     } else if (event.metaKey && event.code === "Slash") {
       event.preventDefault();
+      if (store.commandPaletteActive) return;
       store.asideActive = !store.asideActive;
     } else if (event.metaKey && event.shiftKey && event.code === "KeyS") {
       event.preventDefault();

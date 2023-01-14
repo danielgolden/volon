@@ -14,6 +14,7 @@ import {
   clearActiveNoteState,
   setWindowDimensions,
   navigateToNoteByRelativeIndex,
+  createSampleData,
 } from "../src/utils";
 import { describe, it, expect, beforeEach, afterEach } from "vitest";
 
@@ -226,5 +227,12 @@ describe("navigateToNoteByRelativeIndex()", () => {
     store.activeNoteId = getNotesByContent("first")[0].id;
     navigateToNoteByRelativeIndex(store.loadedData.notes, 1);
     expect(store.activeNoteId).toBe(store.loadedData.notes[1].id);
+  });
+});
+
+describe("createSampleData()", () => {
+  it("Creates 50 dummy notes", () => {
+    createSampleData();
+    expect(store.loadedData.notes.length).toBeGreaterThanOrEqual(50);
   });
 });

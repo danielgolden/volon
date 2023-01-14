@@ -1,6 +1,7 @@
 import { store } from "./store";
 import { v4 as uuidv4 } from "uuid";
 import { format } from "date-fns";
+import { LoremIpsum } from "lorem-ipsum";
 
 export const getNoteById = (noteId: string | null) => {
   if (noteId === null) throw new Error("noteId parameter must not be null");
@@ -145,4 +146,33 @@ export const downloadBackupOfData = () => {
     "MM/dd/yyyy"
   )}).json`;
   hiddenDownloadLink.click();
+};
+
+const randomIntFromInterval = (min: number, max: number) => {
+  // min and max included
+  return Math.floor(Math.random() * (max - min + 1) + min);
+};
+
+export const createSampleData = () => {
+  const lorem = new LoremIpsum({
+    sentencesPerParagraph: {
+      max: 5,
+      min: 3,
+    },
+    wordsPerSentence: {
+      max: 16,
+      min: 4,
+    },
+  });
+
+  [...Array(50)].map(() => {
+    const title = lorem.generateWords(randomIntFromInterval(2, 6));
+    const bodyContent = lorem.generateParagraphs(randomIntFromInterval(1, 5));
+    const noteContent = `# ${
+      title.charAt(0).toUpperCase() + title.slice(1)
+    } \n\n ${bodyContent}`;
+
+    createNewNote(noteContent);
+    saveAllNoteData();
+  });
 };

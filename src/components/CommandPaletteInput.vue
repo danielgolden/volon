@@ -23,6 +23,7 @@ const handleInputChange = (currentContent: string) => {
 };
 
 const handleSearchKeydownEnter = (e: Event) => {
+  store.commandPaletteActive = false;
   if (noteWasSelectedDuringSearch.value) {
     handleInputChange("");
     currentQuery.value = "";
@@ -35,8 +36,6 @@ const handleSearchKeydownEnter = (e: Event) => {
     saveAllNoteData();
     store.searchJustCreatedNote = true;
   }
-
-  store.commandPaletteActive = false;
 };
 
 const handleDownArrowPress = (e: Event) => {

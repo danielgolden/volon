@@ -113,7 +113,7 @@ const formatRelativeDate = (relativeDate: string) => {
   height: 400px;
   position: absolute;
   z-index: 10;
-  top: 35%;
+  top: 40%;
   left: 50%;
   transform: translate(-50%, -50%);
   overflow: hidden;
