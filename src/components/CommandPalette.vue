@@ -13,6 +13,9 @@ import { formatRelative } from "date-fns";
 
 const noteListItemRefs = ref([]);
 const noteList = ref<null | HTMLElement>(null);
+const noteListItemIsSelected = ref(false);
+const totalNoteCount = computed(() => store.loadedData.notes.length);
+const activeNoteSelectionMade = ref(false);
 
 const searchIsActive = computed(() => {
   return store.matchingNotes !== null;
@@ -40,6 +43,21 @@ const formatRelativeDate = (relativeDate: string) => {
   return dateWithCapitalizedFirstChar.replace("AM", "am").replace("PM", "pm");
 };
 
+const getActiveSelectionStatus = (matchingNotes: Note[]) => {
+  if (matchingNotes) {
+    return matchingNotes.some((note: Note) => note.id === store.activeNoteId);
+  } else {
+    return false;
+  }
+};
+
+watch(
+  () => store.matchingNotes,
+  (newValue) => {
+    activeNoteSelectionMade.value = getActiveSelectionStatus(newValue);
+  }
+);
+
 watch(
   () => store.activeNoteId,
   () => {
@@ -49,6 +67,12 @@ watch(
       }
     );
 
+    activeNoteSelectionMade.value = getActiveSelectionStatus(
+      store.matchingNotes
+    );
+
+    // Find out of the selected note list item is scrolled into view
+    // if not, scroll it into view
     if (activeListItem) {
       const noteListPosition = noteList.value!.getBoundingClientRect();
       const activeListItemPosition = activeListItem.getBoundingClientRect();
@@ -129,6 +153,26 @@ watch(
             <KeyboardShortcutIndicator value="↵" /> Create a new note
           </p>
         </div>
+        <footer class="command-palette-footer">
+          <span class="footer-meta note-count" v-if="!store.matchingNotes"
+            >{{ totalNoteCount }} notes</span
+          >
+          <span
+            class="footer-meta query-results-count"
+            v-if="store.matchingNotes"
+            >{{ notesToBeDisplayed.length }} matching notes</span
+          >
+          <span
+            class="footer-meta command-indicator"
+            v-if="activeNoteSelectionMade"
+            ><KeyboardShortcutIndicator value="↵" />Open note
+          </span>
+          <span
+            class="footer-meta command-indicator"
+            v-if="notesToBeDisplayed.length === 0"
+            ><KeyboardShortcutIndicator value="↵" />Create note
+          </span>
+        </footer>
       </section>
     </Transition>
   </div>
@@ -278,6 +322,24 @@ watch(
   margin-right: 3px;
 }
 
+.command-palette-footer {
+  display: flex;
+  height: 40px;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 22px;
+  border-top: 1px solid var(--color-border-secondary);
+  background-color: var(--color-bg-surface-3);
+}
+
+.footer-meta {
+  font-size: 13px;
+  color: var(--color-text-secondary);
+}
+
+.command-indicator .keyboard-shortcut-indicator {
+  margin-right: 8px;
+}
 @media (max-width: 1400px) {
   .note-list-item-preview {
     font-size: 14px;

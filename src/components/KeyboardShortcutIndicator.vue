@@ -9,7 +9,7 @@ const props = defineProps(["value"]);
 <style scoped>
 .keyboard-shortcut-indicator {
   display: inline-grid;
-  font-size: 0.875rem;
+  font-size: 0.875em;
   padding: 0px 4px;
   box-shadow: 0 0 0 1px rgb(175 200 255 / 20%);
   border-radius: 3px;
