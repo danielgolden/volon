@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted } from "vue";
+import { onMounted, nextTick } from "vue";
 import Aside from "./components/Aside.vue";
 import Editor from "./components/Editor.vue";
 import MarkdownPreview from "./components/MarkdownPreview.vue";
@@ -80,9 +80,10 @@ onMounted(() => {
       if (!store.loadedData.asideActive) {
         event.preventDefault();
         store.commandPaletteActive = !store.commandPaletteActive;
-        setTimeout(() => {
+
+        nextTick(() => {
           store.elementRefs.commandPaletteSearchInput?.focus();
-        }, 150);
+        });
       } else if (store.loadedData.asideActive) {
         event.preventDefault();
         store.elementRefs.asideSearchInput?.focus();

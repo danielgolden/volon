@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { computed, watch, ref } from "vue";
+import { computed, watch, ref, nextTick } from "vue";
 import {
   getNoteById,
   sortNotesByModificationDate,
@@ -95,13 +95,13 @@ watch(
         isAboveContainerViewport || isBelowContainerViewport;
 
       if (isOutsideContainerViewport) {
-        // there's no need to wait at all, just run the function on the next iteration of the event loop
-        setTimeout(() => {
+        // R the function on the next iteration of the event loop
+        nextTick(() => {
           activeListItem.scrollIntoView({
             behavior: "auto",
             block: "nearest",
           });
-        }, 0);
+        });
       }
     }
   }
