@@ -37,43 +37,49 @@ const formatRelativeDate = (relativeDate: string) => {
 </script>
 
 <template>
-  <aside>
-    <AsideSearch :noteList="notesToBeDisplayed" />
-    <ul
-      class="note-list"
-      tabindex="0"
-      @keydown.up="navigateToPreviousNote(notesToBeDisplayed)"
-      @keydown.down="navigateToNextNote(notesToBeDisplayed)"
-    >
-      <li
-        v-for="note in notesToBeDisplayed"
-        :v-key="note.id"
-        :class="{
-          'active-note-list-item': store.activeNoteId === note.id,
-          'note-list-item': true,
-        }"
-        :data-note-id="note.id"
-        @click="handleNoteItemClick(note.id)"
+  <Transition name="aside-toggle">
+    <aside class="aside-container" v-if="store.loadedData.asideActive">
+      <AsideSearch :noteList="notesToBeDisplayed" />
+      <ul
+        class="note-list"
+        tabindex="0"
+        @keydown.up="navigateToPreviousNote(notesToBeDisplayed)"
+        @keydown.down="navigateToNextNote(notesToBeDisplayed)"
       >
-        <span class="note-list-item-preview">
-          {{ note.content.split(`\n`)[0].replaceAll("#", "").substring(0, 50) }}
-          <em v-if="note.content.length === 0" class="empty-list-item-preview"
-            >Empty note</em
-          >
-        </span>
-        <span class="note-list-item-meta">{{
-          formatRelativeDate(formatRelative(note.lastModified, new Date()))
-        }}</span>
-      </li>
-    </ul>
-  </aside>
+        <li
+          v-for="note in notesToBeDisplayed"
+          :v-key="note.id"
+          :class="{
+            'active-note-list-item': store.activeNoteId === note.id,
+            'note-list-item': true,
+          }"
+          :data-note-id="note.id"
+          @click="handleNoteItemClick(note.id)"
+        >
+          <span class="note-list-item-preview">
+            {{
+              note.content.split(`\n`)[0].replaceAll("#", "").substring(0, 50)
+            }}
+            <em v-if="note.content.length === 0" class="empty-list-item-preview"
+              >Empty note</em
+            >
+          </span>
+          <span class="note-list-item-meta">{{
+            formatRelativeDate(formatRelative(note.lastModified, new Date()))
+          }}</span>
+        </li>
+      </ul>
+    </aside>
+  </Transition>
 </template>
 
 <style scoped>
-aside {
+.aside-container {
   display: grid;
   grid-area: aside;
+  width: 350px;
   height: 100%;
+  flex-shrink: 0;
   overflow: hidden;
   grid-template-rows: min-content 1fr;
   background-color: var(--color-bg-surface-2);
@@ -83,6 +89,7 @@ aside {
   overflow-y: auto;
   margin: 0;
   padding: 14px 12px;
+  min-width: 350px;
   display: flex;
   flex-direction: column;
   gap: 2px;
@@ -126,16 +133,18 @@ aside {
 .active-note-list-item .note-list-item-meta {
   color: var(--color-text-secondary);
 }
-/* 
-@media (prefers-color-scheme: light) {
-  .active-note-list-item .note-list-item-preview {
-    color: var(--color-text-primary-interactive-inverted);
-  }
 
-  .active-note-list-item .note-list-item-meta {
-    color: var(--color-text-secondary-interactive-inverted);
-  }
-} */
+.aside-toggle-leave-active {
+  transition: width 200ms var(--ease-in-out-cubic);
+}
+.aside-toggle-enter-active {
+  transition: width 200ms var(--ease-out-quad);
+}
+
+.aside-toggle-leave-to,
+.aside-toggle-enter-from {
+  width: 0;
+}
 
 @media (max-width: 1400px) {
   .note-list-item-preview {

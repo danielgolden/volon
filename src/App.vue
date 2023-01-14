@@ -103,7 +103,7 @@ onMounted(() => {
       'markdown-preview-active': store.loadedData.markdownPreviewActive,
     }"
   >
-    <Aside v-if="store.loadedData.asideActive" />
+    <Aside />
     <Editor v-model="store.activeNoteContents" />
     <MarkdownPreview v-if="store.loadedData.markdownPreviewActive" />
     <CommandPalette />
@@ -112,7 +112,7 @@ onMounted(() => {
 
 <style scoped>
 main {
-  display: grid;
+  display: flex;
   height: var(--doc-height);
   width: 100%;
   position: relative;
@@ -121,7 +121,7 @@ main {
 }
 
 .aside-active {
-  grid-template-columns: 350px 1fr;
+  grid-template-columns: 1fr 1fr;
   grid-template-areas: "aside editor";
 }
 
@@ -131,16 +131,16 @@ main {
 }
 
 .aside-active.markdown-preview-active {
-  grid-template-columns: 350px 1fr 1fr;
+  grid-template-columns: 1fr 1fr 1fr;
   grid-template-areas: "aside editor markdown-preview";
 }
 
 @media (max-width: 1400px) {
   .aside-active {
-    grid-template-columns: 300px 1fr;
+    grid-template-columns: 1fr 1fr;
   }
   .aside-active.markdown-preview-active {
-    grid-template-columns: 300px 1fr 1fr;
+    grid-template-columns: 1fr 1fr 1fr;
   }
 }
 </style>

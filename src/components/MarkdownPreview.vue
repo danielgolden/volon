@@ -41,6 +41,7 @@ marked.use({ renderer });
   display: flex;
   grid-area: markdown-preview;
   justify-content: center;
+  width: 100%;
   height: 100%;
   overflow-y: scroll;
   background-color: var(--color-bg-surface-1);
