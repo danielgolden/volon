@@ -70,7 +70,7 @@ onMounted(() => {
     @keydown.enter="(e) => handleSearchKeydownEnter(e)"
     @keydown.down="(e) => handleDownArrowPress(e)"
     @keydown.up="(e) => handleUpArrowPress(e)"
-    placeholder="Search or create..."
+    placeholder="Search for or create a note&hellip;"
     ref="searchInput"
   />
 </template>

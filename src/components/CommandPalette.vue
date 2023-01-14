@@ -196,7 +196,7 @@ watch(
   inset: 0;
   position: absolute;
   z-index: 10;
-  background-color: rgb(0 0 0 / 35%);
+  background-color: rgb(10 13 17 / 70%);
 }
 .container {
   display: grid;
@@ -214,8 +214,8 @@ watch(
   background-color: var(--color-bg-surface-1);
   border-radius: 8px;
   border: 1px solid var(--color-border-secondary);
-  box-shadow: 0px 30px 70px rgba(0, 0, 0, 0.15),
-    0px 14px 34px rgba(0, 0, 0, 0.11), 0px 4px 7px rgba(0, 0, 0, 0.25);
+  box-shadow: 0px 30px 70px rgba(0, 0, 0, 0.35),
+    0px 14px 34px rgba(0, 0, 0, 0.21), 0px 4px 7px rgba(0, 0, 0, 0.35);
   transform-origin: 0 0;
 }
 
