@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted, nextTick } from "vue";
+import { onMounted, nextTick, ref } from "vue";
 import Aside from "./components/Aside.vue";
 import Editor from "./components/Editor.vue";
 import MarkdownPreview from "./components/MarkdownPreview.vue";
@@ -15,10 +15,10 @@ import {
 } from "./utils";
 
 const existingNotesDataFound = () => !!localStorage.getItem("volon");
-
 const initializeNotesData = () => {
   localStorage.setItem("volon", JSON.stringify(getDefaultNotesData()));
 };
+const notesDataLoaded = ref(false);
 
 interface JSONParsedNote {
   id: string | null;
@@ -48,6 +48,7 @@ const loadExistingData = () => {
     notes: parseAllNoteDates(volonData.notes),
   };
   store.loadedData = processedVolonData;
+  notesDataLoaded.value = true;
 };
 
 onMounted(() => {
@@ -98,6 +99,7 @@ onMounted(() => {
 
 <template>
   <main
+    v-if="notesDataLoaded"
     :class="{
       'aside-active': store.loadedData.asideActive,
       'markdown-preview-active': store.loadedData.markdownPreviewActive,
