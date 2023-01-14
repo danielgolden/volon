@@ -44,11 +44,21 @@ const formatRelativeDate = (relativeDate: string) => {
 };
 
 const getActiveSelectionStatus = (matchingNotes: Note[]) => {
-  if (matchingNotes) {
-    return matchingNotes.some((note: Note) => note.id === store.activeNoteId);
-  } else {
-    return false;
+  let selectionFoundInMatchingNotes = false;
+
+  // selected item found in `matchingNotes`?
+  if (store.matchingNotes) {
+    selectionFoundInMatchingNotes = matchingNotes.some(
+      (note: Note) => note.id === store.activeNoteId
+    );
   }
+
+  // selcted item in all `notesToBeDisplayed`?
+  const selectionFoundAmongAllNotes = notesToBeDisplayed.value.some(
+    (note: Note) => note.id === store.activeNoteId
+  );
+
+  return selectionFoundInMatchingNotes || selectionFoundAmongAllNotes;
 };
 
 watch(
@@ -213,10 +223,11 @@ watch(
 .search-input {
   height: 60px;
   font-size: 18px;
-  padding-left: 24px;
+  padding-left: 20px;
   border-radius: 0;
   background-color: var(--color-bg-surface-1);
   border-bottom: 1px solid var(--color-border-secondary);
+  box-shadow: none;
 }
 
 .search-input:focus {
@@ -248,7 +259,6 @@ watch(
 }
 .note-list-item-preview {
   font-size: 16px;
-  font-weight: 500;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
