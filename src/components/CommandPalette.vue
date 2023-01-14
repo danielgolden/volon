@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { computed, onMounted } from "vue";
+import { computed, watch, ref } from "vue";
 import {
   getNoteById,
   sortNotesByModificationDate,
@@ -9,6 +9,9 @@ import {
 import { store } from "../store";
 import CommandPaletteInput from "./CommandPaletteInput.vue";
 import { formatRelative } from "date-fns";
+
+const noteListItemRefs = ref([]);
+const noteList = ref<null | HTMLElement>(null);
 
 const searchIsActive = computed(() => {
   return store.matchingNotes !== null;
@@ -35,6 +38,40 @@ const formatRelativeDate = (relativeDate: string) => {
 
   return dateWithCapitalizedFirstChar.replace("AM", "am").replace("PM", "pm");
 };
+
+watch(
+  () => store.activeNoteId,
+  () => {
+    const activeListItem: HTMLElement | undefined = noteListItemRefs.value.find(
+      (noteListItem: HTMLElement) => {
+        return noteListItem.dataset.noteId === store.activeNoteId;
+      }
+    );
+
+    if (activeListItem) {
+      const noteListPosition = noteList.value!.getBoundingClientRect();
+      const activeListItemPosition = activeListItem.getBoundingClientRect();
+
+      const isAboveContainerViewport =
+        activeListItemPosition.top < noteListPosition.top;
+      const isBelowContainerViewport =
+        activeListItemPosition.bottom > noteListPosition.bottom;
+
+      const isOutsideContainerViewport =
+        isAboveContainerViewport || isBelowContainerViewport;
+
+      if (isOutsideContainerViewport) {
+        // there's no need to wait at all, just run the function on the next iteration of the event loop
+        setTimeout(() => {
+          activeListItem.scrollIntoView({
+            behavior: "auto",
+            block: "nearest",
+          });
+        }, 0);
+      }
+    }
+  }
+);
 </script>
 
 <template>
@@ -55,6 +92,7 @@ const formatRelativeDate = (relativeDate: string) => {
           tabindex="0"
           @keydown.up="navigateToPreviousNote(notesToBeDisplayed)"
           @keydown.down="navigateToNextNote(notesToBeDisplayed)"
+          ref="noteList"
         >
           <li
             v-for="note in notesToBeDisplayed"
@@ -68,6 +106,7 @@ const formatRelativeDate = (relativeDate: string) => {
             @keydown.enter="
               store.commandPaletteActive = !store.commandPaletteActive
             "
+            ref="noteListItemRefs"
           >
             <span class="note-list-item-preview">
               {{
@@ -155,6 +194,7 @@ const formatRelativeDate = (relativeDate: string) => {
   border-radius: 4px;
   align-items: baseline;
   justify-content: space-between;
+  scroll-margin: 10px;
 }
 
 .note-list-item:hover {
