@@ -10,6 +10,8 @@ export const store = reactive({
   searchJustCreatedNote: false,
   elementRefs: {
     codeMirror: <null | EditorView>null,
+    asideSearchInput: <null | HTMLInputElement>null,
+    commandPaletterSearchInput: <null | HTMLInputElement>null,
   },
   loadedData: <LoadedNotesData>{
     markdownPreviewActive: true,

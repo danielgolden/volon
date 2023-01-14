@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { ref, onMounted, watch } from "vue";
+import { ref, onMounted } from "vue";
 import {
   getNotesByContent,
   createNewNote,
@@ -23,9 +23,6 @@ const handleInputChange = (currentContent: string) => {
 };
 
 const handleSearchKeydownEnter = (e: Event) => {
-  if (store.matchingNotes === null) return;
-  const noMatchingNoteFound = store.matchingNotes?.length === 0;
-
   if (noteWasSelectedDuringSearch.value) {
     handleInputChange("");
     currentQuery.value = "";
@@ -38,6 +35,8 @@ const handleSearchKeydownEnter = (e: Event) => {
     saveAllNoteData();
     store.searchJustCreatedNote = true;
   }
+
+  store.commandPaletteActive = false;
 };
 
 const handleDownArrowPress = (e: Event) => {
@@ -59,7 +58,7 @@ const handleUpArrowPress = (e: Event) => {
 };
 
 onMounted(() => {
-  store.elementRefs.asideSearchInput = searchInput.value;
+  store.elementRefs.commandPaletterSearchInput = searchInput.value;
 });
 </script>
 

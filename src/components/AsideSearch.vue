@@ -5,21 +5,8 @@ import { store } from "../store";
 
 const props = defineProps(["noteList"]);
 const currentQuery = ref(``);
-const searchInput = ref<HTMLInputElement | null>(null);
 const keyboardShortcutIndicatorVisible = computed(() => {
   return currentQuery.value.length < 32;
-});
-
-onMounted(() => {
-  document.addEventListener("keydown", (event) => {
-    if (searchInput === null) return;
-    if (store.asideActive === false) return;
-    if (event.metaKey && event.code === "KeyK") {
-      event.preventDefault();
-      searchInput.value?.focus();
-      searchInput.value?.select();
-    }
-  });
 });
 </script>
 

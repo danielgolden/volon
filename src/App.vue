@@ -73,6 +73,20 @@ onMounted(() => {
     } else if (event.metaKey && event.shiftKey && event.code === "KeyS") {
       event.preventDefault();
       downloadBackupOfData();
+    } else if (event.metaKey && event.code === "KeyK") {
+      // Aside is inactive, trigger command palette
+      // and focus it's input
+      if (!store.asideActive) {
+        event.preventDefault();
+        store.commandPaletteActive = !store.commandPaletteActive;
+        setTimeout(() => {
+          store.elementRefs.commandPaletterSearchInput?.focus();
+        }, 150);
+      } else if (store.asideActive) {
+        event.preventDefault();
+        store.elementRefs.asideSearchInput?.focus();
+        store.elementRefs.asideSearchInput?.select();
+      }
     }
   });
 
@@ -90,7 +104,7 @@ onMounted(() => {
     <Aside v-if="store.asideActive" />
     <Editor v-model="store.activeNoteContents" />
     <MarkdownPreview v-if="store.loadedData.markdownPreviewActive" />
-    <CommandPalette v-show="store.commandPaletteActive" />
+    <CommandPalette />
   </main>
 </template>
 
