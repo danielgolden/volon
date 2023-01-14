@@ -1,12 +1,68 @@
 <script lang="ts" setup>
 import { ref, onMounted, computed } from "vue";
-import NoteSearchInput from "../components/NoteSearchInput.vue";
+import {
+  getNotesByContent,
+  createNewNote,
+  navigateToNextNote,
+  navigateToPreviousNote,
+  saveAllNoteData,
+} from "../utils";
 import { store } from "../store";
 
 const props = defineProps(["noteList"]);
 const currentQuery = ref(``);
+const noteWasSelectedDuringSearch = ref(false);
+const searchInput = ref<HTMLInputElement | null>(null);
 const keyboardShortcutIndicatorVisible = computed(() => {
   return currentQuery.value.length < 32;
+});
+
+const handleInputChange = (currentContent: string) => {
+  if (currentContent === "") {
+    store.matchingNotes = null;
+  } else {
+    store.matchingNotes = getNotesByContent(currentContent);
+  }
+};
+
+const handleSearchKeydownEnter = (e: Event) => {
+  if (store.matchingNotes === null) return;
+  const noMatchingNoteFound = store.matchingNotes?.length === 0;
+
+  if (noteWasSelectedDuringSearch.value) {
+    handleInputChange("");
+    currentQuery.value = "";
+    e.preventDefault();
+    store.elementRefs.codeMirror?.focus();
+  } else {
+    createNewNote(`# ${currentQuery.value} \n`);
+    handleInputChange("");
+    currentQuery.value = "";
+    saveAllNoteData();
+    store.searchJustCreatedNote = true;
+  }
+};
+
+const handleDownArrowPress = (e: Event) => {
+  e.preventDefault();
+  noteWasSelectedDuringSearch.value = true;
+
+  if (!store.activeNoteId) {
+    store.activeNoteId = props.noteList[0].id;
+    store.activeNoteContents = props.noteList[0].content;
+  } else {
+    navigateToNextNote(props.noteList);
+  }
+};
+
+const handleUpArrowPress = (e: Event) => {
+  e.preventDefault();
+  noteWasSelectedDuringSearch.value = true;
+  navigateToPreviousNote(props.noteList);
+};
+
+onMounted(() => {
+  store.elementRefs.asideSearchInput = searchInput.value;
 });
 </script>
 
@@ -19,7 +75,17 @@ const keyboardShortcutIndicatorVisible = computed(() => {
       }"
       >⌘K</span
     >
-    <NoteSearchInput :noteList="props.noteList" />
+    <input
+      class="search-input"
+      type="text"
+      v-model="currentQuery"
+      @input="(currentValue) => handleInputChange((currentValue.target as HTMLInputElement)?.value)"
+      @keydown.enter="(e) => handleSearchKeydownEnter(e)"
+      @keydown.down="(e) => handleDownArrowPress(e)"
+      @keydown.up="(e) => handleUpArrowPress(e)"
+      placeholder="Search or create..."
+      ref="searchInput"
+    />
   </div>
 </template>
 
