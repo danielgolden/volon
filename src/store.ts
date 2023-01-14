@@ -3,14 +3,17 @@ import { reactive } from "vue";
 
 export const store = reactive({
   activeNoteContents: "",
-  asideActive: true,
-  matchingNotes: <Note[] | null>null,
   activeNoteId: <string | null>"",
+  commandPaletteActive: false,
+  matchingNotes: <Note[] | null>null,
   searchJustCreatedNote: false,
   elementRefs: {
     codeMirror: <null | EditorView>null,
+    asideSearchInput: <null | HTMLInputElement>null,
+    commandPaletteSearchInput: <null | HTMLInputElement>null,
   },
   loadedData: <LoadedNotesData>{
+    asideActive: true,
     markdownPreviewActive: true,
     queryHasMatch: false,
     notes: [

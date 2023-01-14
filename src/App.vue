@@ -1,8 +1,9 @@
 <script setup lang="ts">
-import { onMounted } from "vue";
+import { onMounted, nextTick } from "vue";
 import Aside from "./components/Aside.vue";
 import Editor from "./components/Editor.vue";
 import MarkdownPreview from "./components/MarkdownPreview.vue";
+import CommandPalette from "./components/CommandPalette.vue";
 import { store } from "./store";
 import {
   getDefaultNotesData,
@@ -68,10 +69,26 @@ onMounted(() => {
       saveAllNoteData();
     } else if (event.metaKey && event.code === "Slash") {
       event.preventDefault();
-      store.asideActive = !store.asideActive;
+      if (store.commandPaletteActive) return;
+      store.loadedData.asideActive = !store.loadedData.asideActive;
     } else if (event.metaKey && event.shiftKey && event.code === "KeyS") {
       event.preventDefault();
       downloadBackupOfData();
+    } else if (event.metaKey && event.code === "KeyK") {
+      // Aside is inactive, trigger command palette
+      // and focus it's input
+      if (!store.loadedData.asideActive) {
+        event.preventDefault();
+        store.commandPaletteActive = !store.commandPaletteActive;
+
+        nextTick(() => {
+          store.elementRefs.commandPaletteSearchInput?.focus();
+        });
+      } else if (store.loadedData.asideActive) {
+        event.preventDefault();
+        store.elementRefs.asideSearchInput?.focus();
+        store.elementRefs.asideSearchInput?.select();
+      }
     }
   });
 
@@ -82,21 +99,23 @@ onMounted(() => {
 <template>
   <main
     :class="{
-      'aside-active': store.asideActive,
+      'aside-active': store.loadedData.asideActive,
       'markdown-preview-active': store.loadedData.markdownPreviewActive,
     }"
   >
-    <Aside v-if="store.asideActive" />
+    <Aside v-if="store.loadedData.asideActive" />
     <Editor v-model="store.activeNoteContents" />
     <MarkdownPreview v-if="store.loadedData.markdownPreviewActive" />
+    <CommandPalette />
   </main>
 </template>
 
 <style scoped>
 main {
+  display: grid;
   height: var(--doc-height);
   width: 100%;
-  display: grid;
+  position: relative;
   grid-template-columns: 1fr;
   grid-template-areas: "editor";
 }

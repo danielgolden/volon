@@ -1,11 +1,11 @@
 <script lang="ts" setup>
-import { ref, onMounted, computed } from "vue";
+import { ref, onMounted } from "vue";
 import {
   getNotesByContent,
   createNewNote,
+  saveAllNoteData,
   navigateToNextNote,
   navigateToPreviousNote,
-  saveAllNoteData,
 } from "../utils";
 import { store } from "../store";
 
@@ -13,9 +13,6 @@ const props = defineProps(["noteList"]);
 const currentQuery = ref(``);
 const noteWasSelectedDuringSearch = ref(false);
 const searchInput = ref<HTMLInputElement | null>(null);
-const keyboardShortcutIndicatorVisible = computed(() => {
-  return currentQuery.value.length < 32;
-});
 
 const handleInputChange = (currentContent: string) => {
   if (currentContent === "") {
@@ -26,9 +23,7 @@ const handleInputChange = (currentContent: string) => {
 };
 
 const handleSearchKeydownEnter = (e: Event) => {
-  if (store.matchingNotes === null) return;
-  const noMatchingNoteFound = store.matchingNotes?.length === 0;
-
+  store.commandPaletteActive = false;
   if (noteWasSelectedDuringSearch.value) {
     handleInputChange("");
     currentQuery.value = "";
@@ -62,64 +57,25 @@ const handleUpArrowPress = (e: Event) => {
 };
 
 onMounted(() => {
-  store.elementRefs.asideSearchInput = searchInput.value;
+  store.elementRefs.commandPaletteSearchInput = searchInput.value;
 });
 </script>
 
 <template>
-  <div class="search-container">
-    <span
-      :class="{
-        'keyboard-shortcut-indicator': true,
-        'hidden-keyboard-indicator': !keyboardShortcutIndicatorVisible,
-      }"
-      >⌘K</span
-    >
-    <input
-      class="search-input"
-      type="text"
-      v-model="currentQuery"
-      @input="(currentValue) => handleInputChange((currentValue.target as HTMLInputElement)?.value)"
-      @keydown.enter="(e) => handleSearchKeydownEnter(e)"
-      @keydown.down="(e) => handleDownArrowPress(e)"
-      @keydown.up="(e) => handleUpArrowPress(e)"
-      placeholder="Search or create..."
-      ref="searchInput"
-    />
-  </div>
+  <input
+    class="search-input"
+    type="text"
+    v-model="currentQuery"
+    @input="(currentValue) => handleInputChange((currentValue.target as HTMLInputElement)?.value)"
+    @keydown.enter="(e) => handleSearchKeydownEnter(e)"
+    @keydown.down="(e) => handleDownArrowPress(e)"
+    @keydown.up="(e) => handleUpArrowPress(e)"
+    placeholder="Search or create..."
+    ref="searchInput"
+  />
 </template>
 
 <style scoped>
-.search-container {
-  position: relative;
-  margin: 18px 22px;
-}
-
-.keyboard-shortcut-indicator {
-  position: absolute;
-  top: 9px;
-  right: 8px;
-  font-size: 12px;
-  padding: 3px 5px;
-  border-radius: 3px;
-  letter-spacing: 1.5px;
-  color: var(--color-text-input-enabled-indicator);
-  /* border: 1px solid var(--color-border-tertiary); */
-  background-color: var(--color-bg-input-enabled-indicator);
-  transition: opacity 150ms var(--ease-in-out-cubic);
-}
-
-@media (prefers-color-scheme: light) {
-  .keyboard-shortcut-indicator {
-    box-shadow: inset 0 0 0 1px var(--color-border-input-enabled-indicator);
-    background-color: transparent;
-    transition: opacity 150ms var(--ease-in-out-cubic);
-  }
-}
-.hidden-keyboard-indicator {
-  opacity: 0;
-}
-
 .search-input {
   width: 100%;
   height: 41px;
@@ -153,10 +109,6 @@ onMounted(() => {
   .search-input {
     height: 38px;
     font-size: 14px;
-  }
-
-  .keyboard-shortcut-indicator {
-    top: 7.5px;
   }
 }
 </style>
