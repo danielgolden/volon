@@ -70,20 +70,20 @@ onMounted(() => {
     } else if (event.metaKey && event.code === "Slash") {
       event.preventDefault();
       if (store.commandPaletteActive) return;
-      store.asideActive = !store.asideActive;
+      store.loadedData.asideActive = !store.loadedData.asideActive;
     } else if (event.metaKey && event.shiftKey && event.code === "KeyS") {
       event.preventDefault();
       downloadBackupOfData();
     } else if (event.metaKey && event.code === "KeyK") {
       // Aside is inactive, trigger command palette
       // and focus it's input
-      if (!store.asideActive) {
+      if (!store.loadedData.asideActive) {
         event.preventDefault();
         store.commandPaletteActive = !store.commandPaletteActive;
         setTimeout(() => {
-          store.elementRefs.commandPaletterSearchInput?.focus();
+          store.elementRefs.commandPaletteSearchInput?.focus();
         }, 150);
-      } else if (store.asideActive) {
+      } else if (store.loadedData.asideActive) {
         event.preventDefault();
         store.elementRefs.asideSearchInput?.focus();
         store.elementRefs.asideSearchInput?.select();
@@ -98,11 +98,11 @@ onMounted(() => {
 <template>
   <main
     :class="{
-      'aside-active': store.asideActive,
+      'aside-active': store.loadedData.asideActive,
       'markdown-preview-active': store.loadedData.markdownPreviewActive,
     }"
   >
-    <Aside v-if="store.asideActive" />
+    <Aside v-if="store.loadedData.asideActive" />
     <Editor v-model="store.activeNoteContents" />
     <MarkdownPreview v-if="store.loadedData.markdownPreviewActive" />
     <CommandPalette />

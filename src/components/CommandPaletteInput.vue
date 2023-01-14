@@ -57,7 +57,7 @@ const handleUpArrowPress = (e: Event) => {
 };
 
 onMounted(() => {
-  store.elementRefs.commandPaletterSearchInput = searchInput.value;
+  store.elementRefs.commandPaletteSearchInput = searchInput.value;
 });
 </script>
 

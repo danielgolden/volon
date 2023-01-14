@@ -11,9 +11,8 @@ import CommandPaletteInput from "./CommandPaletteInput.vue";
 import KeyboardShortcutIndicator from "./KeyboardShortcutIndicator.vue";
 import { formatRelative } from "date-fns";
 
-const noteListItemRefs = ref([]);
-const noteList = ref<null | HTMLElement>(null);
-const noteListItemIsSelected = ref(false);
+const noteListItemRefs = ref<HTMLElement[] | []>([]);
+const noteList = ref<HTMLUListElement | null>(null);
 const totalNoteCount = computed(() => store.loadedData.notes.length);
 const activeNoteSelectionMade = ref(false);
 
@@ -62,7 +61,7 @@ const getActiveSelectionStatus = (matchingNotes: Note[]) => {
 };
 
 watch(
-  () => store.matchingNotes,
+  () => store.matchingNotes as Note[],
   (newValue) => {
     activeNoteSelectionMade.value = getActiveSelectionStatus(newValue);
   }
@@ -71,14 +70,14 @@ watch(
 watch(
   () => store.activeNoteId,
   () => {
-    const activeListItem: HTMLElement | undefined = noteListItemRefs.value.find(
+    const activeListItem = noteListItemRefs.value.find(
       (noteListItem: HTMLElement) => {
         return noteListItem.dataset.noteId === store.activeNoteId;
       }
     );
 
     activeNoteSelectionMade.value = getActiveSelectionStatus(
-      store.matchingNotes
+      <Note[]>store.matchingNotes
     );
 
     // Find out of the selected note list item is scrolled into view
