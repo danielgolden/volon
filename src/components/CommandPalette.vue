@@ -8,6 +8,7 @@ import {
 } from "../utils";
 import { store } from "../store";
 import CommandPaletteInput from "./CommandPaletteInput.vue";
+import KeyboardShortcutIndicator from "./KeyboardShortcutIndicator.vue";
 import { formatRelative } from "date-fns";
 
 const noteListItemRefs = ref([]);
@@ -123,11 +124,11 @@ watch(
             }}</span>
           </li>
         </ul>
-        <p class="empty-state" v-if="notesToBeDisplayed.length === 0">
-          Press Enter to create a note with the title "{{
-            store.elementRefs.commandPaletterSearchInput?.value
-          }}"
-        </p>
+        <div class="empty-state" v-if="notesToBeDisplayed.length === 0">
+          <p class="empty-state-description">
+            <KeyboardShortcutIndicator value="↵" /> Create a new note
+          </p>
+        </div>
       </section>
     </Transition>
   </div>
@@ -258,13 +259,23 @@ watch(
 }
 
 .empty-state {
-  display: grid;
-  place-items: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
   padding: 0 10%;
   width: 100%;
   height: 100%;
   margin: 0;
-  color: var(--color-text-tertiary);
+  color: var(--color-text-secondary);
+}
+
+.empty-state-description {
+  margin: 0 0 4px 0;
+}
+
+.empty-state .keyboard-shortcut-indicator {
+  margin-right: 3px;
 }
 
 @media (max-width: 1400px) {
