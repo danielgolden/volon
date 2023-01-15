@@ -72,6 +72,7 @@ onMounted(() => {
       event.preventDefault();
       if (store.commandPaletteActive) return;
       store.loadedData.asideActive = !store.loadedData.asideActive;
+      saveAllNoteData();
     } else if (event.metaKey && event.shiftKey && event.code === "KeyS") {
       event.preventDefault();
       downloadBackupOfData();
