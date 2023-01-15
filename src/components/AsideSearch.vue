@@ -131,7 +131,7 @@ onMounted(() => {
   border: none;
   color: var(--color-text-primary);
   font-family: var(--font-family-primary);
-  transition: box-shadow 150ms var(--ease-out-cubic);
+  transition: box-shadow 200ms var(--ease-out-cubic);
 }
 
 @media (prefers-color-scheme: light) {

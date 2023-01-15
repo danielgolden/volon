@@ -133,7 +133,7 @@
 
     --color-bg-indicator-inactive: #333333;
 
-    --color-bg-input-enabled: #252d3a;
+    --color-bg-input-enabled: var(--color-bg-surface-3);
     --color-text-input-enabled: #7f8ea0;
     --color-text-input-enabled-placeholder: #6d7e95;
     --color-text-input-enabled-indicator: #7f8ea0;
