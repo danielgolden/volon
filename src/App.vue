@@ -91,6 +91,11 @@ onMounted(() => {
         store.elementRefs.asideSearchInput?.select();
       }
     }
+    if (event.code === "Escape") {
+      event.preventDefault();
+      if (!store.commandPaletteActive) return;
+      store.commandPaletteActive = false;
+    }
   });
 
   window.addEventListener("resize", () => setWindowDimensions());
