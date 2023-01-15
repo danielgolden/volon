@@ -1,7 +1,12 @@
 import { mount, VueWrapper } from "@vue/test-utils";
 import CommandPalette from "./CommandPalette.vue";
 import { store } from "../store";
-import { getDefaultNotesData } from "../utils";
+import {
+  getDefaultNotesData,
+  createSampleData,
+  randomIntFromInterval,
+  Note,
+} from "../utils";
 import { describe, it, expect, beforeEach, afterEach } from "vitest";
 
 let wrapper: VueWrapper | null = null;
@@ -14,12 +19,68 @@ afterEach(() => {
   if (wrapper) wrapper.unmount;
 });
 
-describe("Aside.vue", async () => {
-  it("When you click on a note item, that note's ID is set to be the activeNoteId", () => {
-    const listItem = wrapper?.get(".note-list-item");
-    const listItemId = listItem?.attributes("data-note-id");
-    listItem?.trigger("click");
+describe("handleNoteItemClick()", async () => {
+  let randomNote = new Note();
+  beforeEach(() => {
+    createSampleData();
+    randomNote = store.loadedData.notes[randomIntFromInterval(0, 50)];
+  });
 
-    expect(store.activeNoteId).toBe(listItemId);
+  afterEach(() => {
+    localStorage.clear();
+  });
+
+  it("It saves the incoming note ID to state", () => {
+    //@ts-ignore
+    wrapper?.vm.handleNoteItemClick(randomNote.id);
+    expect(store.activeNoteId).toBe(randomNote.id);
+  });
+
+  it("It saves the incoming note contents to state", () => {
+    //@ts-ignore
+    wrapper?.vm.handleNoteItemClick(randomNote.id);
+    expect(store.activeNoteContents).toBe(randomNote.content);
+  });
+
+  it("Toggles the the value of commandPaletteActive", () => {
+    const originalCommandPaletteActive = store.commandPaletteActive;
+    //@ts-ignore
+    wrapper?.vm.handleNoteItemClick(randomNote.id);
+
+    expect(store.commandPaletteActive).toBe(!originalCommandPaletteActive);
+  });
+});
+
+describe("getActiveSelectionStatus()", () => {
+  let randomNote = new Note();
+  beforeEach(() => {
+    createSampleData();
+    randomNote = store.loadedData.notes[randomIntFromInterval(0, 50)];
+  });
+
+  afterEach(() => {
+    localStorage.clear();
+  });
+
+  it("Returns true if the active note has an ID found in matchingNotes", () => {
+    store.activeNoteId = randomNote.id;
+    // @ts-ignore
+    expect(wrapper?.vm.getActiveSelectionStatus([randomNote])).toBe(true);
+  });
+
+  it("Returns true if a list item has an ID found in notesToBeDisplayed", () => {
+    store.activeNoteId = randomNote.id;
+    store.loadedData.notes = [randomNote];
+    // @ts-ignore
+    expect(wrapper?.vm.getActiveSelectionStatus()).toBe(true);
+  });
+
+  it("Returns false if a list item has an ID not found in notesToBeDisplayed nor matchingNotes", () => {
+    // Store the random note in notesToBeDisplayed
+    // expect the function to return to return false
+
+    store.activeNoteId = "fakeNoteId";
+    // @ts-ignore
+    expect(wrapper?.vm.getActiveSelectionStatus()).toBe(false);
   });
 });

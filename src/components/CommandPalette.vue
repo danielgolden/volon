@@ -42,11 +42,11 @@ const formatRelativeDate = (relativeDate: string) => {
   return dateWithCapitalizedFirstChar.replace("AM", "am").replace("PM", "pm");
 };
 
-const getActiveSelectionStatus = (matchingNotes: Note[]) => {
+const getActiveSelectionStatus = (matchingNotes?: Note[]) => {
   let selectionFoundInMatchingNotes = false;
 
   // selected item found in `matchingNotes`?
-  if (store.matchingNotes) {
+  if (matchingNotes) {
     selectionFoundInMatchingNotes = matchingNotes.some(
       (note: Note) => note.id === store.activeNoteId
     );
