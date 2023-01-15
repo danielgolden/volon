@@ -107,8 +107,8 @@
     --color-bg-surface-3: #242c37;
 
     --color-text-primary: #d6deef;
-    --color-text-secondary: #858ea1;
-    --color-text-tertiary: #5e6677;
+    --color-text-secondary: #8591ac;
+    --color-text-tertiary: #576279;
     --color-text-selection: #2b3a51;
     --color-text-interactive: #86bdff;
     --color-text-destructive: #ff8686;
@@ -120,8 +120,8 @@
     --color-bg-indicator-inactive: #333333;
     --color-bg-indicator-inactive-hover: #3d3d3d;
     --color-bg-indicator-active: #86bdff;
-    --color-bg-indicator-high-contrast-inactive-hover: #242d3a;
-    --color-bg-indicator-high-contrast-active: #333f53;
+    --color-bg-indicator-high-contrast-inactive-hover: #252d39;
+    --color-bg-indicator-high-contrast-active: #343f52;
 
     --color-bg-control: #363636; /*-- menus items, popover items, etc. --*/
     --color-bg-control-hover: #3e3e3e;

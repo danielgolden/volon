@@ -135,7 +135,7 @@ const formatRelativeDate = (relativeDate: string) => {
 }
 
 .aside-toggle-leave-active {
-  transition: width 200ms var(--ease-in-out-cubic);
+  transition: width 150ms var(--ease-in-out-quad);
 }
 .aside-toggle-enter-active {
   transition: width 200ms var(--ease-out-quad);
