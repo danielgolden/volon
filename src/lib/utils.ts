@@ -114,10 +114,11 @@ export const deleteActiveNote = () => {
 
   if (store.session) {
     deleteNoteInDB(getNoteById(store.activeNoteId));
+    store.loadedData.notes.splice(indexOfActiveNote, 1);
   } else {
+    store.loadedData.notes.splice(indexOfActiveNote, 1);
     saveAllNoteDataToLocalStorage();
   }
-  store.loadedData.notes.splice(indexOfActiveNote, 1);
 };
 
 export const clearActiveNoteState = () => {
