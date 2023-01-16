@@ -31,18 +31,26 @@ const props = defineProps(["modelValue"]);
 const codemirrorContainer = ref<Element | null>(null);
 let myCodemirrorView = new EditorView();
 const codeMirrorTriggeredNoteCreation = ref(false);
+let onChangeTimer = ref(setTimeout(() => {}, 0));
 
 const handleOnChange = (update: ViewUpdate) => {
+  const waitTime = 500; // in milliseconds
+  clearTimeout(onChangeTimer.value);
+
   if (!update.docChanged) return;
   const currentContent = update.view.state.doc.toString();
 
   if (store.activeNoteId) {
     emit("update:modelValue", currentContent);
-    saveCurrentNoteChange(currentContent);
+    onChangeTimer.value = setTimeout(() => {
+      saveCurrentNoteChange(currentContent);
+    }, waitTime);
   } else {
     createNewNote();
     emit("update:modelValue", currentContent);
-    saveCurrentNoteChange(currentContent);
+    onChangeTimer.value = setTimeout(() => {
+      saveCurrentNoteChange(currentContent);
+    }, waitTime);
 
     codeMirrorTriggeredNoteCreation.value = true;
   }
