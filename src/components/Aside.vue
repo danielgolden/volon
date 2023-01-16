@@ -1,11 +1,12 @@
 <script lang="ts" setup>
-import { computed } from "vue";
+import { computed, onMounted } from "vue";
 import {
   getNoteById,
   sortNotesByModificationDate,
   navigateToPreviousNote,
   navigateToNextNote,
-} from "../utils";
+} from "../lib/utils";
+import { signInWithGitHub, signout } from "../lib/supabase";
 import { store } from "../store";
 import AsideSearch from "./AsideSearch.vue";
 import { formatRelative } from "date-fns";
@@ -39,6 +40,10 @@ const formatRelativeDate = (relativeDate: string) => {
 <template>
   <Transition name="aside-toggle">
     <aside class="aside-container" v-if="store.loadedData.asideActive">
+      <div style="position: absolute" v-if="false">
+        <button @click="signInWithGitHub">Sign in with GitHub</button>
+        <button @click="signout">logOut</button>
+      </div>
       <AsideSearch :noteList="notesToBeDisplayed" />
       <ul
         class="note-list"
@@ -69,6 +74,10 @@ const formatRelativeDate = (relativeDate: string) => {
           }}</span>
         </li>
       </ul>
+      <span v-if="false"
+        >Logged in via {{ store.session.user.app_metadata.provider }}</span
+      >
+      <span v-if="false">Using localStorage data</span>
     </aside>
   </Transition>
 </template>

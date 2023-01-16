@@ -3,10 +3,10 @@ import { ref, onMounted } from "vue";
 import {
   getNotesByContent,
   createNewNote,
-  saveAllNoteData,
   navigateToNextNote,
   navigateToPreviousNote,
-} from "../utils";
+} from "../lib/utils";
+import { saveAllNoteDataToLocalStorage } from "../lib/localStorage";
 import { store } from "../store";
 
 const props = defineProps(["noteList"]);
@@ -22,18 +22,20 @@ const handleInputChange = (currentContent: string) => {
   }
 };
 
+const clearQuery = () => {
+  handleInputChange("");
+  currentQuery.value = "";
+};
+
 const handleSearchKeydownEnter = (e: Event) => {
   store.commandPaletteActive = false;
   if (noteWasSelectedDuringSearch.value) {
-    handleInputChange("");
-    currentQuery.value = "";
+    clearQuery();
     e.preventDefault();
     store.elementRefs.codeMirror?.focus();
   } else {
     createNewNote(`# ${currentQuery.value} \n`);
-    handleInputChange("");
-    currentQuery.value = "";
-    saveAllNoteData();
+    clearQuery();
     store.searchJustCreatedNote = true;
   }
 };

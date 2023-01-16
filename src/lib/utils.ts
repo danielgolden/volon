@@ -1,7 +1,16 @@
-import { store } from "./store";
+import { store } from "../store";
 import { v4 as uuidv4 } from "uuid";
 import { format } from "date-fns";
-import { LoremIpsum } from "lorem-ipsum";
+import {
+  saveAllNoteDataToLocalStorage,
+  intializeLocalStorageData,
+} from "./localStorage";
+import {
+  loadExistingDBData,
+  deleteNoteInDB,
+  updateNoteInDB,
+  createNoteInDB,
+} from "./supabase";
 
 export const getNoteById = (noteId: string | null) => {
   if (noteId === null) throw new Error("noteId parameter must not be null");
@@ -46,13 +55,15 @@ export class Note {
 }
 
 export const saveCurrentNoteChange = (currentContent: string) => {
-  getNoteById(store.activeNoteId).content = currentContent;
-  getNoteById(store.activeNoteId).lastModified = new Date();
-  localStorage.setItem("volon", JSON.stringify(store.loadedData));
-};
+  const currentNote = getNoteById(store.activeNoteId);
+  currentNote.content = currentContent;
+  currentNote.lastModified = new Date();
 
-export const saveAllNoteData = () => {
-  localStorage.setItem("volon", JSON.stringify(store.loadedData));
+  if (store.session) {
+    updateNoteInDB(currentNote);
+  } else {
+    saveAllNoteDataToLocalStorage();
+  }
 };
 
 export const createNewNote = (contents: string = "") => {
@@ -61,6 +72,12 @@ export const createNewNote = (contents: string = "") => {
   store.activeNoteId = newNoteData.id;
   store.activeNoteContents = contents;
   store.loadedData.notes.push(newNoteData);
+
+  if (store.session) {
+    createNoteInDB(newNoteData);
+  } else {
+    saveAllNoteDataToLocalStorage();
+  }
 };
 
 export const getNotesByContent = (content: string): Note[] => {
@@ -95,7 +112,13 @@ export const deleteActiveNote = () => {
     throw new Error(`No note with the ID ${store.activeNoteId} found.`);
   }
 
-  store.loadedData.notes.splice(indexOfActiveNote, 1);
+  if (store.session) {
+    deleteNoteInDB(getNoteById(store.activeNoteId));
+    store.loadedData.notes.splice(indexOfActiveNote, 1);
+  } else {
+    store.loadedData.notes.splice(indexOfActiveNote, 1);
+    saveAllNoteDataToLocalStorage();
+  }
 };
 
 export const clearActiveNoteState = () => {
@@ -154,26 +177,10 @@ export const randomIntFromInterval = (min: number, max: number) => {
   return Math.floor(Math.random() * (max - min + 1) + min);
 };
 
-export const createSampleData = () => {
-  const lorem = new LoremIpsum({
-    sentencesPerParagraph: {
-      max: 5,
-      min: 3,
-    },
-    wordsPerSentence: {
-      max: 16,
-      min: 4,
-    },
-  });
-
-  [...Array(50)].map(() => {
-    const title = lorem.generateWords(randomIntFromInterval(2, 6));
-    const bodyContent = lorem.generateParagraphs(randomIntFromInterval(1, 5));
-    const noteContent = `# ${
-      title.charAt(0).toUpperCase() + title.slice(1)
-    } \n\n ${bodyContent}`;
-
-    createNewNote(noteContent);
-    saveAllNoteData();
-  });
+export const loadNotesData = async () => {
+  if (store.session) {
+    await loadExistingDBData();
+  } else {
+    intializeLocalStorageData();
+  }
 };

@@ -7,6 +7,7 @@ export const store = reactive({
   commandPaletteActive: false,
   matchingNotes: <Note[] | null>null,
   searchJustCreatedNote: false,
+  session: <any>null,
   elementRefs: {
     codeMirror: <null | EditorView>null,
     asideSearchInput: <null | HTMLInputElement>null,

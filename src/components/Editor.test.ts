@@ -1,7 +1,7 @@
 import { mount, VueWrapper } from "@vue/test-utils";
 import App from "../App.vue";
 import Editor from "./Editor.vue";
-import { getDefaultNotesData } from "../utils";
+import { getDefaultNotesData } from "../lib/utils";
 import { store } from "../store";
 import { describe, it, expect, beforeEach, afterEach } from "vitest";
 
@@ -36,6 +36,16 @@ describe("The editor's responses to change", () => {
     await editorWrapper?.vm.myCodemirrorView.dispatch({
       changes: { from: 0, insert: testContent },
     });
+
+    const timer = () => {
+      return new Promise((resolve) => {
+        setTimeout(() => {
+          resolve("");
+        }, 500);
+      });
+    };
+
+    await timer();
 
     expect(store.loadedData.notes[0].content).toBe(testContent);
   });

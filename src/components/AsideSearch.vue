@@ -5,8 +5,7 @@ import {
   createNewNote,
   navigateToNextNote,
   navigateToPreviousNote,
-  saveAllNoteData,
-} from "../utils";
+} from "../lib/utils";
 import { store } from "../store";
 
 const props = defineProps(["noteList"]);
@@ -25,20 +24,21 @@ const handleInputChange = (currentContent: string) => {
   }
 };
 
+const clearQuery = () => {
+  handleInputChange("");
+  currentQuery.value = "";
+};
+
 const handleSearchKeydownEnter = (e: Event) => {
   if (store.matchingNotes === null) return;
-  const noMatchingNoteFound = store.matchingNotes?.length === 0;
 
   if (noteWasSelectedDuringSearch.value) {
-    handleInputChange("");
-    currentQuery.value = "";
+    clearQuery();
     e.preventDefault();
     store.elementRefs.codeMirror?.focus();
   } else {
     createNewNote(`# ${currentQuery.value} \n`);
-    handleInputChange("");
-    currentQuery.value = "";
-    saveAllNoteData();
+    clearQuery();
     store.searchJustCreatedNote = true;
   }
 };
