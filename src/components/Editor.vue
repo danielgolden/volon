@@ -355,8 +355,7 @@ const handleCommandV = () => {
 
 @media (max-width: 800px) {
   .cm-editor .cm-content {
-    padding: 20px;
-    font-size: 16px;
+    padding: 24px;
   }
 }
 </style>
