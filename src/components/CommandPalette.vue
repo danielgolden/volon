@@ -356,7 +356,9 @@ watch(
   .note-list-item-meta {
     font-size: 11px;
   }
+}
 
+@media (max-width: 800px) {
   .container {
     width: 85%;
   }
