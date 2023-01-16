@@ -40,7 +40,7 @@ const formatRelativeDate = (relativeDate: string) => {
 <template>
   <Transition name="aside-toggle">
     <aside class="aside-container" v-if="store.loadedData.asideActive">
-      <div style="position: absolute">
+      <div style="position: absolute" v-if="false">
         <button @click="signInWithGitHub">Sign in with GitHub</button>
         <button @click="signout">logOut</button>
       </div>
@@ -74,10 +74,10 @@ const formatRelativeDate = (relativeDate: string) => {
           }}</span>
         </li>
       </ul>
-      <span v-if="store.session"
+      <span v-if="false"
         >Logged in via {{ store.session.user.app_metadata.provider }}</span
       >
-      <span v-else>Using localStorage data</span>
+      <span v-if="false">Using localStorage data</span>
     </aside>
   </Transition>
 </template>
