@@ -491,7 +491,7 @@ onMounted(() => {
 .login-buttons {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 10px;
 }
 
 .logged-in-meta {
