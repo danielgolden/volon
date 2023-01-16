@@ -37,6 +37,16 @@ describe("The editor's responses to change", () => {
       changes: { from: 0, insert: testContent },
     });
 
+    const timer = () => {
+      return new Promise((resolve) => {
+        setTimeout(() => {
+          resolve("");
+        }, 500);
+      });
+    };
+
+    await timer();
+
     expect(store.loadedData.notes[0].content).toBe(testContent);
   });
 
