@@ -58,17 +58,10 @@ onMounted(async () => {
     } else if (event.metaKey && event.code === "KeyK") {
       // Aside is inactive, trigger command palette
       // and focus it's input
-      if (!store.loadedData.asideActive) {
-        event.preventDefault();
-        displayCommandPalette();
-      } else if (store.loadedData.asideActive) {
-        event.preventDefault();
-        store.elementRefs.asideSearchInput?.focus();
-        store.elementRefs.asideSearchInput?.select();
-      }
+      event.preventDefault();
+      displayCommandPalette();
     }
     if (event.code === "Escape") {
-      event.preventDefault();
       if (!store.commandPaletteActive) return;
       store.commandPaletteActive = false;
     }

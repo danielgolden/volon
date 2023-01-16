@@ -2,17 +2,45 @@
 import { signInWithGitHub, signout } from "../lib/supabase";
 import { store } from "../store";
 import { displayCommandPalette, downloadBackupOfData } from "../lib/utils";
-import { ref } from "vue";
+import { onMounted, ref } from "vue";
+import { et } from "date-fns/locale";
 
 const accountMenuActive = ref(false);
+const asideElement = ref<HTMLElement | null>(null);
+const accountButton = ref<HTMLElement | null>(null);
+
+onMounted(() => {
+  document.addEventListener("click", (e) => {
+    const didntClickAccountButton = e.target !== accountButton.value;
+    const didntClickPopover = e.target !== asideElement.value;
+
+    if (
+      didntClickAccountButton &&
+      didntClickPopover &&
+      accountMenuActive.value
+    ) {
+      accountMenuActive.value = false;
+    }
+  });
+
+  document.addEventListener("keydown", (e) => {
+    if (e.code === "Escape" && accountMenuActive) {
+      accountMenuActive.value = false;
+    }
+  });
+});
 </script>
 
 <template>
   <Transition name="aside-toggle">
-    <aside class="aside-container" v-if="store.loadedData.asideActive">
+    <aside
+      class="aside-container"
+      v-if="store.loadedData.asideActive"
+      ref="asideElement"
+    >
       <div style="position: absolute" v-if="false">
-        <btn @click="signInWithGitHub">Sign in with GitHub</btn>
-        <btn @click="signout">logOut</btn>
+        <button @click="signInWithGitHub">Sign in with GitHub</button>
+        <button @click="signout">logOut</button>
       </div>
 
       <a href="/" class="logo" title="Volón">
@@ -36,13 +64,15 @@ const accountMenuActive = ref(false);
       <div class="menu-items">
         <ul class="primary-menu-items">
           <li class="primary-menu-item">
-            <btn
+            <button
               :class="{
                 'btn-menu': true,
                 'btn-account': true,
                 'btn-active': accountMenuActive,
               }"
               @click="accountMenuActive = !accountMenuActive"
+              ref="accountButton"
+              title="Your notes data"
             >
               <svg
                 width="15"
@@ -59,10 +89,14 @@ const accountMenuActive = ref(false);
                   fill="var(--color-text-secondary)"
                 />
               </svg>
-            </btn>
+            </button>
           </li>
           <li class="primary-menu-item">
-            <btn class="btn-menu btn-search" @click="displayCommandPalette">
+            <button
+              class="btn-menu btn-search"
+              @click="displayCommandPalette"
+              title="Search your notes"
+            >
               <svg
                 width="15"
                 height="15"
@@ -78,11 +112,15 @@ const accountMenuActive = ref(false);
                   fill="var(--color-text-secondary)"
                 />
               </svg>
-            </btn>
+            </button>
           </li>
         </ul>
 
-        <btn class="btn-menu btn-backup" @click="downloadBackupOfData">
+        <button
+          class="btn-menu btn-backup"
+          @click="downloadBackupOfData"
+          title="Download a backup of your data"
+        >
           <svg
             width="15"
             height="15"
@@ -98,7 +136,7 @@ const accountMenuActive = ref(false);
               fill="var(--color-text-secondary)"
             />
           </svg>
-        </btn>
+        </button>
       </div>
 
       <div
@@ -136,15 +174,17 @@ const accountMenuActive = ref(false);
           <div class="login-buttons">
             <button class="btn-login">
               <svg
-                width="14"
-                height="16"
-                viewBox="0 0 14 16"
+                width="17"
+                height="18"
+                viewBox="0 0 17 18"
                 fill="none"
                 xmlns="http://www.w3.org/2000/svg"
                 class="btn-login-icon"
               >
                 <path
-                  d="M13.0969 5.45525C13.0041 5.52725 11.3657 6.45046 11.3657 8.50325C11.3657 10.8777 13.4505 11.7177 13.5129 11.7385C13.5033 11.7897 13.1817 12.8889 12.4137 14.0089C11.7289 14.9945 11.0137 15.9785 9.92571 15.9785C8.83771 15.9785 8.5577 15.3465 7.3017 15.3465C6.0777 15.3465 5.64251 15.9993 4.64731 15.9993C3.6521 15.9993 2.9577 15.0873 2.1593 13.9673C1.2345 12.6521 0.487305 10.6089 0.487305 8.66965C0.487305 5.55925 2.5097 3.90965 4.5001 3.90965C5.5577 3.90965 6.4393 4.60405 7.1033 4.60405C7.7353 4.60405 8.72091 3.86805 9.9241 3.86805C10.3801 3.86805 12.0185 3.90965 13.0969 5.45525ZM9.3529 2.55125C9.8505 1.96085 10.2025 1.14165 10.2025 0.322455C10.2025 0.208855 10.1929 0.0936545 10.1721 0.000854492C9.3625 0.0312545 8.39931 0.540055 7.81851 1.21365C7.36251 1.73205 6.9369 2.55125 6.9369 3.38165C6.9369 3.50645 6.95771 3.63125 6.96731 3.67125C7.01851 3.68085 7.10171 3.69205 7.18491 3.69205C7.9113 3.69205 8.8249 3.20565 9.3529 2.55125Z"
+                  fill-rule="evenodd"
+                  clip-rule="evenodd"
+                  d="M8.49923 0.831697C3.8751 0.831697 0.125 4.5813 0.125 9.20697C0.125 12.9067 2.52447 16.046 5.85246 17.1539C6.27148 17.2306 6.42418 16.972 6.42418 16.7498C6.42418 16.5509 6.41698 16.0244 6.41287 15.3257C4.08333 15.8316 3.59181 14.2028 3.59181 14.2028C3.21084 13.2352 2.66175 12.9776 2.66175 12.9776C1.90134 12.4584 2.71933 12.4686 2.71933 12.4686C3.55994 12.5278 4.00209 13.3319 4.00209 13.3319C4.74913 14.6116 5.96249 14.2419 6.43961 14.0275C6.5157 13.4866 6.73215 13.1175 6.97122 12.9082C5.1116 12.6964 3.15634 11.9782 3.15634 8.76893C3.15634 7.85428 3.48282 7.10725 4.01855 6.52165C3.93217 6.30982 3.64477 5.4584 4.10081 4.3052C4.10081 4.3052 4.80363 4.08 6.40361 5.16328C7.07148 4.97768 7.78818 4.88514 8.50026 4.88154C9.21182 4.88514 9.92801 4.97768 10.5969 5.16328C12.1959 4.08 12.8977 4.3052 12.8977 4.3052C13.3547 5.4584 13.0673 6.30982 12.9815 6.52165C13.5182 7.10725 13.8421 7.85428 13.8421 8.76893C13.8421 11.9864 11.8838 12.6943 10.0185 12.9015C10.3188 13.1602 10.5866 13.6712 10.5866 14.4527C10.5866 15.572 10.5763 16.4753 10.5763 16.7498C10.5763 16.974 10.7275 17.2347 11.1522 17.1529C14.4776 16.0429 16.875 12.9062 16.875 9.20697C16.875 4.5813 13.1249 0.831697 8.49923 0.831697Z"
                   fill="white"
                 />
               </svg>
@@ -172,17 +212,15 @@ const accountMenuActive = ref(false);
             </button>
             <button class="btn-login">
               <svg
-                width="17"
-                height="18"
-                viewBox="0 0 17 18"
+                width="14"
+                height="16"
+                viewBox="0 0 14 16"
                 fill="none"
                 xmlns="http://www.w3.org/2000/svg"
                 class="btn-login-icon"
               >
                 <path
-                  fill-rule="evenodd"
-                  clip-rule="evenodd"
-                  d="M8.49923 0.831697C3.8751 0.831697 0.125 4.5813 0.125 9.20697C0.125 12.9067 2.52447 16.046 5.85246 17.1539C6.27148 17.2306 6.42418 16.972 6.42418 16.7498C6.42418 16.5509 6.41698 16.0244 6.41287 15.3257C4.08333 15.8316 3.59181 14.2028 3.59181 14.2028C3.21084 13.2352 2.66175 12.9776 2.66175 12.9776C1.90134 12.4584 2.71933 12.4686 2.71933 12.4686C3.55994 12.5278 4.00209 13.3319 4.00209 13.3319C4.74913 14.6116 5.96249 14.2419 6.43961 14.0275C6.5157 13.4866 6.73215 13.1175 6.97122 12.9082C5.1116 12.6964 3.15634 11.9782 3.15634 8.76893C3.15634 7.85428 3.48282 7.10725 4.01855 6.52165C3.93217 6.30982 3.64477 5.4584 4.10081 4.3052C4.10081 4.3052 4.80363 4.08 6.40361 5.16328C7.07148 4.97768 7.78818 4.88514 8.50026 4.88154C9.21182 4.88514 9.92801 4.97768 10.5969 5.16328C12.1959 4.08 12.8977 4.3052 12.8977 4.3052C13.3547 5.4584 13.0673 6.30982 12.9815 6.52165C13.5182 7.10725 13.8421 7.85428 13.8421 8.76893C13.8421 11.9864 11.8838 12.6943 10.0185 12.9015C10.3188 13.1602 10.5866 13.6712 10.5866 14.4527C10.5866 15.572 10.5763 16.4753 10.5763 16.7498C10.5763 16.974 10.7275 17.2347 11.1522 17.1529C14.4776 16.0429 16.875 12.9062 16.875 9.20697C16.875 4.5813 13.1249 0.831697 8.49923 0.831697Z"
+                  d="M13.0969 5.45525C13.0041 5.52725 11.3657 6.45046 11.3657 8.50325C11.3657 10.8777 13.4505 11.7177 13.5129 11.7385C13.5033 11.7897 13.1817 12.8889 12.4137 14.0089C11.7289 14.9945 11.0137 15.9785 9.92571 15.9785C8.83771 15.9785 8.5577 15.3465 7.3017 15.3465C6.0777 15.3465 5.64251 15.9993 4.64731 15.9993C3.6521 15.9993 2.9577 15.0873 2.1593 13.9673C1.2345 12.6521 0.487305 10.6089 0.487305 8.66965C0.487305 5.55925 2.5097 3.90965 4.5001 3.90965C5.5577 3.90965 6.4393 4.60405 7.1033 4.60405C7.7353 4.60405 8.72091 3.86805 9.9241 3.86805C10.3801 3.86805 12.0185 3.90965 13.0969 5.45525ZM9.3529 2.55125C9.8505 1.96085 10.2025 1.14165 10.2025 0.322455C10.2025 0.208855 10.1929 0.0936545 10.1721 0.000854492C9.3625 0.0312545 8.39931 0.540055 7.81851 1.21365C7.36251 1.73205 6.9369 2.55125 6.9369 3.38165C6.9369 3.50645 6.95771 3.63125 6.96731 3.67125C7.01851 3.68085 7.10171 3.69205 7.18491 3.69205C7.9113 3.69205 8.8249 3.20565 9.3529 2.55125Z"
                   fill="white"
                 />
               </svg>
@@ -275,6 +313,7 @@ const accountMenuActive = ref(false);
   background-color: var(--color-bg-button);
   cursor: pointer;
   border-radius: 4px;
+  border: none;
   transition: all 50ms var(--ease-out-quad);
 }
 
@@ -286,6 +325,10 @@ const accountMenuActive = ref(false);
 
 .btn-menu:active {
   box-shadow: inset 0 0 0 1px var(--color-border-tertiary);
+}
+
+.btn-menu-icon {
+  pointer-events: none;
 }
 
 .btn-menu-icon path {
@@ -359,7 +402,6 @@ const accountMenuActive = ref(false);
   justify-content: center;
   align-items: center;
   border-radius: 4px;
-  align-items: center;
   padding: 7px 0 10px;
   gap: 10px;
   font-family: var(--font-family-primary);
