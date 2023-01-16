@@ -254,7 +254,7 @@ const handleCommandV = () => {
     const firstSelection = myCodemirrorView.state.selection.ranges.at(0)!;
     const selectionText = myCodemirrorView.state.doc
       .toString()
-      .substring(firstSelection.from, fditoirstSelection.to);
+      .substring(firstSelection.from, firstSelection.to);
     const clipBoardText = await navigator.clipboard.readText();
     const isURL =
       clipBoardText.startsWith("https://") ||
