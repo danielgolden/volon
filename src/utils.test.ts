@@ -14,8 +14,8 @@ import {
   clearActiveNoteState,
   setWindowDimensions,
   navigateToNoteByRelativeIndex,
-  createSampleData,
 } from "./lib/utils";
+import { createSampleDataInLocalStorage } from "./lib/localStorage";
 import { describe, it, expect, beforeEach, afterEach } from "vitest";
 
 describe("getNoteById()", () => {
@@ -232,7 +232,7 @@ describe("navigateToNoteByRelativeIndex()", () => {
 
 describe("createSampleData()", () => {
   it("Creates 50 dummy notes", () => {
-    createSampleData();
+    createSampleDataInLocalStorage();
     expect(store.loadedData.notes.length).toBeGreaterThanOrEqual(50);
   });
 });

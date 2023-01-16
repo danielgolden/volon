@@ -2,6 +2,7 @@ import { mount, VueWrapper } from "@vue/test-utils";
 import CommandPalette from "./CommandPalette.vue";
 import { store } from "../store";
 import { getDefaultNotesData, randomIntFromInterval, Note } from "../lib/utils";
+import { createSampleDataInLocalStorage } from "../lib/localStorage";
 import { describe, it, expect, beforeEach, afterEach } from "vitest";
 
 let wrapper: VueWrapper | null = null;
@@ -17,7 +18,7 @@ afterEach(() => {
 describe("handleNoteItemClick()", async () => {
   let randomNote = new Note();
   beforeEach(() => {
-    createSampleData();
+    createSampleDataInLocalStorage();
     randomNote = store.loadedData.notes[randomIntFromInterval(0, 50)];
   });
 
@@ -49,7 +50,7 @@ describe("handleNoteItemClick()", async () => {
 describe("getActiveSelectionStatus()", () => {
   let randomNote = new Note();
   beforeEach(() => {
-    createSampleData();
+    createSampleDataInLocalStorage();
     randomNote = store.loadedData.notes[randomIntFromInterval(0, 50)];
   });
 
