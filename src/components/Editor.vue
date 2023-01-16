@@ -254,7 +254,7 @@ const handleCommandV = () => {
     const firstSelection = myCodemirrorView.state.selection.ranges.at(0)!;
     const selectionText = myCodemirrorView.state.doc
       .toString()
-      .substring(firstSelection.from, firstSelection.to);
+      .substring(firstSelection.from, fditoirstSelection.to);
     const clipBoardText = await navigator.clipboard.readText();
     const isURL =
       clipBoardText.startsWith("https://") ||
@@ -303,6 +303,10 @@ const handleCommandV = () => {
 .cm-editor.cm-focused {
   outline: none;
 }
+.cm-editor .cm-content {
+  padding: 48px;
+  font-size: 20px;
+}
 
 /*-- Custom syntax highlighting --*/
 .md-header {
@@ -340,12 +344,19 @@ const handleCommandV = () => {
 }
 
 @media (max-width: 1400px) {
-  .v-codemirror .cm-content {
-    font-size: 16px;
+  .cm-editor .cm-content {
+    font-size: 18px;
   }
 
   .md-monospace {
-    font-size: 14px;
+    font-size: 15px;
+  }
+}
+
+@media (max-width: 800px) {
+  .cm-editor .cm-content {
+    padding: 20px;
+    font-size: 16px;
   }
 }
 </style>
