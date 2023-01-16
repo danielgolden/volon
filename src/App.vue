@@ -14,6 +14,7 @@ import {
 import {
   saveAppSettingsToLocalStorage,
   intializeLocalStorageData,
+  loadAppSettingsFromLocalStorage,
 } from "./lib/localStorage";
 import { loadExistingDBData, getSession } from "./lib/supabase";
 
@@ -25,6 +26,7 @@ onMounted(async () => {
 
   if (store.session) {
     await loadExistingDBData();
+    loadAppSettingsFromLocalStorage();
     notesDataLoaded.value = true;
   } else {
     intializeLocalStorageData();

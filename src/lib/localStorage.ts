@@ -19,13 +19,31 @@ export const saveAppSettingsToLocalStorage = () => {
 
     localStorage.setItem("volon", JSON.stringify(localDataParsed));
   } else {
-    localStorage.setItem(
-      "volon",
-      JSON.stringify({
-        asideActive: store.loadedData.asideActive,
-        markdownPreviewActive: store.loadedData.markdownPreviewActive,
-      })
-    );
+    createNewAppSettingsInLocalStorage();
+  }
+};
+
+export const createNewAppSettingsInLocalStorage = () => {
+  localStorage.setItem(
+    "volon",
+    JSON.stringify({
+      asideActive: store.loadedData.asideActive,
+      markdownPreviewActive: store.loadedData.markdownPreviewActive,
+    })
+  );
+};
+
+export const loadAppSettingsFromLocalStorage = () => {
+  const localData = localStorage.getItem("volon");
+  const localDataFound = !!localData;
+
+  if (localDataFound) {
+    const localDataParsed = JSON.parse(localData);
+    store.loadedData.asideActive = localDataParsed.asideActive;
+    store.loadedData.markdownPreviewActive =
+      localDataParsed.markdownPreviewActive;
+  } else {
+    createNewAppSettingsInLocalStorage();
   }
 };
 
