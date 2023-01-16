@@ -57,6 +57,12 @@ marked.use({ renderer });
   font-size: 20px;
 }
 
+@media (max-width: 800px) {
+  .markdown-preview-container {
+    display: none;
+  }
+}
+
 /*-----------------------------------------------------*/
 /*---- github.com/sindresorhus/github-markdown-css ----*/
 /*-----------------------------------------------------*/
