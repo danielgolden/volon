@@ -202,7 +202,6 @@ watch(
   display: grid;
   max-width: 700px;
   width: 75%;
-  min-width: 400px;
   height: 400px;
   position: absolute;
   z-index: 10;
@@ -356,6 +355,10 @@ watch(
 
   .note-list-item-meta {
     font-size: 11px;
+  }
+
+  .container {
+    width: 85%;
   }
 }
 </style>
