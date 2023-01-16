@@ -194,6 +194,10 @@ h6 {
   font-weight: 700;
 }
 
+button {
+  font-family: var(--font-family-primary);
+}
+
 #app {
   position: absolute;
   inset: 0;

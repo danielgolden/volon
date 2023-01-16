@@ -1,22 +1,36 @@
 <script lang="ts" setup>
 import { signInWithGitHub, signout } from "../lib/supabase";
 import { store } from "../store";
-import { displayCommandPalette, downloadBackupOfData } from "../lib/utils";
+import {
+  displayCommandPalette,
+  downloadBackupOfData,
+  clearActiveNoteState,
+} from "../lib/utils";
+import { intializeLocalStorageData } from "../lib/localStorage";
 import { onMounted, ref } from "vue";
-import { et } from "date-fns/locale";
 
 const accountMenuActive = ref(false);
 const asideElement = ref<HTMLElement | null>(null);
 const accountButton = ref<HTMLElement | null>(null);
 
+const handleLogOutClick = () => {
+  signout();
+  intializeLocalStorageData();
+  clearActiveNoteState();
+};
+
 onMounted(() => {
   document.addEventListener("click", (e) => {
     const didntClickAccountButton = e.target !== accountButton.value;
     const didntClickPopover = e.target !== asideElement.value;
+    const isntChildOfPopover = !(e.target as HTMLElement).closest(
+      ".menu-popover"
+    );
 
     if (
       didntClickAccountButton &&
       didntClickPopover &&
+      isntChildOfPopover &&
       accountMenuActive.value
     ) {
       accountMenuActive.value = false;
@@ -38,11 +52,6 @@ onMounted(() => {
       v-if="store.loadedData.asideActive"
       ref="asideElement"
     >
-      <div style="position: absolute" v-if="false">
-        <button @click="signInWithGitHub">Sign in with GitHub</button>
-        <button @click="signout">logOut</button>
-      </div>
-
       <a href="/" class="logo" title="Volón">
         <svg
           width="18"
@@ -141,7 +150,7 @@ onMounted(() => {
 
       <div
         class="menu-popover-container logged-out-menu-popover-container"
-        v-if="accountMenuActive"
+        v-if="accountMenuActive && store.session === null"
       >
         <div class="menu-popover logged-out-menu-popover">
           <svg
@@ -164,15 +173,8 @@ onMounted(() => {
             />
           </svg>
 
-          <h3>Notes stored this device</h3>
-          <p>
-            Your notes will <em>only</em> be stored on this device unless you
-            log in. To use Volón across different browsers and devices, log in.
-          </p>
-
-          <hr />
           <div class="login-buttons">
-            <button class="btn-login">
+            <button class="btn-primary btn-login" @click="signInWithGitHub">
               <svg
                 width="17"
                 height="18"
@@ -191,7 +193,7 @@ onMounted(() => {
 
               Log in with GitHub
             </button>
-            <button class="btn-login">
+            <button class="btn-primary btn-login">
               <svg
                 width="15"
                 height="16"
@@ -210,7 +212,7 @@ onMounted(() => {
 
               Log in with Google
             </button>
-            <button class="btn-login">
+            <button class="btn-primary btn-login">
               <svg
                 width="14"
                 height="16"
@@ -226,6 +228,85 @@ onMounted(() => {
               </svg>
 
               Log in with Apple
+            </button>
+          </div>
+          <hr />
+          <h3>
+            <svg
+              width="15"
+              height="15"
+              viewBox="0 0 15 15"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+              class="lock-icon"
+            >
+              <path
+                d="M5 4.63601C5 3.76031 5.24219 3.1054 5.64323 2.67357C6.03934 2.24705 6.64582 1.9783 7.5014 1.9783C8.35745 1.9783 8.96306 2.24652 9.35823 2.67208C9.75838 3.10299 10 3.75708 10 4.63325V5.99999H5V4.63601ZM4 5.99999V4.63601C4 3.58148 4.29339 2.65754 4.91049 1.99307C5.53252 1.32329 6.42675 0.978302 7.5014 0.978302C8.57583 0.978302 9.46952 1.32233 10.091 1.99162C10.7076 2.65557 11 3.57896 11 4.63325V5.99999H12C12.5523 5.99999 13 6.44771 13 6.99999V13C13 13.5523 12.5523 14 12 14H3C2.44772 14 2 13.5523 2 13V6.99999C2 6.44771 2.44772 5.99999 3 5.99999H4ZM3 6.99999H12V13H3V6.99999Z"
+                fill="currentColor"
+                fill-rule="evenodd"
+                clip-rule="evenodd"
+              ></path>
+            </svg>
+            Your notes live on this device
+          </h3>
+          <p>
+            Your notes are currently stored on this device. If you log in, your
+            notes will be store in the cloud and you will be able to use Volón
+            across different browsers and devices.
+          </p>
+        </div>
+      </div>
+      <div
+        class="menu-popover-container logged-in-menu-popover-container"
+        v-if="accountMenuActive && store.session"
+      >
+        <div class="menu-popover logged-in-menu-popover">
+          <svg
+            width="10"
+            height="21"
+            viewBox="0 0 10 21"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+            class="popover-caret"
+          >
+            <path
+              d="M9.29453e-08 10.2065L10 0.411465L10 20.0015L9.29453e-08 10.2065Z"
+              fill="#181B20"
+            />
+            <path
+              fill-rule="evenodd"
+              clip-rule="evenodd"
+              d="M8.88867 1.49847L0 10.2049L8.88867 18.9114V17.2489L1.69725 10.2049L8.88867 3.16093V1.49847Z"
+              fill="#2A303A"
+            />
+          </svg>
+
+          <span class="logged-in-meta"
+            >Logged in with
+            <strong>{{
+              store.session.user.app_metadata.provider
+            }}</strong></span
+          >
+
+          <hr />
+          <div class="logged-out-buttons">
+            <button class="btn-logout" @click="handleLogOutClick">
+              <svg
+                width="15"
+                height="16"
+                viewBox="0 0 15 16"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+                class="btn-icon"
+              >
+                <path
+                  fill-rule="evenodd"
+                  clip-rule="evenodd"
+                  d="M3 1.5C2.44771 1.5 2 1.94772 2 2.5V13.5C2 14.0523 2.44772 14.5 3 14.5H10.5C10.7761 14.5 11 14.2761 11 14C11 13.7239 10.7761 13.5 10.5 13.5H3V2.5L10.5 2.5C10.7761 2.5 11 2.27614 11 2C11 1.72386 10.7761 1.5 10.5 1.5H3ZM12.6036 5.39645C12.4083 5.20118 12.0917 5.20118 11.8964 5.39645C11.7012 5.59171 11.7012 5.90829 11.8964 6.10355L13.2929 7.5H6.5C6.22386 7.5 6 7.72386 6 8C6 8.27614 6.22386 8.5 6.5 8.5H13.2929L11.8964 9.89645C11.7012 10.0917 11.7012 10.4083 11.8964 10.6036C12.0917 10.7988 12.4083 10.7988 12.6036 10.6036L14.8536 8.35355C15.0488 8.15829 15.0488 7.84171 14.8536 7.64645L12.6036 5.39645Z"
+                  fill="var(--color-text-secondary)"
+                />
+              </svg>
+              Log out
             </button>
           </div>
         </div>
@@ -355,7 +436,8 @@ onMounted(() => {
     0px 2px 3px rgba(0, 0, 0, 0.15);
 }
 
-.logged-out-menu-popover-container {
+.logged-out-menu-popover-container,
+.logged-in-menu-popover-container {
   top: 51px;
   left: 64px;
 }
@@ -364,13 +446,24 @@ onMounted(() => {
   padding: 22px 22px 24px;
 }
 
+.logged-in-menu-popover {
+  width: 200px;
+}
+
 .popover-caret {
   position: absolute;
   left: -9px;
   top: 13px;
 }
 
+.logged-in-menu-popover .popover-caret {
+  top: 9px;
+}
+
 .menu-popover h3 {
+  display: flex;
+  gap: 6px;
+  align-items: center;
   font-size: 16px;
   line-height: 16px;
   margin: 0 0 8px;
@@ -390,13 +483,29 @@ onMounted(() => {
   border-top: 1px dotted var(--color-border-secondary);
 }
 
+.logged-in-menu-popover hr {
+  margin: 0;
+}
+
 .login-buttons {
   display: flex;
   flex-direction: column;
   gap: 12px;
 }
 
-.btn-login {
+.logged-in-meta {
+  display: flex;
+  width: 100%;
+  text-align: center;
+  gap: 4px;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  height: 35px;
+  color: var(--color-text-secondary);
+}
+
+.btn-primary {
   border: none;
   display: flex;
   justify-content: center;
@@ -414,12 +523,37 @@ onMounted(() => {
   transition: translate 50ms var(--ease-out-quad);
 }
 
-.btn-login:hover {
+.btn-primary:hover {
   background-color: var(--color-bg-button-hover-primary);
   box-shadow: inset 0 0 0 1px var(--color-border-button-hover-primary);
 }
 
-.btn-login:active {
+.btn-primary:active {
   translate: 0 1px;
+}
+
+.logged-out-buttons {
+  display: flex;
+  justify-content: stretch;
+  padding: 4px;
+}
+
+.btn-logout {
+  display: flex;
+  width: 100%;
+  border-radius: 3px;
+  align-items: center;
+  justify-content: start;
+  gap: 8px;
+  padding: 8px 10px;
+  font-size: 14px;
+  font-weight: 500;
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+}
+
+.btn-logout:hover {
+  background-color: var(--color-bg-surface-1);
 }
 </style>

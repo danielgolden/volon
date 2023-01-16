@@ -11,6 +11,7 @@ export const signInWithGitHub = async () => {
   const { data, error } = await supabase.auth.signInWithOAuth({
     provider: "github",
   });
+  debugger;
   return data;
 };
 
