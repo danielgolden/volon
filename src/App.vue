@@ -10,6 +10,7 @@ import {
   clearActiveNoteState,
   setWindowDimensions,
   downloadBackupOfData,
+  displayCommandPalette,
 } from "./lib/utils";
 import {
   saveAppSettingsToLocalStorage,
@@ -59,11 +60,7 @@ onMounted(async () => {
       // and focus it's input
       if (!store.loadedData.asideActive) {
         event.preventDefault();
-        store.commandPaletteActive = !store.commandPaletteActive;
-
-        nextTick(() => {
-          store.elementRefs.commandPaletteSearchInput?.focus();
-        });
+        displayCommandPalette();
       } else if (store.loadedData.asideActive) {
         event.preventDefault();
         store.elementRefs.asideSearchInput?.focus();

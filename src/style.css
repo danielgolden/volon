@@ -154,12 +154,13 @@
     --color-bg-interactive-active-hover: var(--color-bg-interactive-active);
 
     --color-bg-button: transparent;
-    --color-bg-button-hover: rgba(255 255 255 / 6%);
+    --color-bg-button-hover: var(--color-bg-surface-1);
     --color-text-button: #c3c3c3;
     --color-text-button-hover: #ededed;
+    --color-border-button: var(--color-border-tertiary);
 
     --color-border-primary: #1f252d;
-    --color-border-secondary: #28303b;
+    --color-border-secondary: #2a3440;
     --color-border-tertiary: #3c4657;
 
     --color-box-shadow: rgba(0, 0, 0, 0.075);

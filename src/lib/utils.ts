@@ -11,6 +11,7 @@ import {
   updateNoteInDB,
   createNoteInDB,
 } from "./supabase";
+import { nextTick } from "vue";
 
 export const getNoteById = (noteId: string | null) => {
   if (noteId === null) throw new Error("noteId parameter must not be null");
@@ -183,4 +184,12 @@ export const loadNotesData = async () => {
   } else {
     intializeLocalStorageData();
   }
+};
+
+export const displayCommandPalette = () => {
+  store.commandPaletteActive = !store.commandPaletteActive;
+
+  nextTick(() => {
+    store.elementRefs.commandPaletteSearchInput?.focus();
+  });
 };
