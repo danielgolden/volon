@@ -112,13 +112,12 @@ export const deleteActiveNote = () => {
     throw new Error(`No note with the ID ${store.activeNoteId} found.`);
   }
 
-  store.loadedData.notes.splice(indexOfActiveNote, 1);
-
   if (store.session) {
     deleteNoteInDB(getNoteById(store.activeNoteId));
   } else {
     saveAllNoteDataToLocalStorage();
   }
+  store.loadedData.notes.splice(indexOfActiveNote, 1);
 };
 
 export const clearActiveNoteState = () => {
