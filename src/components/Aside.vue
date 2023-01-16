@@ -391,6 +391,7 @@ onMounted(() => {
   width: 100%;
   height: 31px;
   place-items: center;
+  padding: 0;
   background-color: var(--color-bg-button);
   cursor: pointer;
   border-radius: 4px;
