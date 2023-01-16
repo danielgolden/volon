@@ -5,7 +5,7 @@ import {
   sortNotesByModificationDate,
   navigateToPreviousNote,
   navigateToNextNote,
-} from "../utils";
+} from "../lib/utils";
 import { store } from "../store";
 import CommandPaletteInput from "./CommandPaletteInput.vue";
 import KeyboardShortcutIndicator from "./KeyboardShortcutIndicator.vue";

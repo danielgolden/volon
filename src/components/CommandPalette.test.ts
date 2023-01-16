@@ -1,12 +1,7 @@
 import { mount, VueWrapper } from "@vue/test-utils";
 import CommandPalette from "./CommandPalette.vue";
 import { store } from "../store";
-import {
-  getDefaultNotesData,
-  createSampleData,
-  randomIntFromInterval,
-  Note,
-} from "../utils";
+import { getDefaultNotesData, randomIntFromInterval, Note } from "../lib/utils";
 import { describe, it, expect, beforeEach, afterEach } from "vitest";
 
 let wrapper: VueWrapper | null = null;

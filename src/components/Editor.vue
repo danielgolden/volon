@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { watch, onMounted, ref, shallowRef } from "vue";
-import { saveCurrentNoteChange, createNewNote } from "../utils";
+import { saveCurrentNoteChange, createNewNote } from "../lib/utils";
 import { store } from "../store";
 import { defaultKeymap, indentWithTab } from "@codemirror/commands";
 import {

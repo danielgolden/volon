@@ -1,7 +1,7 @@
 import { mount, VueWrapper } from "@vue/test-utils";
 import AsideSearch from "./AsideSearch.vue";
 import { store } from "../store";
-import { getDefaultNotesData, getNoteById, Note } from "../utils";
+import { getDefaultNotesData, getNoteById, Note } from "../lib/utils";
 import { describe, it, expect, beforeEach, afterEach } from "vitest";
 
 let wrapper: VueWrapper | null = null;

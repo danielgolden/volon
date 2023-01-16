@@ -15,7 +15,7 @@ import {
   setWindowDimensions,
   navigateToNoteByRelativeIndex,
   createSampleData,
-} from "../src/utils";
+} from "./lib/utils";
 import { describe, it, expect, beforeEach, afterEach } from "vitest";
 
 describe("getNoteById()", () => {

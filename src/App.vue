@@ -6,54 +6,30 @@ import MarkdownPreview from "./components/MarkdownPreview.vue";
 import CommandPalette from "./components/CommandPalette.vue";
 import { store } from "./store";
 import {
-  getDefaultNotesData,
   deleteActiveNote,
   clearActiveNoteState,
   setWindowDimensions,
-  saveAllNoteData,
   downloadBackupOfData,
-} from "./utils";
+} from "./lib/utils";
+import {
+  saveAppSettingsToLocalStorage,
+  intializeLocalStorageData,
+} from "./lib/localStorage";
+import { loadExistingDBData, getSession } from "./lib/supabase";
 
-const existingNotesDataFound = () => !!localStorage.getItem("volon");
-const initializeNotesData = () => {
-  localStorage.setItem("volon", JSON.stringify(getDefaultNotesData()));
-};
 const notesDataLoaded = ref(false);
 
-interface JSONParsedNote {
-  id: string | null;
-  content: string;
-  dateCreated: string;
-  lastModified: string;
-}
-
-const parseAllNoteDates = (notes: JSONParsedNote[]): Note[] => {
-  return notes.map((note) => {
-    return {
-      ...note,
-      lastModified: new Date(note.lastModified),
-      dateCreated: new Date(note.dateCreated),
-    };
-  });
-};
-
-const loadExistingData = () => {
-  if (!existingNotesDataFound()) {
-    initializeNotesData();
-  }
-
-  const volonData = JSON.parse(localStorage.getItem("volon")!);
-  const processedVolonData = {
-    ...volonData,
-    notes: parseAllNoteDates(volonData.notes),
-  };
-  store.loadedData = processedVolonData;
-  notesDataLoaded.value = true;
-};
-
-onMounted(() => {
+onMounted(async () => {
   setWindowDimensions();
-  loadExistingData();
+  await getSession();
+
+  if (store.session) {
+    await loadExistingDBData();
+    notesDataLoaded.value = true;
+  } else {
+    intializeLocalStorageData();
+    notesDataLoaded.value = true;
+  }
 
   window.addEventListener("keydown", (event) => {
     if (event.altKey && event.metaKey && event.code === "KeyN") {
@@ -67,12 +43,12 @@ onMounted(() => {
       event.preventDefault();
       store.loadedData.markdownPreviewActive =
         !store.loadedData.markdownPreviewActive;
-      saveAllNoteData();
+      saveAppSettingsToLocalStorage();
     } else if (event.metaKey && event.code === "Slash") {
       event.preventDefault();
       if (store.commandPaletteActive) return;
       store.loadedData.asideActive = !store.loadedData.asideActive;
-      saveAllNoteData();
+      saveAppSettingsToLocalStorage();
     } else if (event.metaKey && event.shiftKey && event.code === "KeyS") {
       event.preventDefault();
       downloadBackupOfData();
