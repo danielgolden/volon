@@ -2,9 +2,8 @@ import { store } from "../store";
 import { getDefaultNotesData } from "./utils";
 import { createClient } from "@supabase/supabase-js";
 
-const supabaseUrl = "https://eejwunlqqnquiuzfvolh.supabase.co";
-const supabaseKey =
-  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVland1bmxxcW5xdWl1emZ2b2xoIiwicm9sZSI6ImFub24iLCJpYXQiOjE2NzM3OTE0MzksImV4cCI6MTk4OTM2NzQzOX0.11Y0jRYyhAxmmuTLYf38bmxLNoo6SZjP1tQQcC9tmhE";
+const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
+const supabaseKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
 const supabase = createClient(supabaseUrl, supabaseKey);
 
 export const signInWithGitHub = async () => {
