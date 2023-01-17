@@ -4,6 +4,8 @@ import Editor from "./Editor.vue";
 import { getDefaultNotesData } from "../lib/utils";
 import { store } from "../store";
 import { describe, it, expect, beforeEach, afterEach } from "vitest";
+import { createPinia } from "pinia";
+import { createApp } from "vue";
 
 // TODO: Figure out how to test keyboard shortcuts with vue test utils or another library.
 // The best lead I have so far: https://testing-library.com/docs/user-event/keyboard
@@ -11,8 +13,12 @@ import { describe, it, expect, beforeEach, afterEach } from "vitest";
 let editorWrapper: VueWrapper | null = null;
 let appWrapper: VueWrapper | null = null;
 beforeEach(() => {
-  store.loadedData = getDefaultNotesData();
+  const pinia = createPinia();
+  const app = createApp(App);
+  app.use(pinia);
   appWrapper = mount(App);
+
+  store.loadedData = getDefaultNotesData();
   // @ts-ignore
   editorWrapper = mount(Editor, {
     context: {

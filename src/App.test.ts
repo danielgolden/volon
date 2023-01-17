@@ -1,10 +1,15 @@
 import { mount, VueWrapper } from "@vue/test-utils";
 import App from "./App.vue";
 import { store } from "../src/store";
+import { createApp } from "vue";
 import { describe, it, expect, beforeEach, afterEach } from "vitest";
+import { createPinia } from "pinia";
 
 let wrapper: VueWrapper | null = null;
 beforeEach(() => {
+  const pinia = createPinia();
+  const app = createApp(App);
+  app.use(pinia);
   wrapper = mount(App);
 });
 
