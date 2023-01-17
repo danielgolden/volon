@@ -43,8 +43,8 @@ export const loadAppSettingsFromLocalStorage = () => {
 
   if (localDataFound) {
     const localDataParsed = JSON.parse(localData);
-    settings.setAsideActive(localDataParsed.asideActive);
-    settings.setMarkdownPreviewActive(localDataParsed.markdownPreviewActive);
+    settings.asideActive = localDataParsed.asideActive;
+    settings.markdownPreviewActive = localDataParsed.markdownPreviewActive;
   } else {
     createNewAppSettingsInLocalStorage();
   }
@@ -54,8 +54,8 @@ export const loadExistingLocalStorageData = () => {
   const settings = useSettingsStore();
   const volonData = JSON.parse(localStorage.getItem("volon")!);
 
-  settings.setAsideActive(volonData.asideActive);
-  settings.setMarkdownPreviewActive(volonData.markdownPreviewActive);
+  settings.asideActive = volonData.asideActive;
+  settings.markdownPreviewActive = volonData.markdownPreviewActive;
 
   store.loadedData.notes = volonData.notes.map((note: Note) => ({
     id: note.id,
