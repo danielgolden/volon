@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import { signInWithGitHub, signout } from "../lib/supabase";
 import { store } from "../store";
+import { useSettingsStore } from "../stores/store.settings";
 import {
   displayCommandPalette,
   downloadBackupOfData,
@@ -12,6 +13,7 @@ import { onMounted, ref } from "vue";
 const accountMenuActive = ref(false);
 const asideElement = ref<HTMLElement | null>(null);
 const accountButton = ref<HTMLElement | null>(null);
+const settings = useSettingsStore();
 
 const handleLogOutClick = () => {
   signout();
@@ -46,11 +48,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <aside
-    class="aside-container"
-    v-if="store.loadedData.asideActive"
-    ref="asideElement"
-  >
+  <aside class="aside-container" v-if="settings.asideActive" ref="asideElement">
     <a href="/" class="logo" title="Volón">
       <svg
         width="18"

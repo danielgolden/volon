@@ -5,6 +5,7 @@ import Editor from "./components/Editor.vue";
 import MarkdownPreview from "./components/MarkdownPreview.vue";
 import CommandPalette from "./components/CommandPalette.vue";
 import { store } from "./store";
+import { useSettingsStore } from "./stores/store.settings";
 import {
   deleteActiveNote,
   clearActiveNoteState,
@@ -20,6 +21,7 @@ import {
 import { loadExistingDBData, getSession } from "./lib/supabase";
 
 const notesDataLoaded = ref(false);
+const settings = useSettingsStore();
 
 onMounted(async () => {
   setWindowDimensions();
@@ -50,7 +52,7 @@ onMounted(async () => {
     } else if (event.metaKey && event.code === "Slash") {
       event.preventDefault();
       if (store.commandPaletteActive) return;
-      store.loadedData.asideActive = !store.loadedData.asideActive;
+      settings.toggleAsideActive();
       saveAppSettingsToLocalStorage();
     } else if (event.metaKey && event.shiftKey && event.code === "KeyS") {
       event.preventDefault();
@@ -75,7 +77,7 @@ onMounted(async () => {
   <main
     v-if="notesDataLoaded"
     :class="{
-      'aside-active': store.loadedData.asideActive,
+      'aside-active': settings.asideActive,
       'markdown-preview-active': store.loadedData.markdownPreviewActive,
     }"
   >

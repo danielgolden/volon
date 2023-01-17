@@ -1,6 +1,15 @@
 import { store } from "../store";
 import { getDefaultNotesData, randomIntFromInterval, Note } from "./utils";
 import { LoremIpsum } from "lorem-ipsum";
+import { createApp } from "vue";
+import App from "../App.vue";
+import { createPinia } from "pinia";
+import { useSettingsStore } from "../stores/store.settings";
+
+const pinia = createPinia();
+const app = createApp(App);
+app.use(pinia);
+const settings = useSettingsStore();
 
 export const saveAllNoteDataToLocalStorage = () => {
   localStorage.setItem("volon", JSON.stringify(store.loadedData));
@@ -12,10 +21,10 @@ export const saveAppSettingsToLocalStorage = () => {
 
   if (localDataFound) {
     const localDataParsed = JSON.parse(localData);
-    localDataParsed.asideActive = store.loadedData.asideActive;
+    localDataParsed.asideActive = settings.asideActive;
     localDataParsed.markdownPreviewActive =
       store.loadedData.markdownPreviewActive;
-    localDataParsed.asideActive = store.loadedData.asideActive;
+    localDataParsed.asideActive = settings.asideActive;
 
     localStorage.setItem("volon", JSON.stringify(localDataParsed));
   } else {
@@ -27,8 +36,8 @@ export const createNewAppSettingsInLocalStorage = () => {
   localStorage.setItem(
     "volon",
     JSON.stringify({
-      asideActive: store.loadedData.asideActive,
-      markdownPreviewActive: store.loadedData.markdownPreviewActive,
+      asideActive: settings.asideActive,
+      markdownPreviewActive: settings.markdownPreviewActive,
     })
   );
 };
@@ -39,7 +48,7 @@ export const loadAppSettingsFromLocalStorage = () => {
 
   if (localDataFound) {
     const localDataParsed = JSON.parse(localData);
-    store.loadedData.asideActive = localDataParsed.asideActive;
+    settings.setAsideActive(localDataParsed.asideActive);
     store.loadedData.markdownPreviewActive =
       localDataParsed.markdownPreviewActive;
   } else {
