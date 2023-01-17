@@ -1,29 +1,22 @@
 import { store } from "../store";
 import { getDefaultNotesData, randomIntFromInterval, Note } from "./utils";
 import { LoremIpsum } from "lorem-ipsum";
-import { createApp } from "vue";
-import App from "../App.vue";
-import { createPinia } from "pinia";
 import { useSettingsStore } from "../stores/store.settings";
-
-const pinia = createPinia();
-const app = createApp(App);
-app.use(pinia);
-const settings = useSettingsStore();
 
 export const saveAllNoteDataToLocalStorage = () => {
   localStorage.setItem("volon", JSON.stringify(store.loadedData));
 };
 
 export const saveAppSettingsToLocalStorage = () => {
+  const settings = useSettingsStore();
   const localData = localStorage.getItem("volon");
   const localDataFound = !!localData;
 
   if (localDataFound) {
     const localDataParsed = JSON.parse(localData);
     localDataParsed.asideActive = settings.asideActive;
-    localDataParsed.markdownPreviewActive =
-      store.loadedData.markdownPreviewActive;
+    localDataParsed.markdownPreviewActive = settings.markdownPreviewActive;
+
     localDataParsed.asideActive = settings.asideActive;
 
     localStorage.setItem("volon", JSON.stringify(localDataParsed));
@@ -33,6 +26,7 @@ export const saveAppSettingsToLocalStorage = () => {
 };
 
 export const createNewAppSettingsInLocalStorage = () => {
+  const settings = useSettingsStore();
   localStorage.setItem(
     "volon",
     JSON.stringify({
@@ -43,14 +37,14 @@ export const createNewAppSettingsInLocalStorage = () => {
 };
 
 export const loadAppSettingsFromLocalStorage = () => {
+  const settings = useSettingsStore();
   const localData = localStorage.getItem("volon");
   const localDataFound = !!localData;
 
   if (localDataFound) {
     const localDataParsed = JSON.parse(localData);
     settings.setAsideActive(localDataParsed.asideActive);
-    store.loadedData.markdownPreviewActive =
-      localDataParsed.markdownPreviewActive;
+    settings.setMarkdownPreviewActive(localDataParsed.markdownPreviewActive);
   } else {
     createNewAppSettingsInLocalStorage();
   }

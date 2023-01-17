@@ -46,8 +46,7 @@ onMounted(async () => {
       clearActiveNoteState();
     } else if (event.metaKey && event.shiftKey && event.code === "KeyP") {
       event.preventDefault();
-      store.loadedData.markdownPreviewActive =
-        !store.loadedData.markdownPreviewActive;
+      settings.toggleMarkdownPreviewActive();
       saveAppSettingsToLocalStorage();
     } else if (event.metaKey && event.code === "Slash") {
       event.preventDefault();
@@ -78,12 +77,12 @@ onMounted(async () => {
     v-if="notesDataLoaded"
     :class="{
       'aside-active': settings.asideActive,
-      'markdown-preview-active': store.loadedData.markdownPreviewActive,
+      'markdown-preview-active': settings.markdownPreviewActive,
     }"
   >
     <Aside />
     <Editor v-model="store.activeNoteContents" />
-    <MarkdownPreview v-if="store.loadedData.markdownPreviewActive" />
+    <MarkdownPreview v-if="settings.markdownPreviewActive" />
     <CommandPalette />
   </main>
 </template>

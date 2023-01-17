@@ -14,5 +14,11 @@ export const useSettingsStore = defineStore("settings", {
     setAsideActive(newValue: boolean) {
       this.asideActive = newValue;
     },
+    toggleMarkdownPreviewActive() {
+      this.markdownPreviewActive = !this.markdownPreviewActive;
+    },
+    setMarkdownPreviewActive(newValue: boolean) {
+      this.markdownPreviewActive = newValue;
+    },
   },
 });
