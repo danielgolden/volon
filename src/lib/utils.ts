@@ -25,7 +25,6 @@ export const getNoteById = (noteId: string | null) => {
 
 export const getDefaultNotesData = (): LoadedNotesData => {
   return {
-    queryHasMatch: false,
     asideActive: true,
     markdownPreviewActive: true,
     notes: [

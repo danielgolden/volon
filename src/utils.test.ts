@@ -41,7 +41,6 @@ describe("getDefaultNotesData()", () => {
   it("Returns the expected data structure", () => {
     const result = getDefaultNotesData();
 
-    expect(result).toHaveProperty("queryHasMatch");
     expect(result).toHaveProperty("notes");
     expect(Array.isArray(result.notes)).toBe(true);
 

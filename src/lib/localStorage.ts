@@ -51,17 +51,18 @@ export const loadAppSettingsFromLocalStorage = () => {
 };
 
 export const loadExistingLocalStorageData = () => {
+  const settings = useSettingsStore();
   const volonData = JSON.parse(localStorage.getItem("volon")!);
-  const processedVolonData = {
-    ...volonData,
-    notes: volonData.notes.map((note: Note) => ({
-      id: note.id,
-      dateCreated: new Date(note.dateCreated),
-      lastModified: new Date(note.lastModified),
-      content: note.content,
-    })),
-  };
-  store.loadedData = processedVolonData;
+
+  settings.setAsideActive(volonData.asideActive);
+  settings.setMarkdownPreviewActive(volonData.markdownPreviewActive);
+
+  store.loadedData.notes = volonData.notes.map((note: Note) => ({
+    id: note.id,
+    dateCreated: new Date(note.dateCreated),
+    lastModified: new Date(note.lastModified),
+    content: note.content,
+  }));
 };
 
 export const generateLocalStorageNotesData = () => {

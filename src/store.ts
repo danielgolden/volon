@@ -14,9 +14,6 @@ export const store = reactive({
     commandPaletteSearchInput: <null | HTMLInputElement>null,
   },
   loadedData: <LoadedNotesData>{
-    asideActive: true,
-    markdownPreviewActive: true,
-    queryHasMatch: false,
     notes: [
       {
         id: null,
