@@ -54,8 +54,9 @@ export const loadExistingLocalStorageData = () => {
   const settings = useSettingsStore();
   const volonData = JSON.parse(localStorage.getItem("volon")!);
 
-  settings.asideActive = volonData.asideActive;
-  settings.markdownPreviewActive = volonData.markdownPreviewActive;
+  settings.asideActive = volonData.asideActive ?? settings.asideActive;
+  settings.markdownPreviewActive =
+    volonData.markdownPreviewActive ?? settings.markdownPreviewActive;
 
   store.loadedData.notes = volonData.notes.map((note: Note) => ({
     id: note.id,

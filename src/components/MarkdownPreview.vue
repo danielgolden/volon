@@ -1,7 +1,7 @@
 <script lang="ts" setup>
-import { store } from "../store";
 import DOMPurify from "dompurify";
 import { marked } from "marked";
+import { useGenericStateStore } from "../stores/store.genericState";
 
 // Override the output of <li> checkboxes to add the classes I want
 // TODO: Write tests for this
@@ -24,6 +24,7 @@ const renderer = {
   },
 };
 
+const genericState = useGenericStateStore();
 marked.use({ renderer });
 </script>
 
