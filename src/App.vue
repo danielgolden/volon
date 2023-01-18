@@ -29,7 +29,7 @@ onMounted(async () => {
   setWindowDimensions();
   await getSession();
 
-  if (store.session) {
+  if (genericState.userIsLoggedIn) {
     await loadExistingDBData();
     loadAppSettingsFromLocalStorage();
     notesDataLoaded.value = true;
@@ -52,7 +52,7 @@ onMounted(async () => {
       saveAppSettingsToLocalStorage();
     } else if (event.metaKey && event.code === "Slash") {
       event.preventDefault();
-      if (store.commandPaletteActive) return;
+      if (genericState.commandPaletteActive) return;
       settings.toggleAsideActive();
       saveAppSettingsToLocalStorage();
     } else if (event.metaKey && event.shiftKey && event.code === "KeyS") {
@@ -65,8 +65,8 @@ onMounted(async () => {
       displayCommandPalette();
     }
     if (event.code === "Escape") {
-      if (!store.commandPaletteActive) return;
-      store.commandPaletteActive = false;
+      if (!genericState.commandPaletteActive) return;
+      genericState.commandPaletteActive = false;
     }
   });
 

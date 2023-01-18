@@ -13,8 +13,11 @@ export const useGenericStateStore = defineStore("genericState", {
     };
   },
   actions: {
-    updateActiveNoteContentsByActiveId() {
-      this.activeNoteContents = getNoteById(this.activeNoteId).content;
+    toggleCommandPaletteActive() {
+      this.commandPaletteActive = !this.commandPaletteActive;
     },
+  },
+  getters: {
+    userIsLoggedIn: (state) => state.session !== null,
   },
 });

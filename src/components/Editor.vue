@@ -26,6 +26,7 @@ import {
   placeholder,
 } from "@codemirror/view";
 import { useElementRefsStore } from "../stores/store.elementRefs";
+import { useGenericStateStore } from "../stores/store.genericState";
 
 const emit = defineEmits(["update:modelValue"]);
 const props = defineProps(["modelValue"]);
@@ -34,6 +35,7 @@ let myCodemirrorView = new EditorView();
 const codeMirrorTriggeredNoteCreation = ref(false);
 let onChangeTimer = ref(setTimeout(() => {}, 0));
 const elementRefs = useElementRefsStore();
+const genericState = useGenericStateStore();
 
 const handleOnChange = (update: ViewUpdate) => {
   const waitTime = 500; // in milliseconds
@@ -42,7 +44,7 @@ const handleOnChange = (update: ViewUpdate) => {
   if (!update.docChanged) return;
   const currentContent = update.view.state.doc.toString();
 
-  if (store.activeNoteId) {
+  if (genericState.activeNoteId) {
     emit("update:modelValue", currentContent);
     onChangeTimer.value = setTimeout(() => {
       saveCurrentNoteChange(currentContent);
@@ -235,17 +237,20 @@ onMounted(() => {
 
 // When the activeNoteId changes, reset the view for the incoming note
 watch(
-  () => store.activeNoteId,
+  () => genericState.activeNoteId,
   () => {
     resetCodemirrorView();
-    if (codeMirrorTriggeredNoteCreation.value || store.searchJustCreatedNote) {
+    if (
+      codeMirrorTriggeredNoteCreation.value ||
+      genericState.searchJustCreatedNote
+    ) {
       const codeMirrorContentsLength = myCodemirrorView.state.doc.length;
       myCodemirrorView.focus();
       myCodemirrorView.dispatch({
         selection: { anchor: codeMirrorContentsLength },
       });
 
-      store.searchJustCreatedNote = false;
+      genericState.searchJustCreatedNote = false;
       codeMirrorTriggeredNoteCreation.value = false;
     }
   }

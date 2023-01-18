@@ -1,17 +1,11 @@
 import { mount, VueWrapper } from "@vue/test-utils";
 import AsideSearch from "./AsideSearch.vue";
 import { store } from "../store";
-import { getDefaultNotesData, getNoteById, Note } from "../lib/utils";
+import { getDefaultNotesData, Note } from "../lib/utils";
 import { describe, it, expect, beforeEach, afterEach } from "vitest";
-import { createPinia } from "pinia";
-import { createApp } from "vue";
 
 let wrapper: VueWrapper | null = null;
 beforeEach(() => {
-  const pinia = createPinia();
-  const asideSearch = createApp(AsideSearch);
-  asideSearch.use(pinia);
-
   store.loadedData = getDefaultNotesData();
   wrapper = mount(AsideSearch, {
     props: {

@@ -1,6 +1,7 @@
 import { store } from "../store";
 import { getDefaultNotesData } from "./utils";
 import { createClient } from "@supabase/supabase-js";
+import { useGenericStateStore } from "../stores/store.genericState";
 
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
 const supabaseKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
@@ -15,17 +16,20 @@ export const signInWithGitHub = async () => {
 };
 
 export const signout = async () => {
+  const genericState = useGenericStateStore();
   const { error } = await supabase.auth.signOut();
-  store.session = null;
+  genericState.session = null;
   return error;
 };
 
 export const getSession = async () => {
+  const genericState = useGenericStateStore();
+
   const { data, error } = await supabase.auth.getSession();
   if (error) {
     console.error(error);
   }
-  store.session = data.session;
+  genericState.session = data.session;
 };
 
 export const loadNotesFromDB = async () => {
@@ -46,12 +50,13 @@ export const updateNoteInDB = async (noteToUpdate: Note) => {
 };
 
 export const createNoteInDB = async (noteToUpdate: Note) => {
+  const genericState = useGenericStateStore();
   const { error } = await supabase.from("notes").insert({
     id: noteToUpdate.id,
     created_at: noteToUpdate.dateCreated,
     modified_at: noteToUpdate.lastModified,
     content: noteToUpdate.content,
-    user_id: store.session.user.id,
+    user_id: genericState.session.user.id,
   });
 
   return error;

@@ -31,7 +31,7 @@ marked.use({ renderer });
   <section class="markdown-preview-container">
     <div
       class="markdown-preview"
-      v-html="DOMPurify.sanitize(marked.parse(store.activeNoteContents))"
+      v-html="DOMPurify.sanitize(marked.parse(genericState.activeNoteContents))"
     ></div>
   </section>
 </template>

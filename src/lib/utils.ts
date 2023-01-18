@@ -13,6 +13,7 @@ import {
 } from "./supabase";
 import { nextTick } from "vue";
 import { useElementRefsStore } from "../stores/store.elementRefs";
+import { useGenericStateStore } from "../stores/store.genericState";
 
 export const getNoteById = (noteId: string | null) => {
   if (noteId === null) throw new Error("noteId parameter must not be null");
@@ -56,11 +57,12 @@ export class Note {
 }
 
 export const saveCurrentNoteChange = (currentContent: string) => {
-  const currentNote = getNoteById(store.activeNoteId);
+  const genericState = useGenericStateStore();
+  const currentNote = getNoteById(genericState.activeNoteId);
   currentNote.content = currentContent;
   currentNote.lastModified = new Date();
 
-  if (store.session) {
+  if (genericState.userIsLoggedIn) {
     updateNoteInDB(currentNote);
   } else {
     saveAllNoteDataToLocalStorage();
@@ -68,13 +70,14 @@ export const saveCurrentNoteChange = (currentContent: string) => {
 };
 
 export const createNewNote = (contents: string = "") => {
+  const genericState = useGenericStateStore();
   const newNoteData = new Note(contents);
 
-  store.activeNoteId = newNoteData.id;
-  store.activeNoteContents = contents;
+  genericState.activeNoteId = newNoteData.id;
+  genericState.activeNoteContents = contents;
   store.loadedData.notes.push(newNoteData);
 
-  if (store.session) {
+  if (genericState.userIsLoggedIn) {
     createNoteInDB(newNoteData);
   } else {
     saveAllNoteDataToLocalStorage();
@@ -102,19 +105,21 @@ export const getIndexOfNoteById = (
   noteList: Note[] = store.loadedData.notes
 ) => {
   if (!id) return null;
+  const genericState = useGenericStateStore();
 
-  return noteList.findIndex((note) => note.id === store.activeNoteId);
+  return noteList.findIndex((note) => note.id === genericState.activeNoteId);
 };
 
 export const deleteActiveNote = () => {
-  const indexOfActiveNote = getIndexOfNoteById(store.activeNoteId);
+  const genericState = useGenericStateStore();
+  const indexOfActiveNote = getIndexOfNoteById(genericState.activeNoteId);
 
   if (indexOfActiveNote === null) {
-    throw new Error(`No note with the ID ${store.activeNoteId} found.`);
+    throw new Error(`No note with the ID ${genericState.activeNoteId} found.`);
   }
 
-  if (store.session) {
-    deleteNoteInDB(getNoteById(store.activeNoteId));
+  if (genericState.userIsLoggedIn) {
+    deleteNoteInDB(getNoteById(genericState.activeNoteId));
     store.loadedData.notes.splice(indexOfActiveNote, 1);
   } else {
     store.loadedData.notes.splice(indexOfActiveNote, 1);
@@ -123,8 +128,9 @@ export const deleteActiveNote = () => {
 };
 
 export const clearActiveNoteState = () => {
-  store.activeNoteId = null;
-  store.activeNoteContents = "";
+  const genericState = useGenericStateStore();
+  genericState.activeNoteId = null;
+  genericState.activeNoteContents = "";
 };
 
 export const setWindowDimensions = () => {
@@ -138,7 +144,11 @@ export const navigateToNoteByRelativeIndex = (
   noteList: Note[],
   relativeIndex: number
 ) => {
-  const indexOfActiveNote = getIndexOfNoteById(store.activeNoteId, noteList);
+  const genericState = useGenericStateStore();
+  const indexOfActiveNote = getIndexOfNoteById(
+    genericState.activeNoteId,
+    noteList
+  );
   const indexOfLastItemInNoteList = noteList.length - 1;
   const noteIsFirstInList = indexOfActiveNote === 0;
   const noteIsLastInList = indexOfActiveNote === indexOfLastItemInNoteList;
@@ -147,8 +157,10 @@ export const navigateToNoteByRelativeIndex = (
   if (noteIsLastInList && relativeIndex > 0) return;
   if (indexOfActiveNote === null) return;
 
-  store.activeNoteId = noteList[indexOfActiveNote + relativeIndex].id;
-  store.activeNoteContents = getNoteById(store.activeNoteId).content;
+  genericState.activeNoteId = noteList[indexOfActiveNote + relativeIndex].id;
+  genericState.activeNoteContents = getNoteById(
+    genericState.activeNoteId
+  ).content;
 };
 
 export const navigateToPreviousNote = (noteList: Note[]) => {
@@ -179,7 +191,8 @@ export const randomIntFromInterval = (min: number, max: number) => {
 };
 
 export const loadNotesData = async () => {
-  if (store.session) {
+  const genericState = useGenericStateStore();
+  if (genericState.userIsLoggedIn) {
     await loadExistingDBData();
   } else {
     intializeLocalStorageData();
@@ -187,8 +200,9 @@ export const loadNotesData = async () => {
 };
 
 export const displayCommandPalette = () => {
+  const genericState = useGenericStateStore();
   const elementRefs = useElementRefsStore();
-  store.commandPaletteActive = !store.commandPaletteActive;
+  genericState.toggleCommandPaletteActive();
 
   nextTick(() => {
     elementRefs.commandPaletteSearchInput?.focus();

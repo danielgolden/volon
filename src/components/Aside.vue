@@ -9,11 +9,13 @@ import {
 } from "../lib/utils";
 import { intializeLocalStorageData } from "../lib/localStorage";
 import { onMounted, ref } from "vue";
+import { useGenericStateStore } from "../stores/store.genericState";
 
 const accountMenuActive = ref(false);
 const asideElement = ref<HTMLElement | null>(null);
 const accountButton = ref<HTMLElement | null>(null);
 const settings = useSettingsStore();
+const genericState = useGenericStateStore();
 
 const handleLogOutClick = () => {
   signout();
@@ -147,7 +149,7 @@ onMounted(() => {
 
     <div
       class="menu-popover-container logged-out-menu-popover-container"
-      v-if="accountMenuActive && store.session === null"
+      v-if="accountMenuActive && !genericState.userIsLoggedIn"
     >
       <div class="menu-popover logged-out-menu-popover">
         <svg
@@ -255,7 +257,7 @@ onMounted(() => {
     </div>
     <div
       class="menu-popover-container logged-in-menu-popover-container"
-      v-if="accountMenuActive && store.session"
+      v-if="accountMenuActive && genericState.userIsLoggedIn"
     >
       <div class="menu-popover logged-in-menu-popover">
         <svg
@@ -280,7 +282,9 @@ onMounted(() => {
 
         <span class="logged-in-meta"
           >Logged in with
-          <strong>{{ store.session.user.app_metadata.provider }}</strong></span
+          <strong>{{
+            genericState.session.user.app_metadata.provider
+          }}</strong></span
         >
 
         <hr />

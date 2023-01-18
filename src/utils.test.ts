@@ -1,5 +1,5 @@
 import { store } from "../src/store";
-import { App } from "./App.vue";
+import App from "./App.vue";
 import {
   saveCurrentNoteChange,
   createNewNote,
@@ -16,9 +16,19 @@ import {
 } from "./lib/utils";
 import { createSampleDataInLocalStorage } from "./lib/localStorage";
 import { describe, it, expect, beforeEach } from "vitest";
-import { useGenericStateStore } from "./stores/store.genericState";
 import { createPinia, Pinia, _StoreWithState } from "pinia";
+import { createTestingPinia } from "@pinia/testing";
+import { useGenericStateStore } from "./stores/store.genericState";
 import { createApp } from "vue";
+import { mount } from "@vue/test-utils";
+
+const wrapper = mount(App, {
+  global: {
+    plugins: [createTestingPinia()],
+  },
+});
+
+const genericState = useGenericStateStore();
 
 beforeEach(() => {
   const pinia = createPinia();
@@ -29,11 +39,11 @@ beforeEach(() => {
 describe("getNoteById()", () => {
   beforeEach(() => {
     store.loadedData = getDefaultNotesData();
-    store.activeNoteId = store.loadedData.notes[0].id;
+    genericState.activeNoteId = store.loadedData.notes[0].id;
   });
 
   it("Returns a note when a matching noteId is found", () => {
-    expect(getNoteById(store.activeNoteId)).toBeInstanceOf(Note);
+    expect(getNoteById(genericState.activeNoteId)).toBeInstanceOf(Note);
   });
 
   it("Throws an error if the provided noteId is null", () => {
@@ -62,7 +72,7 @@ describe("saveCurrentNoteChange()", () => {
   let testContent = "";
   beforeEach(() => {
     store.loadedData = getDefaultNotesData();
-    store.activeNoteId = store.loadedData.notes[0].id;
+    genericState.activeNoteId = store.loadedData.notes[0].id;
 
     testContent = "hi, I'm some test content";
   });
@@ -158,7 +168,7 @@ describe("sortNotesByModificationDate()", async () => {
 describe("getIndexOfNoteById()", () => {
   it("Returns the ID of the matching note", () => {
     store.loadedData = getDefaultNotesData();
-    store.activeNoteId = store.loadedData.notes[0].id;
+    genericState.activeNoteId = store.loadedData.notes[0].id;
     const idOfFirstNote = store.loadedData.notes[0].id;
 
     expect(getIndexOfNoteById(idOfFirstNote)).toBe(0);
@@ -168,7 +178,7 @@ describe("getIndexOfNoteById()", () => {
 describe("deleteActiveNote()", () => {
   it("Deletes the active note", () => {
     store.loadedData = getDefaultNotesData();
-    store.activeNoteId = store.loadedData.notes[0].id;
+    genericState.activeNoteId = store.loadedData.notes[0].id;
     const idOfFirstNote = store.loadedData.notes[0].id;
 
     deleteActiveNote();
@@ -179,14 +189,13 @@ describe("deleteActiveNote()", () => {
 
 describe("clearActiveNoteState()", () => {
   it("sets the active note state back to it's default", () => {
-    const genericState = useGenericStateStore();
     store.loadedData = getDefaultNotesData();
-    store.activeNoteId = store.loadedData.notes[0].id;
+    genericState.activeNoteId = store.loadedData.notes[0].id;
 
     clearActiveNoteState();
 
     expect(genericState.activeNoteContents).toBe("");
-    expect(store.activeNoteId).toBe(null);
+    expect(genericState.activeNoteId).toBe(null);
   });
 });
 
@@ -213,28 +222,28 @@ describe("navigateToNoteByRelativeIndex()", () => {
     ];
   });
   it("Navigates to a new note in the incoming list relative to the incoming index", () => {
-    store.activeNoteId = getNotesByContent("second")[0].id;
+    genericState.activeNoteId = getNotesByContent("second")[0].id;
 
     navigateToNoteByRelativeIndex(store.loadedData.notes, 1);
-    expect(store.activeNoteId).toBe(store.loadedData.notes[2].id);
+    expect(genericState.activeNoteId).toBe(store.loadedData.notes[2].id);
     navigateToNoteByRelativeIndex(store.loadedData.notes, -2);
-    expect(store.activeNoteId).toBe(store.loadedData.notes[0].id);
+    expect(genericState.activeNoteId).toBe(store.loadedData.notes[0].id);
   });
 
   it("Doesn't allow navigation before first note nor past last note", () => {
-    store.activeNoteId = getNotesByContent("first")[0].id;
+    genericState.activeNoteId = getNotesByContent("first")[0].id;
     navigateToNoteByRelativeIndex(store.loadedData.notes, -1);
-    expect(store.activeNoteId).toBe(store.loadedData.notes[0].id);
+    expect(genericState.activeNoteId).toBe(store.loadedData.notes[0].id);
 
-    store.activeNoteId = getNotesByContent("last")[0].id;
+    genericState.activeNoteId = getNotesByContent("last")[0].id;
     navigateToNoteByRelativeIndex(store.loadedData.notes, 1);
-    expect(store.activeNoteId).toBe(store.loadedData.notes[2].id);
+    expect(genericState.activeNoteId).toBe(store.loadedData.notes[2].id);
   });
 
   it("Allows navigation from first to another note", () => {
-    store.activeNoteId = getNotesByContent("first")[0].id;
+    genericState.activeNoteId = getNotesByContent("first")[0].id;
     navigateToNoteByRelativeIndex(store.loadedData.notes, 1);
-    expect(store.activeNoteId).toBe(store.loadedData.notes[1].id);
+    expect(genericState.activeNoteId).toBe(store.loadedData.notes[1].id);
   });
 });
 

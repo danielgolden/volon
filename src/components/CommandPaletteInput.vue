@@ -8,18 +8,20 @@ import {
 } from "../lib/utils";
 import { store } from "../store";
 import { useElementRefsStore } from "../stores/store.elementRefs";
+import { useGenericStateStore } from "../stores/store.genericState";
 
 const props = defineProps(["noteList"]);
 const currentQuery = ref(``);
 const noteWasSelectedDuringSearch = ref(false);
 const searchInput = ref<HTMLInputElement | null>(null);
 const elementRefs = useElementRefsStore();
+const genericState = useGenericStateStore();
 
 const handleInputChange = (currentContent: string) => {
   if (currentContent === "") {
-    store.matchingNotes = null;
+    genericState.matchingNotes = null;
   } else {
-    store.matchingNotes = getNotesByContent(currentContent);
+    genericState.matchingNotes = getNotesByContent(currentContent);
   }
 };
 
@@ -29,7 +31,7 @@ const clearQuery = () => {
 };
 
 const handleSearchKeydownEnter = (e: Event) => {
-  store.commandPaletteActive = false;
+  genericState.commandPaletteActive = false;
   if (noteWasSelectedDuringSearch.value) {
     clearQuery();
     e.preventDefault();
@@ -37,7 +39,7 @@ const handleSearchKeydownEnter = (e: Event) => {
   } else {
     createNewNote(`# ${currentQuery.value} \n`);
     clearQuery();
-    store.searchJustCreatedNote = true;
+    genericState.searchJustCreatedNote = true;
   }
 };
 
@@ -45,9 +47,9 @@ const handleDownArrowPress = (e: Event) => {
   e.preventDefault();
   noteWasSelectedDuringSearch.value = true;
 
-  if (!store.activeNoteId) {
-    store.activeNoteId = props.noteList[0].id;
-    store.activeNoteContents = props.noteList[0].content;
+  if (!genericState.activeNoteId) {
+    genericState.activeNoteId = props.noteList[0].id;
+    genericState.activeNoteContents = props.noteList[0].content;
   } else {
     navigateToNextNote(props.noteList);
   }
