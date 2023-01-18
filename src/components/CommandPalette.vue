@@ -1,23 +1,21 @@
 <script lang="ts" setup>
 import { computed, watch, ref, nextTick } from "vue";
 import {
-  getNoteById,
   sortNotesByModificationDate,
   navigateToPreviousNote,
   navigateToNextNote,
 } from "../lib/utils";
-import { store } from "../store";
 import CommandPaletteInput from "./CommandPaletteInput.vue";
 import KeyboardShortcutIndicator from "./KeyboardShortcutIndicator.vue";
 import { formatRelative } from "date-fns";
 import { useGenericStateStore } from "../stores/store.genericState";
-import { useNotesStore } from "../stores/store.notes";
+import { useNotebookStore } from "../stores/store.notebook";
 
 const noteListItemRefs = ref<HTMLElement[] | []>([]);
 const noteList = ref<HTMLUListElement | null>(null);
 const activeNoteSelectionMade = ref(false);
 const genericState = useGenericStateStore();
-const notes = useNotesStore();
+const notebook = useNotebookStore();
 
 const searchIsActive = computed(() => {
   return genericState.matchingNotes !== null;
@@ -25,7 +23,7 @@ const searchIsActive = computed(() => {
 
 const notesToBeDisplayed = computed(() => {
   if (!searchIsActive.value) {
-    return sortNotesByModificationDate(notes.all);
+    return sortNotesByModificationDate(notebook.notes);
   } else {
     return sortNotesByModificationDate(genericState.matchingNotes!);
   }
@@ -33,7 +31,7 @@ const notesToBeDisplayed = computed(() => {
 const handleNoteItemClick = (noteId: string | null) => {
   if (noteId) {
     genericState.activeNoteId = noteId;
-    genericState.activeNoteContents = getNoteById(
+    genericState.activeNoteContents = notebook.getNoteById(
       genericState.activeNoteId
     ).content;
     genericState.toggleCommandPaletteActive();
@@ -169,7 +167,7 @@ watch(
           <span
             class="footer-meta note-count"
             v-if="!genericState.matchingNotes"
-            >{{ totalNoteCount }} notes</span
+            >{{ notebook.totalNotesCount }} notes</span
           >
           <span
             class="footer-meta query-results-count"

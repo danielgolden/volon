@@ -1,14 +1,13 @@
 <script lang="ts" setup>
 import { ref, onMounted, computed } from "vue";
 import {
-  getNotesByContent,
   createNewNote,
   navigateToNextNote,
   navigateToPreviousNote,
 } from "../lib/utils";
-import { store } from "../store";
 import { useElementRefsStore } from "../stores/store.elementRefs";
 import { useGenericStateStore } from "../stores/store.genericState";
+import { useNotebookStore } from "../stores/store.notebook";
 
 const props = defineProps(["noteList"]);
 const currentQuery = ref(``);
@@ -19,12 +18,13 @@ const keyboardShortcutIndicatorVisible = computed(() => {
 });
 const elementRefs = useElementRefsStore();
 const genericState = useGenericStateStore();
+const notebook = useNotebookStore();
 
 const handleInputChange = (currentContent: string) => {
   if (currentContent === "") {
     genericState.matchingNotes = null;
   } else {
-    genericState.matchingNotes = getNotesByContent(currentContent);
+    genericState.matchingNotes = notebook.getNotesByContent(currentContent);
   }
 };
 

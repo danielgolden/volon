@@ -1,8 +1,7 @@
-import { store } from "../store";
 import { getDefaultNotesData } from "./utils";
 import { createClient } from "@supabase/supabase-js";
 import { useGenericStateStore } from "../stores/store.genericState";
-import { useNotesStore } from "../stores/store.notes";
+import { useNotebookStore } from "../stores/store.notebook";
 
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
 const supabaseKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
@@ -12,7 +11,6 @@ export const signInWithGitHub = async () => {
   const { data, error } = await supabase.auth.signInWithOAuth({
     provider: "github",
   });
-  debugger;
   return data;
 };
 
@@ -73,7 +71,7 @@ export const deleteNoteInDB = async (noteToDelete: Note) => {
 };
 
 export const loadExistingDBData = async () => {
-  const notes = useNotesStore();
+  const notebook = useNotebookStore();
   let dbNotes = await loadNotesFromDB();
 
   if (dbNotes === null) {
@@ -93,7 +91,7 @@ export const loadExistingDBData = async () => {
   }
 
   // Format the database data to fit our expected data structure
-  notes.all = dbNotes!.map(
+  notebook.notes = dbNotes!.map(
     (note): Note => ({
       id: note.id,
       content: note.content,

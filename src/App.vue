@@ -1,10 +1,9 @@
 <script setup lang="ts">
-import { onMounted, nextTick, ref } from "vue";
+import { onMounted, ref } from "vue";
 import Aside from "./components/Aside.vue";
 import Editor from "./components/Editor.vue";
 import MarkdownPreview from "./components/MarkdownPreview.vue";
 import CommandPalette from "./components/CommandPalette.vue";
-import { store } from "./store";
 import { useSettingsStore } from "./stores/store.settings";
 import { useGenericStateStore } from "./stores/store.genericState";
 import {

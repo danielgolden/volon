@@ -1,12 +1,19 @@
-import { store } from "../store";
 import { getDefaultNotesData, randomIntFromInterval, Note } from "./utils";
 import { LoremIpsum } from "lorem-ipsum";
 import { useSettingsStore } from "../stores/store.settings";
-import { useNotesStore } from "../stores/store.notes";
+import { useNotebookStore } from "../stores/store.notebook";
 
-// TODO: Make this work again now that we're not using `store.loadedData`
 export const saveAllNoteDataToLocalStorage = () => {
-  localStorage.setItem("volon", JSON.stringify(store.loadedData));
+  const notebook = useNotebookStore();
+  const settings = useSettingsStore();
+  localStorage.setItem(
+    "volon",
+    JSON.stringify({
+      asideActive: settings.asideActive,
+      markdownPreviewActive: settings.markdownPreviewActive,
+      notes: notebook.notes,
+    })
+  );
 };
 
 export const saveAppSettingsToLocalStorage = () => {
@@ -54,14 +61,14 @@ export const loadAppSettingsFromLocalStorage = () => {
 
 export const loadExistingLocalStorageData = () => {
   const settings = useSettingsStore();
-  const notes = useNotesStore();
+  const notebook = useNotebookStore();
   const volonData = JSON.parse(localStorage.getItem("volon")!);
 
   settings.asideActive = volonData.asideActive ?? settings.asideActive;
   settings.markdownPreviewActive =
     volonData.markdownPreviewActive ?? settings.markdownPreviewActive;
 
-  notes.all = volonData.notes.map((note: Note) => ({
+  notebook.notes = volonData.notes.map((note: Note) => ({
     id: note.id,
     dateCreated: new Date(note.dateCreated),
     lastModified: new Date(note.lastModified),
@@ -85,7 +92,7 @@ export const intializeLocalStorageData = () => {
 };
 
 export const createSampleDataInLocalStorage = () => {
-  const notes = useNotesStore();
+  const notebook = useNotebookStore();
   const lorem = new LoremIpsum({
     sentencesPerParagraph: {
       max: 5,
@@ -106,7 +113,7 @@ export const createSampleDataInLocalStorage = () => {
 
     const newNoteData = new Note(noteContent);
 
-    notes.all.push(newNoteData);
+    notebook.notes.push(newNoteData);
     saveAllNoteDataToLocalStorage();
   });
 };

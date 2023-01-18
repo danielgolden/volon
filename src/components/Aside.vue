@@ -1,6 +1,5 @@
 <script lang="ts" setup>
 import { signInWithGitHub, signout } from "../lib/supabase";
-import { store } from "../store";
 import { useSettingsStore } from "../stores/store.settings";
 import {
   displayCommandPalette,

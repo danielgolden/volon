@@ -1,5 +1,4 @@
 import { defineStore } from "pinia";
-import { getNoteById } from "../lib/utils";
 
 export const useGenericStateStore = defineStore("genericState", {
   state: () => {

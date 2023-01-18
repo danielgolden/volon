@@ -1,4 +1,3 @@
-import { store } from "../store";
 import { v4 as uuidv4 } from "uuid";
 import { format } from "date-fns";
 import {
@@ -14,6 +13,8 @@ import {
 import { nextTick } from "vue";
 import { useElementRefsStore } from "../stores/store.elementRefs";
 import { useGenericStateStore } from "../stores/store.genericState";
+import { useSettingsStore } from "../stores/store.settings";
+import { useNotebookStore } from "../stores/store.notebook";
 
 export const getDefaultNotesData = (): LoadedNotesData => {
   return {
@@ -48,7 +49,8 @@ export class Note {
 
 export const saveCurrentNoteChange = (currentContent: string) => {
   const genericState = useGenericStateStore();
-  const currentNote = getNoteById(genericState.activeNoteId);
+  const notebook = useNotebookStore();
+  const currentNote = notebook.getNoteById(genericState.activeNoteId);
   currentNote.content = currentContent;
   currentNote.lastModified = new Date();
 
@@ -61,11 +63,12 @@ export const saveCurrentNoteChange = (currentContent: string) => {
 
 export const createNewNote = (contents: string = "") => {
   const genericState = useGenericStateStore();
+  const notebook = useNotebookStore();
   const newNoteData = new Note(contents);
 
   genericState.activeNoteId = newNoteData.id;
   genericState.activeNoteContents = contents;
-  store.loadedData.notes.push(newNoteData);
+  notebook.notes.push(newNoteData);
 
   if (genericState.userIsLoggedIn) {
     createNoteInDB(newNoteData);
@@ -82,18 +85,20 @@ export const sortNotesByModificationDate = (notes: Note[]): Note[] => {
   return sortedNotes;
 };
 
-export const getIndexOfNoteById = (
-  id: string | null,
-  noteList: Note[] = store.loadedData.notes
-) => {
-  if (!id) return null;
+export const getIndexOfNoteById = (id: string | null, noteList?: Note[]) => {
+  const notebook = useNotebookStore();
   const genericState = useGenericStateStore();
+  const defaultNoteList = notebook.notes;
+  if (!id) return null;
 
-  return noteList.findIndex((note) => note.id === genericState.activeNoteId);
+  return (noteList ?? defaultNoteList).findIndex(
+    (note) => note.id === genericState.activeNoteId
+  );
 };
 
 export const deleteActiveNote = () => {
   const genericState = useGenericStateStore();
+  const notebook = useNotebookStore();
   const indexOfActiveNote = getIndexOfNoteById(genericState.activeNoteId);
 
   if (indexOfActiveNote === null) {
@@ -101,10 +106,10 @@ export const deleteActiveNote = () => {
   }
 
   if (genericState.userIsLoggedIn) {
-    deleteNoteInDB(getNoteById(genericState.activeNoteId));
-    store.loadedData.notes.splice(indexOfActiveNote, 1);
+    deleteNoteInDB(notebook.getNoteById(genericState.activeNoteId));
+    notebook.notes.splice(indexOfActiveNote, 1);
   } else {
-    store.loadedData.notes.splice(indexOfActiveNote, 1);
+    notebook.notes.splice(indexOfActiveNote, 1);
     saveAllNoteDataToLocalStorage();
   }
 };
@@ -127,6 +132,7 @@ export const navigateToNoteByRelativeIndex = (
   relativeIndex: number
 ) => {
   const genericState = useGenericStateStore();
+  const notebook = useNotebookStore();
   const indexOfActiveNote = getIndexOfNoteById(
     genericState.activeNoteId,
     noteList
@@ -140,7 +146,7 @@ export const navigateToNoteByRelativeIndex = (
   if (indexOfActiveNote === null) return;
 
   genericState.activeNoteId = noteList[indexOfActiveNote + relativeIndex].id;
-  genericState.activeNoteContents = getNoteById(
+  genericState.activeNoteContents = notebook.getNoteById(
     genericState.activeNoteId
   ).content;
 };
@@ -155,7 +161,13 @@ export const navigateToNextNote = (noteList: Note[]) => {
 
 // TODO: Make this work again now that we're not using loadedData to save data
 export const downloadBackupOfData = () => {
-  const dataToSave = store.loadedData;
+  const settings = useSettingsStore();
+  const notebook = useNotebookStore();
+  const dataToSave = {
+    asideActive: settings.asideActive,
+    markdownPreviewActive: settings.markdownPreviewActive,
+    notes: notebook.notes,
+  };
   const hiddenDownloadLink = document.createElement("a");
   hiddenDownloadLink.href =
     "data:text/json;charset=utf-8," +
