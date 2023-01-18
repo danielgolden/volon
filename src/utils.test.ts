@@ -5,8 +5,6 @@ import {
   createNewNote,
   Note,
   getDefaultNotesData,
-  getNoteById,
-  getNotesByContent,
   sortNotesByModificationDate,
   getIndexOfNoteById,
   deleteActiveNote,
@@ -16,19 +14,22 @@ import {
 } from "./lib/utils";
 import { createSampleDataInLocalStorage } from "./lib/localStorage";
 import { describe, it, expect, beforeEach } from "vitest";
-import { createPinia, Pinia, _StoreWithState } from "pinia";
-import { createTestingPinia } from "@pinia/testing";
+import { createPinia, _StoreWithState } from "pinia";
 import { useGenericStateStore } from "./stores/store.genericState";
+import { useSettingsStore } from "./stores/store.settings";
+import { useNotebookStore } from "./stores/store.notebook";
 import { createApp } from "vue";
 import { mount } from "@vue/test-utils";
 
-const wrapper = mount(App, {
-  global: {
-    plugins: [createTestingPinia()],
-  },
-});
+const pinia = createPinia();
+const app = createApp(App);
+app.use(pinia);
 
+const settings = useSettingsStore();
+const notebook = useNotebookStore();
 const genericState = useGenericStateStore();
+
+const wrapper = mount(App);
 
 beforeEach(() => {
   const pinia = createPinia();
@@ -36,22 +37,33 @@ beforeEach(() => {
   app.use(pinia);
 });
 
+const setDefaultData = () => {
+  const defaultData = getDefaultNotesData();
+
+  settings.asideActive = defaultData.asideActive;
+  settings.markdownPreviewActive = defaultData.markdownPreviewActive;
+  notebook.notes = defaultData.notes;
+};
+
 describe("getNoteById()", () => {
   beforeEach(() => {
-    store.loadedData = getDefaultNotesData();
-    genericState.activeNoteId = store.loadedData.notes[0].id;
+    setDefaultData();
+
+    genericState.activeNoteId = notebook.notes[0].id;
   });
 
   it("Returns a note when a matching noteId is found", () => {
-    expect(getNoteById(genericState.activeNoteId)).toBeInstanceOf(Note);
+    expect(notebook.getNoteById(genericState.activeNoteId)).toBeInstanceOf(
+      Note
+    );
   });
 
   it("Throws an error if the provided noteId is null", () => {
-    expect(() => getNoteById(null)).toThrow();
+    expect(() => notebook.getNoteById(null)).toThrow();
   });
 
   it("Throws an error if no matching note is found", () => {
-    expect(() => getNoteById("aFakeNoteId")).toThrow();
+    expect(() => notebook.getNoteById("aFakeNoteId")).toThrow();
   });
 });
 
@@ -71,32 +83,35 @@ describe("getDefaultNotesData()", () => {
 describe("saveCurrentNoteChange()", () => {
   let testContent = "";
   beforeEach(() => {
-    store.loadedData = getDefaultNotesData();
-    genericState.activeNoteId = store.loadedData.notes[0].id;
+    setDefaultData();
+    genericState.activeNoteId = notebook.notes[0].id;
 
     testContent = "hi, I'm some test content";
   });
 
   it("Saves it's argument as the contents of the active note", () => {
     saveCurrentNoteChange(testContent);
-    const firstNoteContent = store.loadedData.notes[0].content;
+    const firstNoteContent = notebook.notes[0].content;
 
     expect(firstNoteContent).toBe(testContent);
   });
 
   it("Updates the lastModified date", () => {
-    const lastModified = store.loadedData.notes[0].lastModified;
+    const lastModified = notebook.notes[0].lastModified;
     saveCurrentNoteChange(testContent);
 
-    expect(lastModified).not.toBe(store.loadedData.notes[0].lastModified);
+    expect(lastModified).not.toBe(notebook.notes[0].lastModified);
   });
 });
 
 describe("createNewNote()", () => {
   it("Creates a new, blank note and adds it to the loadedData", () => {
+    console.log("notes.length", notebook.notes.length);
     createNewNote();
 
-    const lastNote = store.loadedData.notes.at(-1);
+    const lastNote = notebook.notes.at(-1);
+
+    console.log("after new note notes", notebook.notes.length);
 
     expect(lastNote).toBeInstanceOf(Note);
     expect(lastNote?.content).toBe("");
@@ -105,16 +120,16 @@ describe("createNewNote()", () => {
 
 describe("getNotesByContent()", () => {
   beforeEach(() => {
-    store.loadedData = getDefaultNotesData();
-    store.loadedData.notes[0].content = "I'm just some special test data";
+    setDefaultData();
+    notebook.notes[0].content = "I'm just some special test data";
   });
 
   it("Returns any notes with matching content", () => {
     const searchQuery = "special";
 
-    expect(getNotesByContent(searchQuery).length).toBeGreaterThan(0);
+    expect(notebook.getNotesByContent(searchQuery).length).toBeGreaterThan(0);
 
-    getNotesByContent("whaat").forEach((note) => {
+    notebook.getNotesByContent("whaat").forEach((note) => {
       expect(note).toBeInstanceOf(Note);
       expect(note.content).toContain(searchQuery);
     });
@@ -123,7 +138,7 @@ describe("getNotesByContent()", () => {
   it("Ignores letter casing", () => {
     const searchQuery = "SpEcIaL";
 
-    expect(getNotesByContent(searchQuery)).not.toStrictEqual([]);
+    expect(notebook.getNotesByContent(searchQuery)).not.toStrictEqual([]);
   });
 });
 
@@ -167,9 +182,9 @@ describe("sortNotesByModificationDate()", async () => {
 
 describe("getIndexOfNoteById()", () => {
   it("Returns the ID of the matching note", () => {
-    store.loadedData = getDefaultNotesData();
-    genericState.activeNoteId = store.loadedData.notes[0].id;
-    const idOfFirstNote = store.loadedData.notes[0].id;
+    setDefaultData();
+    genericState.activeNoteId = notebook.notes[0].id;
+    const idOfFirstNote = notebook.notes[0].id;
 
     expect(getIndexOfNoteById(idOfFirstNote)).toBe(0);
   });
@@ -177,20 +192,20 @@ describe("getIndexOfNoteById()", () => {
 
 describe("deleteActiveNote()", () => {
   it("Deletes the active note", () => {
-    store.loadedData = getDefaultNotesData();
-    genericState.activeNoteId = store.loadedData.notes[0].id;
-    const idOfFirstNote = store.loadedData.notes[0].id;
+    setDefaultData();
+    genericState.activeNoteId = notebook.notes[0].id;
+    const idOfFirstNote = notebook.notes[0].id;
 
     deleteActiveNote();
 
-    expect(() => getNoteById(idOfFirstNote)).toThrow();
+    expect(() => notebook.getNoteById(idOfFirstNote)).toThrow();
   });
 });
 
 describe("clearActiveNoteState()", () => {
   it("sets the active note state back to it's default", () => {
-    store.loadedData = getDefaultNotesData();
-    genericState.activeNoteId = store.loadedData.notes[0].id;
+    setDefaultData();
+    genericState.activeNoteId = notebook.notes[0].id;
 
     clearActiveNoteState();
 
@@ -215,41 +230,41 @@ describe("setWindowDimensions()", () => {
 
 describe("navigateToNoteByRelativeIndex()", () => {
   beforeEach(() => {
-    store.loadedData.notes = [
+    notebook.notes = [
       new Note("I'm the first note"),
       new Note("I'm the second note"),
       new Note("And I'm the third and last note"),
     ];
   });
   it("Navigates to a new note in the incoming list relative to the incoming index", () => {
-    genericState.activeNoteId = getNotesByContent("second")[0].id;
+    genericState.activeNoteId = notebook.getNotesByContent("second")[0].id;
 
-    navigateToNoteByRelativeIndex(store.loadedData.notes, 1);
-    expect(genericState.activeNoteId).toBe(store.loadedData.notes[2].id);
-    navigateToNoteByRelativeIndex(store.loadedData.notes, -2);
-    expect(genericState.activeNoteId).toBe(store.loadedData.notes[0].id);
+    navigateToNoteByRelativeIndex(notebook.notes, 1);
+    expect(genericState.activeNoteId).toBe(notebook.notes[2].id);
+    navigateToNoteByRelativeIndex(notebook.notes, -2);
+    expect(genericState.activeNoteId).toBe(notebook.notes[0].id);
   });
 
   it("Doesn't allow navigation before first note nor past last note", () => {
-    genericState.activeNoteId = getNotesByContent("first")[0].id;
-    navigateToNoteByRelativeIndex(store.loadedData.notes, -1);
-    expect(genericState.activeNoteId).toBe(store.loadedData.notes[0].id);
+    genericState.activeNoteId = notebook.getNotesByContent("first")[0].id;
+    navigateToNoteByRelativeIndex(notebook.notes, -1);
+    expect(genericState.activeNoteId).toBe(notebook.notes[0].id);
 
-    genericState.activeNoteId = getNotesByContent("last")[0].id;
-    navigateToNoteByRelativeIndex(store.loadedData.notes, 1);
-    expect(genericState.activeNoteId).toBe(store.loadedData.notes[2].id);
+    genericState.activeNoteId = notebook.getNotesByContent("last")[0].id;
+    navigateToNoteByRelativeIndex(notebook.notes, 1);
+    expect(genericState.activeNoteId).toBe(notebook.notes[2].id);
   });
 
   it("Allows navigation from first to another note", () => {
-    genericState.activeNoteId = getNotesByContent("first")[0].id;
-    navigateToNoteByRelativeIndex(store.loadedData.notes, 1);
-    expect(genericState.activeNoteId).toBe(store.loadedData.notes[1].id);
+    genericState.activeNoteId = notebook.getNotesByContent("first")[0].id;
+    navigateToNoteByRelativeIndex(notebook.notes, 1);
+    expect(genericState.activeNoteId).toBe(notebook.notes[1].id);
   });
 });
 
 describe("createSampleData()", () => {
   it("Creates 50 dummy notes", () => {
     createSampleDataInLocalStorage();
-    expect(store.loadedData.notes.length).toBeGreaterThanOrEqual(50);
+    expect(notebook.notes.length).toBeGreaterThanOrEqual(50);
   });
 });
