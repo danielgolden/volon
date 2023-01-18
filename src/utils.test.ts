@@ -1,6 +1,5 @@
-import { mount, VueWrapper } from "@vue/test-utils";
-import App from "./App.vue";
 import { store } from "../src/store";
+import { App } from "./App.vue";
 import {
   saveCurrentNoteChange,
   createNewNote,
@@ -16,7 +15,16 @@ import {
   navigateToNoteByRelativeIndex,
 } from "./lib/utils";
 import { createSampleDataInLocalStorage } from "./lib/localStorage";
-import { describe, it, expect, beforeEach, afterEach } from "vitest";
+import { describe, it, expect, beforeEach } from "vitest";
+import { useGenericStateStore } from "./stores/store.genericState";
+import { createPinia, Pinia, _StoreWithState } from "pinia";
+import { createApp } from "vue";
+
+beforeEach(() => {
+  const pinia = createPinia();
+  const app = createApp(App);
+  app.use(pinia);
+});
 
 describe("getNoteById()", () => {
   beforeEach(() => {
@@ -171,12 +179,13 @@ describe("deleteActiveNote()", () => {
 
 describe("clearActiveNoteState()", () => {
   it("sets the active note state back to it's default", () => {
+    const genericState = useGenericStateStore();
     store.loadedData = getDefaultNotesData();
     store.activeNoteId = store.loadedData.notes[0].id;
 
     clearActiveNoteState();
 
-    expect(store.activeNoteContents).toBe("");
+    expect(genericState.activeNoteContents).toBe("");
     expect(store.activeNoteId).toBe(null);
   });
 });

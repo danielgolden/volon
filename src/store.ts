@@ -8,11 +8,6 @@ export const store = reactive({
   matchingNotes: <Note[] | null>null,
   searchJustCreatedNote: false,
   session: <any>null,
-  elementRefs: {
-    codeMirror: <null | EditorView>null,
-    asideSearchInput: <null | HTMLInputElement>null,
-    commandPaletteSearchInput: <null | HTMLInputElement>null,
-  },
   loadedData: <LoadedNotesData>{
     notes: [
       {

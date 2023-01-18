@@ -6,6 +6,7 @@ import MarkdownPreview from "./components/MarkdownPreview.vue";
 import CommandPalette from "./components/CommandPalette.vue";
 import { store } from "./store";
 import { useSettingsStore } from "./stores/store.settings";
+import { useGenericStateStore } from "./stores/store.genericState";
 import {
   deleteActiveNote,
   clearActiveNoteState,
@@ -22,6 +23,7 @@ import { loadExistingDBData, getSession } from "./lib/supabase";
 
 const notesDataLoaded = ref(false);
 const settings = useSettingsStore();
+const genericState = useGenericStateStore();
 
 onMounted(async () => {
   setWindowDimensions();
@@ -81,7 +83,7 @@ onMounted(async () => {
     }"
   >
     <Aside />
-    <Editor v-model="store.activeNoteContents" />
+    <Editor v-model="genericState.activeNoteContents" />
     <MarkdownPreview v-if="settings.markdownPreviewActive" />
     <CommandPalette />
   </main>
