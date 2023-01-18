@@ -4,9 +4,14 @@ import { store } from "../store";
 import { getDefaultNotesData, randomIntFromInterval, Note } from "../lib/utils";
 import { createSampleDataInLocalStorage } from "../lib/localStorage";
 import { describe, it, expect, beforeEach, afterEach } from "vitest";
+import { createPinia } from "pinia";
+import { createApp } from "vue";
 
 let wrapper: VueWrapper | null = null;
 beforeEach(() => {
+  const pinia = createPinia();
+  const app = createApp(CommandPalette);
+  app.use(pinia);
   store.loadedData = getDefaultNotesData();
   wrapper = mount(CommandPalette);
 });

@@ -12,6 +12,7 @@ import {
   createNoteInDB,
 } from "./supabase";
 import { nextTick } from "vue";
+import { useElementRefsStore } from "../stores/store.elementRefs";
 
 export const getNoteById = (noteId: string | null) => {
   if (noteId === null) throw new Error("noteId parameter must not be null");
@@ -186,9 +187,10 @@ export const loadNotesData = async () => {
 };
 
 export const displayCommandPalette = () => {
+  const elementRefs = useElementRefsStore();
   store.commandPaletteActive = !store.commandPaletteActive;
 
   nextTick(() => {
-    store.elementRefs.commandPaletteSearchInput?.focus();
+    elementRefs.commandPaletteSearchInput?.focus();
   });
 };

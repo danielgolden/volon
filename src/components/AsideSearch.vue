@@ -7,6 +7,7 @@ import {
   navigateToPreviousNote,
 } from "../lib/utils";
 import { store } from "../store";
+import { useElementRefsStore } from "../stores/store.elementRefs";
 
 const props = defineProps(["noteList"]);
 const currentQuery = ref(``);
@@ -15,6 +16,7 @@ const searchInput = ref<HTMLInputElement | null>(null);
 const keyboardShortcutIndicatorVisible = computed(() => {
   return currentQuery.value.length < 32;
 });
+const elementRefs = useElementRefsStore();
 
 const handleInputChange = (currentContent: string) => {
   if (currentContent === "") {
@@ -35,7 +37,7 @@ const handleSearchKeydownEnter = (e: Event) => {
   if (noteWasSelectedDuringSearch.value) {
     clearQuery();
     e.preventDefault();
-    store.elementRefs.codeMirror?.focus();
+    elementRefs.codeMirror?.focus();
   } else {
     createNewNote(`# ${currentQuery.value} \n`);
     clearQuery();
@@ -62,7 +64,7 @@ const handleUpArrowPress = (e: Event) => {
 };
 
 onMounted(() => {
-  store.elementRefs.asideSearchInput = searchInput.value;
+  elementRefs.asideSearchInput = searchInput.value;
 });
 </script>
 

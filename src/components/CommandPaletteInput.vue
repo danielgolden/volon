@@ -6,13 +6,14 @@ import {
   navigateToNextNote,
   navigateToPreviousNote,
 } from "../lib/utils";
-import { saveAllNoteDataToLocalStorage } from "../lib/localStorage";
 import { store } from "../store";
+import { useElementRefsStore } from "../stores/store.elementRefs";
 
 const props = defineProps(["noteList"]);
 const currentQuery = ref(``);
 const noteWasSelectedDuringSearch = ref(false);
 const searchInput = ref<HTMLInputElement | null>(null);
+const elementRefs = useElementRefsStore();
 
 const handleInputChange = (currentContent: string) => {
   if (currentContent === "") {
@@ -32,7 +33,7 @@ const handleSearchKeydownEnter = (e: Event) => {
   if (noteWasSelectedDuringSearch.value) {
     clearQuery();
     e.preventDefault();
-    store.elementRefs.codeMirror?.focus();
+    elementRefs.codeMirror?.focus();
   } else {
     createNewNote(`# ${currentQuery.value} \n`);
     clearQuery();
@@ -59,7 +60,7 @@ const handleUpArrowPress = (e: Event) => {
 };
 
 onMounted(() => {
-  store.elementRefs.commandPaletteSearchInput = searchInput.value;
+  elementRefs.commandPaletteSearchInput = searchInput.value;
 });
 </script>
 

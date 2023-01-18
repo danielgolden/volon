@@ -25,6 +25,7 @@ import {
   ViewUpdate,
   placeholder,
 } from "@codemirror/view";
+import { useElementRefsStore } from "../stores/store.elementRefs";
 
 const emit = defineEmits(["update:modelValue"]);
 const props = defineProps(["modelValue"]);
@@ -32,6 +33,7 @@ const codemirrorContainer = ref<Element | null>(null);
 let myCodemirrorView = new EditorView();
 const codeMirrorTriggeredNoteCreation = ref(false);
 let onChangeTimer = ref(setTimeout(() => {}, 0));
+const elementRefs = useElementRefsStore();
 
 const handleOnChange = (update: ViewUpdate) => {
   const waitTime = 500; // in milliseconds
@@ -224,7 +226,7 @@ const resetCodemirrorView = () => {
   };
 
   myCodemirrorView = new EditorView(codeMirrorOptions);
-  store.elementRefs.codeMirror = myCodemirrorView;
+  elementRefs.codeMirror = myCodemirrorView;
 };
 
 onMounted(() => {
