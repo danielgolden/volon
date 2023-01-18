@@ -11,12 +11,13 @@ import CommandPaletteInput from "./CommandPaletteInput.vue";
 import KeyboardShortcutIndicator from "./KeyboardShortcutIndicator.vue";
 import { formatRelative } from "date-fns";
 import { useGenericStateStore } from "../stores/store.genericState";
+import { useNotesStore } from "../stores/store.notes";
 
 const noteListItemRefs = ref<HTMLElement[] | []>([]);
 const noteList = ref<HTMLUListElement | null>(null);
-const totalNoteCount = computed(() => store.loadedData.notes.length);
 const activeNoteSelectionMade = ref(false);
 const genericState = useGenericStateStore();
+const notes = useNotesStore();
 
 const searchIsActive = computed(() => {
   return genericState.matchingNotes !== null;
@@ -24,7 +25,7 @@ const searchIsActive = computed(() => {
 
 const notesToBeDisplayed = computed(() => {
   if (!searchIsActive.value) {
-    return sortNotesByModificationDate(store.loadedData.notes);
+    return sortNotesByModificationDate(notes.all);
   } else {
     return sortNotesByModificationDate(genericState.matchingNotes!);
   }

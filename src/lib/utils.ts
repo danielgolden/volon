@@ -15,16 +15,6 @@ import { nextTick } from "vue";
 import { useElementRefsStore } from "../stores/store.elementRefs";
 import { useGenericStateStore } from "../stores/store.genericState";
 
-export const getNoteById = (noteId: string | null) => {
-  if (noteId === null) throw new Error("noteId parameter must not be null");
-
-  const matchedNote = store.loadedData.notes.find((note) => note.id === noteId);
-  if (!matchedNote) {
-    throw new Error("No matching note found");
-  }
-  return matchedNote;
-};
-
 export const getDefaultNotesData = (): LoadedNotesData => {
   return {
     asideActive: true,
@@ -82,14 +72,6 @@ export const createNewNote = (contents: string = "") => {
   } else {
     saveAllNoteDataToLocalStorage();
   }
-};
-
-export const getNotesByContent = (content: string): Note[] => {
-  const matchedNotes = store.loadedData.notes.filter((note) => {
-    return note.content.toLowerCase().includes(content.toLowerCase());
-  });
-
-  return matchedNotes;
 };
 
 export const sortNotesByModificationDate = (notes: Note[]): Note[] => {
@@ -171,6 +153,7 @@ export const navigateToNextNote = (noteList: Note[]) => {
   navigateToNoteByRelativeIndex(noteList, 1);
 };
 
+// TODO: Make this work again now that we're not using loadedData to save data
 export const downloadBackupOfData = () => {
   const dataToSave = store.loadedData;
   const hiddenDownloadLink = document.createElement("a");

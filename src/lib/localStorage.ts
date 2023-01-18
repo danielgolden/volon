@@ -2,7 +2,9 @@ import { store } from "../store";
 import { getDefaultNotesData, randomIntFromInterval, Note } from "./utils";
 import { LoremIpsum } from "lorem-ipsum";
 import { useSettingsStore } from "../stores/store.settings";
+import { useNotesStore } from "../stores/store.notes";
 
+// TODO: Make this work again now that we're not using `store.loadedData`
 export const saveAllNoteDataToLocalStorage = () => {
   localStorage.setItem("volon", JSON.stringify(store.loadedData));
 };
@@ -52,13 +54,14 @@ export const loadAppSettingsFromLocalStorage = () => {
 
 export const loadExistingLocalStorageData = () => {
   const settings = useSettingsStore();
+  const notes = useNotesStore();
   const volonData = JSON.parse(localStorage.getItem("volon")!);
 
   settings.asideActive = volonData.asideActive ?? settings.asideActive;
   settings.markdownPreviewActive =
     volonData.markdownPreviewActive ?? settings.markdownPreviewActive;
 
-  store.loadedData.notes = volonData.notes.map((note: Note) => ({
+  notes.all = volonData.notes.map((note: Note) => ({
     id: note.id,
     dateCreated: new Date(note.dateCreated),
     lastModified: new Date(note.lastModified),
@@ -82,6 +85,7 @@ export const intializeLocalStorageData = () => {
 };
 
 export const createSampleDataInLocalStorage = () => {
+  const notes = useNotesStore();
   const lorem = new LoremIpsum({
     sentencesPerParagraph: {
       max: 5,
@@ -102,7 +106,7 @@ export const createSampleDataInLocalStorage = () => {
 
     const newNoteData = new Note(noteContent);
 
-    store.loadedData.notes.push(newNoteData);
+    notes.all.push(newNoteData);
     saveAllNoteDataToLocalStorage();
   });
 };
