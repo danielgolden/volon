@@ -1,6 +1,6 @@
 import { mount, VueWrapper } from "@vue/test-utils";
 import AsideSearch from "./AsideSearch.vue";
-import { getDefaultNotesData, Note } from "../lib/utils";
+import { Note } from "../lib/utils";
 import { describe, it, expect, beforeEach, afterEach } from "vitest";
 import { useGenericStateStore } from "../stores/store.genericState";
 import { useSettingsStore } from "../stores/store.settings";
@@ -19,12 +19,6 @@ const genericState = useGenericStateStore();
 let wrapper: VueWrapper | null = null;
 
 beforeEach(() => {
-  const defaultData = getDefaultNotesData();
-
-  settings.asideActive = defaultData.asideActive;
-  settings.markdownPreviewActive = defaultData.markdownPreviewActive;
-  notebook.notes = defaultData.notes;
-
   wrapper = mount(AsideSearch, {
     props: {
       noteList: [
@@ -42,11 +36,6 @@ afterEach(() => {
 
 describe("handleInputChange()", async () => {
   it("Stores any notes with matching content in store.matchingNotes", () => {
-    const defaultData = getDefaultNotesData();
-
-    settings.asideActive = defaultData.asideActive;
-    settings.markdownPreviewActive = defaultData.markdownPreviewActive;
-    notebook.notes = defaultData.notes;
     notebook.notes[0].content = "I'm unique note content";
 
     const searchQuery = "unique";

@@ -1,10 +1,8 @@
 import { mount, VueWrapper } from "@vue/test-utils";
 import CommandPalette from "./CommandPalette.vue";
-import { store } from "../store";
-import { getDefaultNotesData, randomIntFromInterval, Note } from "../lib/utils";
+import { randomIntFromInterval, Note } from "../lib/utils";
 import { createSampleDataInLocalStorage } from "../lib/localStorage";
 import { useGenericStateStore } from "../stores/store.genericState";
-import { useSettingsStore } from "../stores/store.settings";
 import { useNotebookStore } from "../stores/store.notebook";
 import { describe, it, expect, beforeEach, afterEach } from "vitest";
 import { createPinia } from "pinia";
@@ -15,8 +13,6 @@ beforeEach(() => {
   const pinia = createPinia();
   const app = createApp(CommandPalette);
   app.use(pinia);
-  const notebook = useNotebookStore();
-  notebook.notes = getDefaultNotesData().notes;
   wrapper = mount(CommandPalette);
 });
 

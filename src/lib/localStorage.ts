@@ -1,4 +1,4 @@
-import { getDefaultNotesData, randomIntFromInterval, Note } from "./utils";
+import { randomIntFromInterval, Note } from "./utils";
 import { LoremIpsum } from "lorem-ipsum";
 import { useSettingsStore } from "../stores/store.settings";
 import { useNotebookStore } from "../stores/store.notebook";
@@ -77,7 +77,17 @@ export const loadExistingLocalStorageData = () => {
 };
 
 export const generateLocalStorageNotesData = () => {
-  localStorage.setItem("volon", JSON.stringify(getDefaultNotesData()));
+  const settings = useSettingsStore();
+  const notebook = useNotebookStore();
+
+  localStorage.setItem(
+    "volon",
+    JSON.stringify({
+      asideActive: settings.asideActive,
+      markdownPreviewActive: settings.markdownPreviewActive,
+      notes: notebook.notes,
+    })
+  );
 };
 
 export const intializeLocalStorageData = () => {

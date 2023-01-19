@@ -15,6 +15,10 @@ export const useGenericStateStore = defineStore("genericState", {
     toggleCommandPaletteActive() {
       this.commandPaletteActive = !this.commandPaletteActive;
     },
+    clearActiveNoteState() {
+      this.activeNoteId = null;
+      this.activeNoteContents = "";
+    },
   },
   getters: {
     userIsLoggedIn: (state) => state.session !== null,

@@ -1,8 +1,6 @@
 import { mount, VueWrapper } from "@vue/test-utils";
 import App from "../App.vue";
 import Editor from "./Editor.vue";
-import { getDefaultNotesData } from "../lib/utils";
-import { store } from "../store";
 import { describe, it, expect, beforeEach, afterEach } from "vitest";
 import { createPinia } from "pinia";
 import { createApp } from "vue";
@@ -24,12 +22,6 @@ beforeEach(() => {
   const notebook = useNotebookStore();
   const settings = useSettingsStore();
   const genericState = useGenericStateStore();
-
-  const defaultData = getDefaultNotesData();
-
-  settings.asideActive = defaultData.asideActive;
-  settings.markdownPreviewActive = defaultData.markdownPreviewActive;
-  notebook.notes = defaultData.notes;
 
   // @ts-ignore
   editorWrapper = mount(Editor, {
