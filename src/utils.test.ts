@@ -1,4 +1,3 @@
-import { store } from "../src/store";
 import App from "./App.vue";
 import {
   saveCurrentNoteChange,
@@ -106,12 +105,11 @@ describe("saveCurrentNoteChange()", () => {
 
 describe("createNewNote()", () => {
   it("Creates a new, blank note and adds it to the loadedData", () => {
-    console.log("notes.length", notebook.notes.length);
+    const notebook = useNotebookStore();
+
     createNewNote();
 
     const lastNote = notebook.notes.at(-1);
-
-    console.log("after new note notes", notebook.notes.length);
 
     expect(lastNote).toBeInstanceOf(Note);
     expect(lastNote?.content).toBe("");
@@ -182,7 +180,16 @@ describe("sortNotesByModificationDate()", async () => {
 
 describe("getIndexOfNoteById()", () => {
   it("Returns the ID of the matching note", () => {
-    setDefaultData();
+    const notebook = useNotebookStore();
+
+    const defaultData = getDefaultNotesData();
+
+    settings.asideActive = defaultData.asideActive;
+    settings.markdownPreviewActive = defaultData.markdownPreviewActive;
+    notebook.notes = defaultData.notes;
+
+    notebook.notes[0].id = "hiyyaaaa";
+
     genericState.activeNoteId = notebook.notes[0].id;
     const idOfFirstNote = notebook.notes[0].id;
 
