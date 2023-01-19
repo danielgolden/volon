@@ -1,24 +1,27 @@
 <script lang="ts" setup>
 import { ref, onMounted } from "vue";
 import {
-  getNotesByContent,
   createNewNote,
   navigateToNextNote,
   navigateToPreviousNote,
 } from "../lib/utils";
-import { saveAllNoteDataToLocalStorage } from "../lib/localStorage";
-import { store } from "../store";
+import { useElementRefsStore } from "../stores/store.elementRefs";
+import { useGenericStateStore } from "../stores/store.genericState";
+import { useNotebookStore } from "../stores/store.notebook";
 
 const props = defineProps(["noteList"]);
 const currentQuery = ref(``);
 const noteWasSelectedDuringSearch = ref(false);
 const searchInput = ref<HTMLInputElement | null>(null);
+const elementRefs = useElementRefsStore();
+const genericState = useGenericStateStore();
+const notebook = useNotebookStore();
 
 const handleInputChange = (currentContent: string) => {
   if (currentContent === "") {
-    store.matchingNotes = null;
+    genericState.matchingNotes = null;
   } else {
-    store.matchingNotes = getNotesByContent(currentContent);
+    genericState.matchingNotes = notebook.getNotesByContent(currentContent);
   }
 };
 
@@ -28,15 +31,15 @@ const clearQuery = () => {
 };
 
 const handleSearchKeydownEnter = (e: Event) => {
-  store.commandPaletteActive = false;
+  genericState.commandPaletteActive = false;
   if (noteWasSelectedDuringSearch.value) {
     clearQuery();
     e.preventDefault();
-    store.elementRefs.codeMirror?.focus();
+    elementRefs.codeMirror?.focus();
   } else {
     createNewNote(`# ${currentQuery.value} \n`);
     clearQuery();
-    store.searchJustCreatedNote = true;
+    genericState.searchJustCreatedNote = true;
   }
 };
 
@@ -44,9 +47,9 @@ const handleDownArrowPress = (e: Event) => {
   e.preventDefault();
   noteWasSelectedDuringSearch.value = true;
 
-  if (!store.activeNoteId) {
-    store.activeNoteId = props.noteList[0].id;
-    store.activeNoteContents = props.noteList[0].content;
+  if (!genericState.activeNoteId) {
+    genericState.activeNoteId = props.noteList[0].id;
+    genericState.activeNoteContents = props.noteList[0].content;
   } else {
     navigateToNextNote(props.noteList);
   }
@@ -59,7 +62,7 @@ const handleUpArrowPress = (e: Event) => {
 };
 
 onMounted(() => {
-  store.elementRefs.commandPaletteSearchInput = searchInput.value;
+  elementRefs.commandPaletteSearchInput = searchInput.value;
 });
 </script>
 

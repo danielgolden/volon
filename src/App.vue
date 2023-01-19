@@ -1,13 +1,13 @@
 <script setup lang="ts">
-import { onMounted, nextTick, ref } from "vue";
+import { onMounted, ref } from "vue";
 import Aside from "./components/Aside.vue";
 import Editor from "./components/Editor.vue";
 import MarkdownPreview from "./components/MarkdownPreview.vue";
 import CommandPalette from "./components/CommandPalette.vue";
-import { store } from "./store";
+import { useSettingsStore } from "./stores/store.settings";
+import { useGenericStateStore } from "./stores/store.genericState";
 import {
   deleteActiveNote,
-  clearActiveNoteState,
   setWindowDimensions,
   downloadBackupOfData,
   displayCommandPalette,
@@ -20,12 +20,14 @@ import {
 import { loadExistingDBData, getSession } from "./lib/supabase";
 
 const notesDataLoaded = ref(false);
+const settings = useSettingsStore();
+const genericState = useGenericStateStore();
 
 onMounted(async () => {
   setWindowDimensions();
   await getSession();
 
-  if (store.session) {
+  if (genericState.userIsLoggedIn) {
     await loadExistingDBData();
     loadAppSettingsFromLocalStorage();
     notesDataLoaded.value = true;
@@ -37,20 +39,19 @@ onMounted(async () => {
   window.addEventListener("keydown", (event) => {
     if (event.altKey && event.metaKey && event.code === "KeyN") {
       event.preventDefault();
-      clearActiveNoteState();
+      genericState.clearActiveNoteState();
     } else if (event.metaKey && event.code === "Backspace") {
       event.preventDefault();
       deleteActiveNote();
-      clearActiveNoteState();
+      genericState.clearActiveNoteState();
     } else if (event.metaKey && event.shiftKey && event.code === "KeyP") {
       event.preventDefault();
-      store.loadedData.markdownPreviewActive =
-        !store.loadedData.markdownPreviewActive;
+      settings.toggleMarkdownPreviewActive();
       saveAppSettingsToLocalStorage();
     } else if (event.metaKey && event.code === "Slash") {
       event.preventDefault();
-      if (store.commandPaletteActive) return;
-      store.loadedData.asideActive = !store.loadedData.asideActive;
+      if (genericState.commandPaletteActive) return;
+      settings.toggleAsideActive();
       saveAppSettingsToLocalStorage();
     } else if (event.metaKey && event.shiftKey && event.code === "KeyS") {
       event.preventDefault();
@@ -62,8 +63,8 @@ onMounted(async () => {
       displayCommandPalette();
     }
     if (event.code === "Escape") {
-      if (!store.commandPaletteActive) return;
-      store.commandPaletteActive = false;
+      if (!genericState.commandPaletteActive) return;
+      genericState.commandPaletteActive = false;
     }
   });
 
@@ -75,13 +76,13 @@ onMounted(async () => {
   <main
     v-if="notesDataLoaded"
     :class="{
-      'aside-active': store.loadedData.asideActive,
-      'markdown-preview-active': store.loadedData.markdownPreviewActive,
+      'aside-active': settings.asideActive,
+      'markdown-preview-active': settings.markdownPreviewActive,
     }"
   >
     <Aside />
-    <Editor v-model="store.activeNoteContents" />
-    <MarkdownPreview v-if="store.loadedData.markdownPreviewActive" />
+    <Editor v-model="genericState.activeNoteContents" />
+    <MarkdownPreview v-if="settings.markdownPreviewActive" />
     <CommandPalette />
   </main>
 </template>

@@ -1,37 +1,40 @@
 <script lang="ts" setup>
 import { computed, watch, ref, nextTick } from "vue";
 import {
-  getNoteById,
   sortNotesByModificationDate,
   navigateToPreviousNote,
   navigateToNextNote,
 } from "../lib/utils";
-import { store } from "../store";
 import CommandPaletteInput from "./CommandPaletteInput.vue";
 import KeyboardShortcutIndicator from "./KeyboardShortcutIndicator.vue";
 import { formatRelative } from "date-fns";
+import { useGenericStateStore } from "../stores/store.genericState";
+import { useNotebookStore } from "../stores/store.notebook";
 
 const noteListItemRefs = ref<HTMLElement[] | []>([]);
 const noteList = ref<HTMLUListElement | null>(null);
-const totalNoteCount = computed(() => store.loadedData.notes.length);
 const activeNoteSelectionMade = ref(false);
+const genericState = useGenericStateStore();
+const notebook = useNotebookStore();
 
 const searchIsActive = computed(() => {
-  return store.matchingNotes !== null;
+  return genericState.matchingNotes !== null;
 });
 
 const notesToBeDisplayed = computed(() => {
   if (!searchIsActive.value) {
-    return sortNotesByModificationDate(store.loadedData.notes);
+    return sortNotesByModificationDate(notebook.notes);
   } else {
-    return sortNotesByModificationDate(store.matchingNotes!);
+    return sortNotesByModificationDate(genericState.matchingNotes!);
   }
 });
 const handleNoteItemClick = (noteId: string | null) => {
   if (noteId) {
-    store.activeNoteId = noteId;
-    store.activeNoteContents = getNoteById(store.activeNoteId).content;
-    store.commandPaletteActive = !store.commandPaletteActive;
+    genericState.activeNoteId = noteId;
+    genericState.activeNoteContents = notebook.getNoteById(
+      genericState.activeNoteId
+    ).content;
+    genericState.toggleCommandPaletteActive();
   }
 };
 const formatRelativeDate = (relativeDate: string) => {
@@ -48,36 +51,36 @@ const getActiveSelectionStatus = (matchingNotes?: Note[]) => {
   // selected item found in `matchingNotes`?
   if (matchingNotes) {
     selectionFoundInMatchingNotes = matchingNotes.some(
-      (note: Note) => note.id === store.activeNoteId
+      (note: Note) => note.id === genericState.activeNoteId
     );
   }
 
   // selcted item in all `notesToBeDisplayed`?
   const selectionFoundAmongAllNotes = notesToBeDisplayed.value.some(
-    (note: Note) => note.id === store.activeNoteId
+    (note: Note) => note.id === genericState.activeNoteId
   );
 
   return selectionFoundInMatchingNotes || selectionFoundAmongAllNotes;
 };
 
 watch(
-  () => store.matchingNotes as Note[],
+  () => genericState.matchingNotes as Note[],
   (newValue) => {
     activeNoteSelectionMade.value = getActiveSelectionStatus(newValue);
   }
 );
 
 watch(
-  () => store.activeNoteId,
+  () => genericState.activeNoteId,
   () => {
     const activeListItem = noteListItemRefs.value.find(
       (noteListItem: HTMLElement) => {
-        return noteListItem.dataset.noteId === store.activeNoteId;
+        return noteListItem.dataset.noteId === genericState.activeNoteId;
       }
     );
 
     activeNoteSelectionMade.value = getActiveSelectionStatus(
-      <Note[]>store.matchingNotes
+      <Note[]>genericState.matchingNotes
     );
 
     // Find out of the selected note list item is scrolled into view
@@ -113,12 +116,12 @@ watch(
     <Transition name="fade">
       <div
         class="overlay"
-        @click="store.commandPaletteActive = false"
-        v-show="store.commandPaletteActive"
+        @click="genericState.commandPaletteActive = false"
+        v-show="genericState.commandPaletteActive"
       ></div>
     </Transition>
     <Transition name="lift">
-      <section class="container" v-show="store.commandPaletteActive">
+      <section class="container" v-show="genericState.commandPaletteActive">
         <CommandPaletteInput :noteList="notesToBeDisplayed" />
         <ul
           v-if="notesToBeDisplayed.length > 0"
@@ -132,14 +135,12 @@ watch(
             v-for="note in notesToBeDisplayed"
             :v-key="note.id"
             :class="{
-              'active-note-list-item': store.activeNoteId === note.id,
+              'active-note-list-item': genericState.activeNoteId === note.id,
               'note-list-item': true,
             }"
             :data-note-id="note.id"
             @click="handleNoteItemClick(note.id)"
-            @keydown.enter="
-              store.commandPaletteActive = !store.commandPaletteActive
-            "
+            @keydown.enter="genericState.toggleCommandPaletteActive"
             ref="noteListItemRefs"
           >
             <span class="note-list-item-preview">
@@ -163,12 +164,14 @@ watch(
           </p>
         </div>
         <footer class="command-palette-footer">
-          <span class="footer-meta note-count" v-if="!store.matchingNotes"
-            >{{ totalNoteCount }} notes</span
+          <span
+            class="footer-meta note-count"
+            v-if="!genericState.matchingNotes"
+            >{{ notebook.totalNotesCount }} notes</span
           >
           <span
             class="footer-meta query-results-count"
-            v-if="store.matchingNotes"
+            v-if="genericState.matchingNotes"
             >{{ notesToBeDisplayed.length }} matching notes</span
           >
           <span

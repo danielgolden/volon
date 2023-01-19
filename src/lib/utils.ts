@@ -1,4 +1,3 @@
-import { store } from "../store";
 import { v4 as uuidv4 } from "uuid";
 import { format } from "date-fns";
 import {
@@ -12,32 +11,10 @@ import {
   createNoteInDB,
 } from "./supabase";
 import { nextTick } from "vue";
-
-export const getNoteById = (noteId: string | null) => {
-  if (noteId === null) throw new Error("noteId parameter must not be null");
-
-  const matchedNote = store.loadedData.notes.find((note) => note.id === noteId);
-  if (!matchedNote) {
-    throw new Error("No matching note found");
-  }
-  return matchedNote;
-};
-
-export const getDefaultNotesData = (): LoadedNotesData => {
-  return {
-    queryHasMatch: false,
-    asideActive: true,
-    markdownPreviewActive: true,
-    notes: [
-      new Note(
-        `# Welcome to Volón\n\nVolón supports Markdown and has preview built in. Just press \`Command + Shift + p\` to preview your note in Markdown.*\n\nThanks for trying out Volón, a minimal notes app based on [nvALT] designed around the use of [Markdown]. There are 3 main sections in \nVolón where you create, search, and choose your notes:\n\n- **Search/Create bar**: type into this bar to search the names and contents of every note you've created! To create a note, just press enter after typing into the bar, and a note will be with your text as the title.\n- **Notes List**: All of your notes live here, ordered by date last modified.\n- **Editor**: This is where you write and update your notes (it's where you're reading this).\n\n---\n\n\n### Feedback\nI'd love to hear your ideas for how Volón can be improved, or if you find some bugs! Feel free to get in touch via [Twitter](https://twitter.com/DanGolden1) or submit an issue on  [GitHub](https://github.com/danielgolden/volon).\n\nVolón is based on [nvALT](http://brettterpstra.com/projects/nvalt/), which is based on [Notational Velocity](http://notational.net/).\n\n[nvAlt]: http://brettterpstra.com/projects/nvalt/\n[Markdown]: https://guides.github.com/features/mastering-markdown/`
-      ),
-      new Note(
-        `# How to do other stuff in Volón\n\nVolón's window was designed for keyboard input above all else, and that's why it doesn't have any buttons (mostly). Everything you'd want to do is handled by keyboard shortcuts. The beauty of this is you won't need to take your hands off of the keyboard to to create and mange your notes (or really anything).\n\n### Keyboard Shortcuts\n*(On Windows \"Ctrl\" should be used instead of \"⌘\")*\n- \`⌘ + K\`: Move focus and the cursor the the search/create bar\n- \`Up and Down arrows\`: Navigate through your notes.\n- \`⌘ + Shift + P\`: Markdown Preview\n- \`⌘ + I\`: View note info (word, character count, and more)\n\n\n `
-      ),
-    ],
-  };
-};
+import { useElementRefsStore } from "../stores/store.elementRefs";
+import { useGenericStateStore } from "../stores/store.genericState";
+import { useSettingsStore } from "../stores/store.settings";
+import { useNotebookStore } from "../stores/store.notebook";
 
 export class Note {
   id: string | null;
@@ -56,11 +33,14 @@ export class Note {
 }
 
 export const saveCurrentNoteChange = (currentContent: string) => {
-  const currentNote = getNoteById(store.activeNoteId);
+  const genericState = useGenericStateStore();
+  const notebook = useNotebookStore();
+  const currentNote = notebook.getNoteById(genericState.activeNoteId);
+
   currentNote.content = currentContent;
   currentNote.lastModified = new Date();
 
-  if (store.session) {
+  if (genericState.userIsLoggedIn) {
     updateNoteInDB(currentNote);
   } else {
     saveAllNoteDataToLocalStorage();
@@ -68,25 +48,20 @@ export const saveCurrentNoteChange = (currentContent: string) => {
 };
 
 export const createNewNote = (contents: string = "") => {
+  const genericState = useGenericStateStore();
+  const notebook = useNotebookStore();
   const newNoteData = new Note(contents);
 
-  store.activeNoteId = newNoteData.id;
-  store.activeNoteContents = contents;
-  store.loadedData.notes.push(newNoteData);
+  genericState.activeNoteId = newNoteData.id;
+  genericState.activeNoteContents = contents;
 
-  if (store.session) {
+  notebook.notes.push(newNoteData);
+
+  if (genericState.userIsLoggedIn) {
     createNoteInDB(newNoteData);
   } else {
     saveAllNoteDataToLocalStorage();
   }
-};
-
-export const getNotesByContent = (content: string): Note[] => {
-  const matchedNotes = store.loadedData.notes.filter((note) => {
-    return note.content.toLowerCase().includes(content.toLowerCase());
-  });
-
-  return matchedNotes;
 };
 
 export const sortNotesByModificationDate = (notes: Note[]): Note[] => {
@@ -97,34 +72,36 @@ export const sortNotesByModificationDate = (notes: Note[]): Note[] => {
   return sortedNotes;
 };
 
-export const getIndexOfNoteById = (
-  id: string | null,
-  noteList: Note[] = store.loadedData.notes
-) => {
+export const getIndexOfNoteById = (id: string | null, noteList?: Note[]) => {
+  const notebook = useNotebookStore();
+  const genericState = useGenericStateStore();
+  const defaultNoteList = notebook.notes;
+
   if (!id) return null;
 
-  return noteList.findIndex((note) => note.id === store.activeNoteId);
+  const result = (noteList ?? defaultNoteList).findIndex(
+    (note) => note.id === id
+  );
+
+  return result;
 };
 
 export const deleteActiveNote = () => {
-  const indexOfActiveNote = getIndexOfNoteById(store.activeNoteId);
+  const genericState = useGenericStateStore();
+  const notebook = useNotebookStore();
+  const indexOfActiveNote = getIndexOfNoteById(genericState.activeNoteId);
 
   if (indexOfActiveNote === null) {
-    throw new Error(`No note with the ID ${store.activeNoteId} found.`);
+    throw new Error(`No note with the ID ${genericState.activeNoteId} found.`);
   }
 
-  if (store.session) {
-    deleteNoteInDB(getNoteById(store.activeNoteId));
-    store.loadedData.notes.splice(indexOfActiveNote, 1);
+  if (genericState.userIsLoggedIn) {
+    deleteNoteInDB(notebook.getNoteById(genericState.activeNoteId));
+    notebook.deleteActiveNote();
   } else {
-    store.loadedData.notes.splice(indexOfActiveNote, 1);
+    notebook.deleteActiveNote();
     saveAllNoteDataToLocalStorage();
   }
-};
-
-export const clearActiveNoteState = () => {
-  store.activeNoteId = null;
-  store.activeNoteContents = "";
 };
 
 export const setWindowDimensions = () => {
@@ -138,7 +115,12 @@ export const navigateToNoteByRelativeIndex = (
   noteList: Note[],
   relativeIndex: number
 ) => {
-  const indexOfActiveNote = getIndexOfNoteById(store.activeNoteId, noteList);
+  const genericState = useGenericStateStore();
+  const notebook = useNotebookStore();
+  const indexOfActiveNote = getIndexOfNoteById(
+    genericState.activeNoteId,
+    noteList
+  );
   const indexOfLastItemInNoteList = noteList.length - 1;
   const noteIsFirstInList = indexOfActiveNote === 0;
   const noteIsLastInList = indexOfActiveNote === indexOfLastItemInNoteList;
@@ -147,8 +129,10 @@ export const navigateToNoteByRelativeIndex = (
   if (noteIsLastInList && relativeIndex > 0) return;
   if (indexOfActiveNote === null) return;
 
-  store.activeNoteId = noteList[indexOfActiveNote + relativeIndex].id;
-  store.activeNoteContents = getNoteById(store.activeNoteId).content;
+  genericState.activeNoteId = noteList[indexOfActiveNote + relativeIndex].id;
+  genericState.activeNoteContents = notebook.getNoteById(
+    genericState.activeNoteId
+  ).content;
 };
 
 export const navigateToPreviousNote = (noteList: Note[]) => {
@@ -160,7 +144,13 @@ export const navigateToNextNote = (noteList: Note[]) => {
 };
 
 export const downloadBackupOfData = () => {
-  const dataToSave = store.loadedData;
+  const settings = useSettingsStore();
+  const notebook = useNotebookStore();
+  const dataToSave = {
+    asideActive: settings.asideActive,
+    markdownPreviewActive: settings.markdownPreviewActive,
+    notes: notebook.notes,
+  };
   const hiddenDownloadLink = document.createElement("a");
   hiddenDownloadLink.href =
     "data:text/json;charset=utf-8," +
@@ -179,7 +169,8 @@ export const randomIntFromInterval = (min: number, max: number) => {
 };
 
 export const loadNotesData = async () => {
-  if (store.session) {
+  const genericState = useGenericStateStore();
+  if (genericState.userIsLoggedIn) {
     await loadExistingDBData();
   } else {
     intializeLocalStorageData();
@@ -187,9 +178,11 @@ export const loadNotesData = async () => {
 };
 
 export const displayCommandPalette = () => {
-  store.commandPaletteActive = !store.commandPaletteActive;
+  const genericState = useGenericStateStore();
+  const elementRefs = useElementRefsStore();
+  genericState.toggleCommandPaletteActive();
 
   nextTick(() => {
-    store.elementRefs.commandPaletteSearchInput?.focus();
+    elementRefs.commandPaletteSearchInput?.focus();
   });
 };

@@ -1,6 +1,6 @@
-import { store } from "../store";
-import { getDefaultNotesData } from "./utils";
 import { createClient } from "@supabase/supabase-js";
+import { useGenericStateStore } from "../stores/store.genericState";
+import { useNotebookStore } from "../stores/store.notebook";
 
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
 const supabaseKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
@@ -10,22 +10,24 @@ export const signInWithGitHub = async () => {
   const { data, error } = await supabase.auth.signInWithOAuth({
     provider: "github",
   });
-  debugger;
   return data;
 };
 
 export const signout = async () => {
+  const genericState = useGenericStateStore();
   const { error } = await supabase.auth.signOut();
-  store.session = null;
+  genericState.session = null;
   return error;
 };
 
 export const getSession = async () => {
+  const genericState = useGenericStateStore();
+
   const { data, error } = await supabase.auth.getSession();
   if (error) {
     console.error(error);
   }
-  store.session = data.session;
+  genericState.session = data.session;
 };
 
 export const loadNotesFromDB = async () => {
@@ -46,12 +48,13 @@ export const updateNoteInDB = async (noteToUpdate: Note) => {
 };
 
 export const createNoteInDB = async (noteToUpdate: Note) => {
+  const genericState = useGenericStateStore();
   const { error } = await supabase.from("notes").insert({
     id: noteToUpdate.id,
     created_at: noteToUpdate.dateCreated,
     modified_at: noteToUpdate.lastModified,
     content: noteToUpdate.content,
-    user_id: store.session.user.id,
+    user_id: genericState.session.user.id,
   });
 
   return error;
@@ -67,6 +70,7 @@ export const deleteNoteInDB = async (noteToDelete: Note) => {
 };
 
 export const loadExistingDBData = async () => {
+  const notebook = useNotebookStore();
   let dbNotes = await loadNotesFromDB();
 
   if (dbNotes === null) {
@@ -77,8 +81,8 @@ export const loadExistingDBData = async () => {
   // Successfully retreived data, but the none was found for this user
   // Populate it with the starter notes
   if (dbNotes.length === 0) {
-    const note1 = getDefaultNotesData().notes[0];
-    const note2 = getDefaultNotesData().notes[1];
+    const note1 = notebook.notes[0];
+    const note2 = notebook.notes[1];
     await createNoteInDB(note1);
     await createNoteInDB(note2);
 
@@ -86,7 +90,7 @@ export const loadExistingDBData = async () => {
   }
 
   // Format the database data to fit our expected data structure
-  store.loadedData.notes = dbNotes!.map(
+  notebook.notes = dbNotes!.map(
     (note): Note => ({
       id: note.id,
       content: note.content,

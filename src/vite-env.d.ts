@@ -8,7 +8,6 @@ interface Note {
 }
 
 interface LoadedNotesData {
-  queryHasMatch: boolean;
   markdownPreviewActive: boolean;
   asideActive: boolean;
   notes: Note[];
