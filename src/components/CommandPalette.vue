@@ -205,7 +205,7 @@ watch(
 .overlay {
   inset: 0;
   position: absolute;
-  z-index: 10;
+  z-index: 100;
   background-color: rgb(10 13 17 / 70%);
 }
 .container {
@@ -214,7 +214,7 @@ watch(
   width: 75%;
   height: 400px;
   position: absolute;
-  z-index: 10;
+  z-index: 100;
   top: 40%;
   left: 50%;
   transform: translate(-50%, -50%);
