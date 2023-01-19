@@ -218,7 +218,7 @@ onMounted(() => {
 
             Log in with GitHub
           </button>
-          <button class="btn-primary btn-login">
+          <!-- <button class="btn-primary btn-login">
             <svg
               width="15"
               height="16"
@@ -253,7 +253,7 @@ onMounted(() => {
             </svg>
 
             Log in with Apple
-          </button>
+          </button> -->
         </div>
         <hr />
         <h3>
@@ -436,7 +436,7 @@ onMounted(() => {
 
 .menu-popover-container {
   position: absolute;
-  z-index: 10;
+  z-index: 1000;
 }
 
 .menu-popover {
