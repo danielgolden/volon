@@ -77,7 +77,7 @@ onMounted(() => {
         'keyboard-shortcut-indicator': true,
         'hidden-keyboard-indicator': !keyboardShortcutIndicatorVisible,
       }"
-      >⌘K</span
+      >⌘/</span
     >
     <input
       class="search-input"
@@ -96,7 +96,8 @@ onMounted(() => {
 <style scoped>
 .search-container {
   position: relative;
-  margin: 18px 22px;
+  margin: 18px 22px 7px;
+  z-index: 100;
 }
 
 .keyboard-shortcut-indicator {
@@ -153,7 +154,7 @@ onMounted(() => {
 .search-input::placeholder {
   color: var(--color-text-input-enabled-placeholder);
 }
-
+/* 
 @media (max-width: 1400px) {
   .search-input {
     height: 38px;
@@ -163,5 +164,5 @@ onMounted(() => {
   .keyboard-shortcut-indicator {
     top: 7.5px;
   }
-}
+} */
 </style>

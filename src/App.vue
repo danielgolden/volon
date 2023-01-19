@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { onMounted, ref } from "vue";
 import Aside from "./components/Aside.vue";
+import AsideNoteList from "./components/AsideNoteList.vue";
 import Editor from "./components/Editor.vue";
 import MarkdownPreview from "./components/MarkdownPreview.vue";
 import CommandPalette from "./components/CommandPalette.vue";
@@ -18,8 +19,10 @@ import {
   loadAppSettingsFromLocalStorage,
 } from "./lib/localStorage";
 import { loadExistingDBData, getSession } from "./lib/supabase";
+import { useElementRefsStore } from "./stores/store.elementRefs";
 
 const notesDataLoaded = ref(false);
+const elementRefs = useElementRefsStore();
 const settings = useSettingsStore();
 const genericState = useGenericStateStore();
 
@@ -50,9 +53,7 @@ onMounted(async () => {
       saveAppSettingsToLocalStorage();
     } else if (event.metaKey && event.code === "Slash") {
       event.preventDefault();
-      if (genericState.commandPaletteActive) return;
-      settings.toggleAsideActive();
-      saveAppSettingsToLocalStorage();
+      elementRefs.asideSearchInput?.focus();
     } else if (event.metaKey && event.shiftKey && event.code === "KeyS") {
       event.preventDefault();
       downloadBackupOfData();
@@ -81,6 +82,7 @@ onMounted(async () => {
     }"
   >
     <Aside />
+    <AsideNoteList />
     <Editor v-model="genericState.activeNoteContents" />
     <MarkdownPreview v-if="settings.markdownPreviewActive" />
     <CommandPalette />

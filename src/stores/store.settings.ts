@@ -4,7 +4,7 @@ export const useSettingsStore = defineStore("settings", {
   state: () => {
     return {
       asideActive: true,
-      markdownPreviewActive: true,
+      markdownPreviewActive: false,
     };
   },
   actions: {
