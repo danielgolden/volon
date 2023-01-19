@@ -3,7 +3,6 @@ import {
   saveCurrentNoteChange,
   createNewNote,
   Note,
-  getDefaultNotesData,
   sortNotesByModificationDate,
   getIndexOfNoteById,
   deleteActiveNote,
@@ -12,7 +11,7 @@ import {
   navigateToNoteByRelativeIndex,
 } from "./lib/utils";
 import { createSampleDataInLocalStorage } from "./lib/localStorage";
-import { describe, it, expect, beforeEach } from "vitest";
+import { describe, it, expect, beforeEach, expectTypeOf } from "vitest";
 import { createPinia, _StoreWithState } from "pinia";
 import { useGenericStateStore } from "./stores/store.genericState";
 import { useSettingsStore } from "./stores/store.settings";
@@ -30,31 +29,18 @@ const genericState = useGenericStateStore();
 
 const wrapper = mount(App);
 
-beforeEach(() => {
-  const pinia = createPinia();
-  const app = createApp(App);
-  app.use(pinia);
-});
-
-const setDefaultData = () => {
-  const defaultData = getDefaultNotesData();
-
-  settings.asideActive = defaultData.asideActive;
-  settings.markdownPreviewActive = defaultData.markdownPreviewActive;
-  notebook.notes = defaultData.notes;
-};
-
 describe("getNoteById()", () => {
   beforeEach(() => {
-    setDefaultData();
-
     genericState.activeNoteId = notebook.notes[0].id;
   });
 
   it("Returns a note when a matching noteId is found", () => {
-    expect(notebook.getNoteById(genericState.activeNoteId)).toBeInstanceOf(
-      Note
-    );
+    expect(notebook.getNoteById(genericState.activeNoteId)).toMatchObject({
+      id: expect.any(String),
+      dateCreated: expect.any(Date),
+      lastModified: expect.any(Date),
+      content: expect.any(String),
+    });
   });
 
   it("Throws an error if the provided noteId is null", () => {
@@ -66,29 +52,17 @@ describe("getNoteById()", () => {
   });
 });
 
-describe("getDefaultNotesData()", () => {
-  it("Returns the expected data structure", () => {
-    const result = getDefaultNotesData();
-
-    expect(result).toHaveProperty("notes");
-    expect(Array.isArray(result.notes)).toBe(true);
-
-    result.notes.forEach((note) => {
-      expect(note).toBeInstanceOf(Note);
-    });
-  });
-});
-
 describe("saveCurrentNoteChange()", () => {
   let testContent = "";
   beforeEach(() => {
-    setDefaultData();
-    genericState.activeNoteId = notebook.notes[0].id;
-
+    // genericState.activeNoteId = notebook.notes[0].id;
     testContent = "hi, I'm some test content";
   });
 
   it("Saves it's argument as the contents of the active note", () => {
+    const genericState = useGenericStateStore();
+    genericState.activeNoteId = notebook.notes[0].id;
+
     saveCurrentNoteChange(testContent);
     const firstNoteContent = notebook.notes[0].content;
 
@@ -118,7 +92,6 @@ describe("createNewNote()", () => {
 
 describe("getNotesByContent()", () => {
   beforeEach(() => {
-    setDefaultData();
     notebook.notes[0].content = "I'm just some special test data";
   });
 
@@ -172,12 +145,6 @@ describe("getIndexOfNoteById()", () => {
   it("Returns the ID of the matching note", () => {
     const notebook = useNotebookStore();
 
-    const defaultData = getDefaultNotesData();
-
-    settings.asideActive = defaultData.asideActive;
-    settings.markdownPreviewActive = defaultData.markdownPreviewActive;
-    notebook.notes = defaultData.notes;
-
     notebook.notes[0].id = "hiyyaaaa";
 
     genericState.activeNoteId = notebook.notes[0].id;
@@ -192,12 +159,6 @@ describe("deleteActiveNote()", () => {
     const notebook = useNotebookStore();
     const genericState = useGenericStateStore();
 
-    const defaultData = getDefaultNotesData();
-
-    settings.asideActive = defaultData.asideActive;
-    settings.markdownPreviewActive = defaultData.markdownPreviewActive;
-    notebook.notes = defaultData.notes;
-
     genericState.activeNoteId = notebook.notes[0].id;
     const idOfFirstNote = notebook.notes[0].id;
 
@@ -211,12 +172,6 @@ describe("clearActiveNoteState()", () => {
   it("sets the active note state back to it's default", () => {
     const notebook = useNotebookStore();
     const genericState = useGenericStateStore();
-
-    const defaultData = getDefaultNotesData();
-
-    settings.asideActive = defaultData.asideActive;
-    settings.markdownPreviewActive = defaultData.markdownPreviewActive;
-    notebook.notes = defaultData.notes;
 
     genericState.activeNoteId = notebook.notes[0].id;
 

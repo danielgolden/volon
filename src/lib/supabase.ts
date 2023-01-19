@@ -1,4 +1,3 @@
-import { getDefaultNotesData } from "./utils";
 import { createClient } from "@supabase/supabase-js";
 import { useGenericStateStore } from "../stores/store.genericState";
 import { useNotebookStore } from "../stores/store.notebook";
@@ -82,8 +81,8 @@ export const loadExistingDBData = async () => {
   // Successfully retreived data, but the none was found for this user
   // Populate it with the starter notes
   if (dbNotes.length === 0) {
-    const note1 = getDefaultNotesData().notes[0];
-    const note2 = getDefaultNotesData().notes[1];
+    const note1 = notebook.notes[0];
+    const note2 = notebook.notes[1];
     await createNoteInDB(note1);
     await createNoteInDB(note2);
 
