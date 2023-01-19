@@ -142,28 +142,18 @@ describe("getNotesByContent()", () => {
 
 describe("sortNotesByModificationDate()", async () => {
   it("Returns an array with the most recently modified notes at the top", async () => {
-    let firstNote!: Note;
-    let secondNote!: Note;
-    let thirdNote!: Note;
-    let fourthNote!: Note;
-    let fifthNote!: Note;
-
-    const setupNotes = () => {
-      return new Promise((resolve) => {
-        setTimeout(() => (firstNote = new Note("first note")), 10);
-        setTimeout(() => (secondNote = new Note("second note")), 20);
-        setTimeout(() => (thirdNote = new Note("third note")), 30);
-        setTimeout(() => (fourthNote = new Note("fourth note")), 40);
-        setTimeout(() => {
-          fifthNote = new Note("fifth note");
-          resolve("");
-        }, 50);
-      });
-    };
-
-    await setupNotes();
+    const firstNote: Note = new Note("first note");
+    const secondNote: Note = new Note("second note");
+    const thirdNote: Note = new Note("third note");
+    const fourthNote: Note = new Note("fourth note");
+    const fifthNote: Note = new Note("fifth note");
 
     const testNotes = [fifthNote, thirdNote, firstNote, secondNote, fourthNote];
+
+    testNotes.forEach((note, index) =>
+      note.lastModified.setDate(new Date().getDate() + index)
+    );
+
     const sortedNotes = sortNotesByModificationDate(testNotes);
 
     sortedNotes.forEach((note, index) => {
