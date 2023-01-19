@@ -6,6 +6,9 @@ import { store } from "../store";
 import { describe, it, expect, beforeEach, afterEach } from "vitest";
 import { createPinia } from "pinia";
 import { createApp } from "vue";
+import { useNotebookStore } from "../stores/store.notebook";
+import { useSettingsStore } from "../stores/store.settings";
+import { useGenericStateStore } from "../stores/store.genericState";
 
 // TODO: Figure out how to test keyboard shortcuts with vue test utils or another library.
 // The best lead I have so far: https://testing-library.com/docs/user-event/keyboard
@@ -18,11 +21,20 @@ beforeEach(() => {
   app.use(pinia);
   appWrapper = mount(App);
 
-  store.loadedData = getDefaultNotesData();
+  const notebook = useNotebookStore();
+  const settings = useSettingsStore();
+  const genericState = useGenericStateStore();
+
+  const defaultData = getDefaultNotesData();
+
+  settings.asideActive = defaultData.asideActive;
+  settings.markdownPreviewActive = defaultData.markdownPreviewActive;
+  notebook.notes = defaultData.notes;
+
   // @ts-ignore
   editorWrapper = mount(Editor, {
     context: {
-      props: { modelValue: store.activeNoteContents },
+      props: { modelValue: genericState.activeNoteContents },
     },
   });
 });
@@ -34,7 +46,10 @@ afterEach(() => {
 
 describe("The editor's responses to change", () => {
   it("If a note is active, it will modify the current note", async () => {
-    store.activeNoteId = store.loadedData.notes[0].id;
+    const genericState = useGenericStateStore();
+    const notebook = useNotebookStore();
+
+    genericState.activeNoteId = notebook.notes[0].id;
     // @ts-ignore: Property 'handleOnChange' does not exist on type 'ComponentPublicInstance ts(2339)
     const testContent = "some test content";
 
@@ -53,7 +68,7 @@ describe("The editor's responses to change", () => {
 
     await timer();
 
-    expect(store.loadedData.notes[0].content).toBe(testContent);
+    expect(notebook.notes[0].content).toBe(testContent);
   });
 
   // it("Pastes a markdown link when there's a link in the clipboard and there's a selection", async () => {

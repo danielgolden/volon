@@ -1,6 +1,7 @@
 import { mount, VueWrapper } from "@vue/test-utils";
 import App from "./App.vue";
 import { store } from "../src/store";
+import { useNotebookStore } from "./stores/store.notebook";
 import { createApp } from "vue";
 import { describe, it, expect, beforeEach, afterEach } from "vitest";
 import { createPinia } from "pinia";
@@ -20,16 +21,17 @@ afterEach(() => {
 describe("App.vue", () => {
   it("If no saved data is found, it loads default data", () => {
     localStorage.clear();
-
-    const firstNoteId = store.loadedData.notes[0].id;
+    const notebook = useNotebookStore();
+    const firstNoteId = notebook.notes[0].id;
 
     expect(firstNoteId).not.toBe(null);
   });
 
   it("Ensures all note dates are Date objects", () => {
     localStorage.clear();
+    const notebook = useNotebookStore();
 
-    store.loadedData.notes.forEach((note) => {
+    notebook.notes.forEach((note) => {
       expect(note.lastModified).toBeInstanceOf(Date);
       expect(note.dateCreated).toBeInstanceOf(Date);
     });

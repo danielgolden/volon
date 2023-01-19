@@ -68,6 +68,7 @@ export const createNewNote = (contents: string = "") => {
 
   genericState.activeNoteId = newNoteData.id;
   genericState.activeNoteContents = contents;
+
   notebook.notes.push(newNoteData);
 
   if (genericState.userIsLoggedIn) {
@@ -89,11 +90,14 @@ export const getIndexOfNoteById = (id: string | null, noteList?: Note[]) => {
   const notebook = useNotebookStore();
   const genericState = useGenericStateStore();
   const defaultNoteList = notebook.notes;
+
   if (!id) return null;
 
-  return (noteList ?? defaultNoteList).findIndex(
-    (note) => note.id === genericState.activeNoteId
+  const result = (noteList ?? defaultNoteList).findIndex(
+    (note) => note.id === id
   );
+
+  return result;
 };
 
 export const deleteActiveNote = () => {
