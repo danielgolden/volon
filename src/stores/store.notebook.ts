@@ -32,9 +32,6 @@ export const useNotebookStore = defineStore("notebook", {
       }
       return matchedNote;
     },
-    deleteNoteAtIndex(noteIndex: number) {
-      this.notes.splice(noteIndex, 1);
-    },
     deleteActiveNote() {
       const genericState = useGenericStateStore();
       this.notes.splice(getIndexOfNoteById(genericState.activeNoteId)!, 1);
