@@ -6,7 +6,6 @@ import {
   sortNotesByModificationDate,
   getIndexOfNoteById,
   deleteActiveNote,
-  clearActiveNoteState,
   setWindowDimensions,
   navigateToNoteByRelativeIndex,
 } from "./lib/utils";
@@ -165,20 +164,6 @@ describe("deleteActiveNote()", () => {
     deleteActiveNote();
 
     expect(() => notebook.getNoteById(idOfFirstNote)).toThrow();
-  });
-});
-
-describe("clearActiveNoteState()", () => {
-  it("sets the active note state back to it's default", () => {
-    const notebook = useNotebookStore();
-    const genericState = useGenericStateStore();
-
-    genericState.activeNoteId = notebook.notes[0].id;
-
-    clearActiveNoteState();
-
-    expect(genericState.activeNoteContents).toBe("");
-    expect(genericState.activeNoteId).toBe(null);
   });
 });
 

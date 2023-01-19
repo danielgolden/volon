@@ -8,7 +8,6 @@ import { useSettingsStore } from "./stores/store.settings";
 import { useGenericStateStore } from "./stores/store.genericState";
 import {
   deleteActiveNote,
-  clearActiveNoteState,
   setWindowDimensions,
   downloadBackupOfData,
   displayCommandPalette,
@@ -40,11 +39,11 @@ onMounted(async () => {
   window.addEventListener("keydown", (event) => {
     if (event.altKey && event.metaKey && event.code === "KeyN") {
       event.preventDefault();
-      clearActiveNoteState();
+      genericState.clearActiveNoteState();
     } else if (event.metaKey && event.code === "Backspace") {
       event.preventDefault();
       deleteActiveNote();
-      clearActiveNoteState();
+      genericState.clearActiveNoteState();
     } else if (event.metaKey && event.shiftKey && event.code === "KeyP") {
       event.preventDefault();
       settings.toggleMarkdownPreviewActive();

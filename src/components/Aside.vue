@@ -1,11 +1,7 @@
 <script lang="ts" setup>
 import { signInWithGitHub, signout } from "../lib/supabase";
 import { useSettingsStore } from "../stores/store.settings";
-import {
-  displayCommandPalette,
-  downloadBackupOfData,
-  clearActiveNoteState,
-} from "../lib/utils";
+import { displayCommandPalette, downloadBackupOfData } from "../lib/utils";
 import { intializeLocalStorageData } from "../lib/localStorage";
 import { onMounted, ref } from "vue";
 import { useGenericStateStore } from "../stores/store.genericState";
@@ -19,7 +15,7 @@ const genericState = useGenericStateStore();
 const handleLogOutClick = () => {
   signout();
   intializeLocalStorageData();
-  clearActiveNoteState();
+  genericState.clearActiveNoteState();
 };
 
 onMounted(() => {

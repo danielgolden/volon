@@ -97,17 +97,11 @@ export const deleteActiveNote = () => {
 
   if (genericState.userIsLoggedIn) {
     deleteNoteInDB(notebook.getNoteById(genericState.activeNoteId));
-    notebook.notes.splice(indexOfActiveNote, 1);
+    notebook.deleteActiveNote();
   } else {
-    notebook.notes.splice(indexOfActiveNote, 1);
+    notebook.deleteActiveNote();
     saveAllNoteDataToLocalStorage();
   }
-};
-
-export const clearActiveNoteState = () => {
-  const genericState = useGenericStateStore();
-  genericState.activeNoteId = null;
-  genericState.activeNoteContents = "";
 };
 
 export const setWindowDimensions = () => {
@@ -149,7 +143,6 @@ export const navigateToNextNote = (noteList: Note[]) => {
   navigateToNoteByRelativeIndex(noteList, 1);
 };
 
-// TODO: Make this work again now that we're not using loadedData to save data
 export const downloadBackupOfData = () => {
   const settings = useSettingsStore();
   const notebook = useNotebookStore();

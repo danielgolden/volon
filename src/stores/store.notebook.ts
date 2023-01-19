@@ -1,5 +1,6 @@
 import { defineStore } from "pinia";
-import { Note } from "../lib/utils";
+import { Note, getIndexOfNoteById } from "../lib/utils";
+import { useGenericStateStore } from "../stores/store.genericState";
 
 export const useNotebookStore = defineStore("notebook", {
   state: () => {
@@ -33,6 +34,10 @@ export const useNotebookStore = defineStore("notebook", {
     },
     deleteNoteAtIndex(noteIndex: number) {
       this.notes.splice(noteIndex, 1);
+    },
+    deleteActiveNote() {
+      const genericState = useGenericStateStore();
+      this.notes.splice(getIndexOfNoteById(genericState.activeNoteId)!, 1);
     },
   },
   getters: {
