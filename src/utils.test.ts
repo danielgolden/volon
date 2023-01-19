@@ -209,7 +209,15 @@ describe("deleteActiveNote()", () => {
 
 describe("clearActiveNoteState()", () => {
   it("sets the active note state back to it's default", () => {
-    setDefaultData();
+    const notebook = useNotebookStore();
+    const genericState = useGenericStateStore();
+
+    const defaultData = getDefaultNotesData();
+
+    settings.asideActive = defaultData.asideActive;
+    settings.markdownPreviewActive = defaultData.markdownPreviewActive;
+    notebook.notes = defaultData.notes;
+
     genericState.activeNoteId = notebook.notes[0].id;
 
     clearActiveNoteState();
@@ -269,6 +277,8 @@ describe("navigateToNoteByRelativeIndex()", () => {
 
 describe("createSampleData()", () => {
   it("Creates 50 dummy notes", () => {
+    const notebook = useNotebookStore();
+
     createSampleDataInLocalStorage();
     expect(notebook.notes.length).toBeGreaterThanOrEqual(50);
   });
