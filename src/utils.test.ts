@@ -189,7 +189,15 @@ describe("getIndexOfNoteById()", () => {
 
 describe("deleteActiveNote()", () => {
   it("Deletes the active note", () => {
-    setDefaultData();
+    const notebook = useNotebookStore();
+    const genericState = useGenericStateStore();
+
+    const defaultData = getDefaultNotesData();
+
+    settings.asideActive = defaultData.asideActive;
+    settings.markdownPreviewActive = defaultData.markdownPreviewActive;
+    notebook.notes = defaultData.notes;
+
     genericState.activeNoteId = notebook.notes[0].id;
     const idOfFirstNote = notebook.notes[0].id;
 
