@@ -15,7 +15,8 @@ beforeEach(() => {
   const pinia = createPinia();
   const app = createApp(CommandPalette);
   app.use(pinia);
-  store.loadedData = getDefaultNotesData();
+  const notebook = useNotebookStore();
+  notebook.notes = getDefaultNotesData().notes;
   wrapper = mount(CommandPalette);
 });
 
@@ -26,8 +27,9 @@ afterEach(() => {
 describe("handleNoteItemClick()", async () => {
   let randomNote = new Note();
   beforeEach(() => {
+    const notebook = useNotebookStore();
     createSampleDataInLocalStorage();
-    randomNote = store.loadedData.notes[randomIntFromInterval(0, 50)];
+    randomNote = notebook.notes[randomIntFromInterval(0, 50)];
   });
 
   afterEach(() => {
@@ -64,8 +66,9 @@ describe("handleNoteItemClick()", async () => {
 describe("getActiveSelectionStatus()", () => {
   let randomNote = new Note();
   beforeEach(() => {
+    const notebook = useNotebookStore();
     createSampleDataInLocalStorage();
-    randomNote = store.loadedData.notes[randomIntFromInterval(0, 50)];
+    randomNote = notebook.notes[randomIntFromInterval(0, 50)];
   });
 
   afterEach(() => {
@@ -81,8 +84,9 @@ describe("getActiveSelectionStatus()", () => {
 
   it("Returns true if a list item has an ID found in notesToBeDisplayed", () => {
     const genericState = useGenericStateStore();
+    const notebook = useNotebookStore();
     genericState.activeNoteId = randomNote.id;
-    store.loadedData.notes = [randomNote];
+    notebook.notes = [randomNote];
     // @ts-ignore
     expect(wrapper?.vm.getActiveSelectionStatus()).toBe(true);
   });
