@@ -24,7 +24,7 @@ const searchIsActive = computed(() => {
 });
 
 const notesToBeDisplayed = computed(() => {
-  if (!searchIsActive.value) {
+  if (!searchIsActive.value || genericState.commandPaletteActive) {
     return sortNotesByModificationDate(notebook.notes);
   } else {
     return sortNotesByModificationDate(genericState.matchingNotes!);
@@ -86,6 +86,15 @@ onMounted(() => {
     }
   });
 });
+
+watch(
+  () => genericState.commandPaletteActive,
+  (oldValue, newValue) => {
+    if (!newValue) {
+      genericState.selectedCommandPaletteNote = null;
+    }
+  }
+);
 
 watch(
   () => genericState.activeNoteId,

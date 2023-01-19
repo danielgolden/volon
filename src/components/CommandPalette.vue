@@ -71,11 +71,14 @@ watch(
 );
 
 watch(
-  () => genericState.activeNoteId,
+  () => genericState.selectedCommandPaletteNote,
   () => {
     const activeListItem = noteListItemRefs.value.find(
       (noteListItem: HTMLElement) => {
-        return noteListItem.dataset.noteId === genericState.activeNoteId;
+        return (
+          noteListItem.dataset.noteId ===
+          genericState.selectedCommandPaletteNote?.id
+        );
       }
     );
 
@@ -135,7 +138,8 @@ watch(
             v-for="note in notesToBeDisplayed"
             :v-key="note.id"
             :class="{
-              'active-note-list-item': genericState.activeNoteId === note.id,
+              'active-note-list-item':
+                genericState.selectedCommandPaletteNote?.id === note.id,
               'note-list-item': true,
             }"
             :data-note-id="note.id"
@@ -145,7 +149,10 @@ watch(
           >
             <span class="note-list-item-preview">
               {{
-                note.content.split(`\n`)[0].replaceAll("#", "").substring(0, 50)
+                note.content
+                  .split(`\n`)[0]
+                  .replaceAll("#", "")
+                  .substring(0, 100)
               }}
               <em
                 v-if="note.content.length === 0"

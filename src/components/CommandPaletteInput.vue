@@ -1,10 +1,6 @@
 <script lang="ts" setup>
 import { ref, onMounted } from "vue";
-import {
-  createNewNote,
-  navigateToNextNote,
-  navigateToPreviousNote,
-} from "../lib/utils";
+import { createNewNote, getIndexOfNoteById } from "../lib/utils";
 import { useElementRefsStore } from "../stores/store.elementRefs";
 import { useGenericStateStore } from "../stores/store.genericState";
 import { useNotebookStore } from "../stores/store.notebook";
@@ -18,6 +14,8 @@ const genericState = useGenericStateStore();
 const notebook = useNotebookStore();
 
 const handleInputChange = (currentContent: string) => {
+  noteWasSelectedDuringSearch.value = false;
+
   if (currentContent === "") {
     genericState.matchingNotes = null;
   } else {
@@ -36,6 +34,7 @@ const handleSearchKeydownEnter = (e: Event) => {
     clearQuery();
     e.preventDefault();
     elementRefs.codeMirror?.focus();
+    genericState.activateSelectedNote();
   } else {
     createNewNote(`# ${currentQuery.value} \n`);
     clearQuery();
@@ -47,18 +46,31 @@ const handleDownArrowPress = (e: Event) => {
   e.preventDefault();
   noteWasSelectedDuringSearch.value = true;
 
-  if (!genericState.activeNoteId) {
-    genericState.activeNoteId = props.noteList[0].id;
-    genericState.activeNoteContents = props.noteList[0].content;
+  if (!genericState.selectedCommandPaletteNote) {
+    genericState.selectedCommandPaletteNote = props.noteList[0];
   } else {
-    navigateToNextNote(props.noteList);
+    const indexOfSelectedNote = getIndexOfNoteById(
+      genericState.selectedCommandPaletteNote!.id,
+      props.noteList
+    )!;
+
+    if (indexOfSelectedNote < props.noteList.length + 1)
+      genericState.selectedCommandPaletteNote =
+        props.noteList[indexOfSelectedNote + 1];
   }
 };
 
 const handleUpArrowPress = (e: Event) => {
   e.preventDefault();
   noteWasSelectedDuringSearch.value = true;
-  navigateToPreviousNote(props.noteList);
+  const indexOfSelectedNote = getIndexOfNoteById(
+    genericState.selectedCommandPaletteNote!.id,
+    props.noteList
+  )!;
+
+  if (indexOfSelectedNote > 0)
+    genericState.selectedCommandPaletteNote =
+      props.noteList[indexOfSelectedNote - 1];
 };
 
 onMounted(() => {
