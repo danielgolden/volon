@@ -10,6 +10,7 @@ import {
   sortNotesByModificationDate,
   navigateToPreviousNote,
   navigateToNextNote,
+  getIndexOfNoteById,
 } from "../lib/utils";
 
 const notebook = useNotebookStore();
@@ -69,6 +70,16 @@ const getActiveSelectionStatus = (matchingNotes?: Note[]) => {
   return selectionFoundInMatchingNotes || selectionFoundAmongAllNotes;
 };
 
+const updateNoteListIsScrolled = () => {
+  const scrollPosition = noteListUl.value!.scrollTop;
+
+  if (scrollPosition > 0) {
+    noteListIsScrolled.value = true;
+  } else {
+    noteListIsScrolled.value = false;
+  }
+};
+
 watch(
   () => genericState.matchingNotes as Note[],
   (newValue) => {
@@ -77,14 +88,10 @@ watch(
 );
 
 onMounted(() => {
-  noteListUl.value?.addEventListener("scroll", () => {
-    const scrollPosition = noteListUl.value!.scrollTop;
+  updateNoteListIsScrolled();
 
-    if (scrollPosition > 0) {
-      noteListIsScrolled.value = true;
-    } else {
-      noteListIsScrolled.value = false;
-    }
+  noteListUl.value?.addEventListener("scroll", () => {
+    updateNoteListIsScrolled();
   });
 });
 
@@ -100,6 +107,8 @@ watch(
 watch(
   () => genericState.activeNoteId,
   () => {
+    updateNoteListIsScrolled();
+
     const activeListItem = noteListItemRefs.value.find(
       (noteListItem: HTMLElement) => {
         return noteListItem.dataset.noteId === genericState.activeNoteId;
@@ -115,14 +124,15 @@ watch(
     if (activeListItem) {
       const noteListPosition = noteListUl.value!.getBoundingClientRect();
       const activeListItemPosition = activeListItem.getBoundingClientRect();
-
       const isAboveContainerViewport =
         activeListItemPosition.top < noteListPosition.top;
       const isBelowContainerViewport =
         activeListItemPosition.bottom > noteListPosition.bottom;
-
       const isOutsideContainerViewport =
         isAboveContainerViewport || isBelowContainerViewport;
+      const indexOfActiveItem = getIndexOfNoteById(
+        activeListItem.dataset.noteId!
+      );
 
       if (isOutsideContainerViewport) {
         // R the function on the next iteration of the event loop
@@ -132,6 +142,10 @@ watch(
             block: "nearest",
           });
         });
+      }
+
+      if (isOutsideContainerViewport && indexOfActiveItem === 0) {
+        noteListUl.value!.scrollTop = 0;
       }
     }
   }
