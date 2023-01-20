@@ -5,6 +5,7 @@ import { onMounted, ref, computed, watch, nextTick } from "vue";
 import { useGenericStateStore } from "../stores/store.genericState";
 import { useNotebookStore } from "../stores/store.notebook";
 import { formatRelative } from "date-fns";
+import KeyboardShortcutIndicator from "./KeyboardShortcutIndicator.vue";
 import {
   sortNotesByModificationDate,
   navigateToPreviousNote,
@@ -146,6 +147,7 @@ watch(
       @keydown.up="navigateToPreviousNote(notesToBeDisplayed)"
       @keydown.down="navigateToNextNote(notesToBeDisplayed)"
       ref="noteListUl"
+      v-show="notesToBeDisplayed.length"
     >
       <li
         v-for="note in notesToBeDisplayed"
@@ -169,6 +171,11 @@ watch(
         }}</span>
       </li>
     </ul>
+    <div class="empty-state" v-show="notesToBeDisplayed.length === 0">
+      <p class="empty-state-description">
+        <KeyboardShortcutIndicator value="↵" /> Create a new note
+      </p>
+    </div>
   </div>
 </template>
 
@@ -176,6 +183,8 @@ watch(
 .aside-note-list-container {
   --padding-block: 14px;
   display: flex;
+  width: 350px;
+  flex-shrink: 0;
   flex-direction: column;
   border-right: 1px solid var(--color-border-secondary);
   background-color: var(--color-bg-surface-2);
@@ -183,7 +192,6 @@ watch(
 .note-list {
   display: flex;
   flex-direction: column;
-  width: 350px;
   height: 100%;
   margin: 0;
   padding: calc(var(--padding-block) / 2) 12px var(--padding-block);
@@ -257,6 +265,26 @@ watch(
 }
 .active-note-list-item .note-list-item-meta {
   color: var(--color-text-secondary);
+}
+
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 0 10%;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  color: var(--color-text-secondary);
+}
+
+.empty-state-description {
+  margin: 0 0 4px 0;
+}
+
+.empty-state .keyboard-shortcut-indicator {
+  margin-right: 3px;
 }
 /* 
 @media (prefers-color-scheme: light) {
