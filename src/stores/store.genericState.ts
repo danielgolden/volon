@@ -10,6 +10,8 @@ export const useGenericStateStore = defineStore("genericState", {
       searchJustCreatedNote: false,
       session: <any>null,
       selectedCommandPaletteNote: <Note | null>null,
+      noteListCurrentQuery: "",
+      urlHasSearch: false,
     };
   },
   actions: {
@@ -20,6 +22,7 @@ export const useGenericStateStore = defineStore("genericState", {
       this.activeNoteId = null;
       this.activeNoteContents = "";
     },
+    // For use with `selectedCommandPaletteNote`
     activateSelectedNote() {
       this.activeNoteId = this.selectedCommandPaletteNote!.id;
       this.activeNoteContents = this.selectedCommandPaletteNote!.content;

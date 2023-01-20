@@ -8,12 +8,13 @@ import {
   deleteActiveNote,
   setWindowDimensions,
   navigateToNoteByRelativeIndex,
+  processUrlParams,
+  setUrlParams,
 } from "./lib/utils";
 import { createSampleDataInLocalStorage } from "./lib/localStorage";
-import { describe, it, expect, beforeEach, expectTypeOf } from "vitest";
+import { describe, it, expect, beforeEach } from "vitest";
 import { createPinia, _StoreWithState } from "pinia";
 import { useGenericStateStore } from "./stores/store.genericState";
-import { useSettingsStore } from "./stores/store.settings";
 import { useNotebookStore } from "./stores/store.notebook";
 import { createApp } from "vue";
 import { mount } from "@vue/test-utils";
@@ -22,7 +23,6 @@ const pinia = createPinia();
 const app = createApp(App);
 app.use(pinia);
 
-const settings = useSettingsStore();
 const notebook = useNotebookStore();
 const genericState = useGenericStateStore();
 
@@ -221,5 +221,46 @@ describe("createSampleData()", () => {
 
     createSampleDataInLocalStorage();
     expect(notebook.notes.length).toBeGreaterThanOrEqual(50);
+  });
+});
+
+describe("processUrlParams", () => {
+  it("Loads the requested note if one has been specified", () => {
+    const notebook = useNotebookStore();
+    const genericState = useGenericStateStore();
+    const specifiedNoteId = notebook.notes[0].id;
+    const urlParams = `?noteId=${specifiedNoteId}`;
+
+    processUrlParams(urlParams);
+
+    expect(genericState.activeNoteContents).toBe(
+      notebook.getNoteById(specifiedNoteId).content
+    );
+  });
+  it("Loads runs the requested search if one has been specified", () => {
+    const searchQuery = "freedom";
+    const urlParams = `?search=${searchQuery}`;
+
+    processUrlParams(urlParams);
+
+    expect(genericState.noteListCurrentQuery).toBe(searchQuery);
+  });
+});
+
+describe("setUrlParams", () => {
+  it("Destructures an object into URL parameters", () => {
+    const specifiedNoteId = notebook.notes[0].id;
+    const desiredUrlParams = {
+      search: "volon",
+      noteId: specifiedNoteId,
+      randomTestQuery: "yaboii",
+    };
+
+    setUrlParams(desiredUrlParams);
+
+    const urlParams = window.location.search;
+    expect(urlParams).toBe(
+      `?search=volon&noteId=${specifiedNoteId}&randomTestQuery=yaboii`
+    );
   });
 });

@@ -60,12 +60,11 @@ describe("handleInputChange()", async () => {
 });
 
 describe("handleSearchKeydownEnter()", () => {
-  it("Creates a new note with the currentQuery as the header", async () => {
+  it("Creates a new note with the noteListCurrentQuery as the header", async () => {
     const searchQuery = "I'm a new note title/search query";
     genericState.matchingNotes = [];
 
-    // @ts-ignore: Property 'currentQuery' does not exist on type 'ComponentPublicInstance ts(2339)
-    wrapper.vm.currentQuery = searchQuery;
+    genericState.noteListCurrentQuery = searchQuery;
     await wrapper?.find("input").trigger("keydown.enter");
 
     const lastNoteIndex = notebook.notes.length - 1;
@@ -77,8 +76,7 @@ describe("handleSearchKeydownEnter()", () => {
     const searchQuery = "I'm a new note title/search query";
     genericState.matchingNotes = wrapper?.props("noteList")[0];
 
-    // @ts-ignore: Property 'currentQuery' does not exist on type 'ComponentPublicInstance ts(2339)
-    wrapper.vm.currentQuery = searchQuery;
+    genericState.noteListCurrentQuery = searchQuery;
     await wrapper?.find("input").trigger("keydown.enter");
 
     const lastNoteIndex = notebook.notes.length - 1;
@@ -90,13 +88,11 @@ describe("handleSearchKeydownEnter()", () => {
     notebook.notes = wrapper?.props("noteList");
     genericState.matchingNotes = wrapper?.props("noteList")[0];
 
-    // @ts-ignore: Property 'currentQuery' does not exist on type 'ComponentPublicInstance ts(2339)
-    wrapper.vm.currentQuery = "e";
+    genericState.noteListCurrentQuery = "e";
     await wrapper?.find("input").trigger("keydown.down");
     await wrapper?.find("input").trigger("keydown.enter");
 
-    // @ts-ignore: Property 'currentQuery' does not exist on type 'ComponentPublicInstance ts(2339)
-    expect(wrapper?.vm.currentQuery).toBe("");
+    expect(genericState.noteListCurrentQuery).toBe("");
   });
 });
 
@@ -106,12 +102,10 @@ describe("handleDownArrowPress()", () => {
     genericState.matchingNotes = wrapper?.props("noteList");
     genericState.activeNoteId = wrapper?.props("noteList")[0].id;
 
-    // @ts-ignore: Property 'currentQuery' does not exist on type 'ComponentPublicInstance ts(2339)
-    wrapper.vm.currentQuery = "e";
+    genericState.noteListCurrentQuery = "e";
     await wrapper?.find("input").trigger("keydown.down");
 
-    // @ts-ignore: Property 'currentQuery' does not exist on type 'ComponentPublicInstance ts(2339)
-    expect(genericState.activeNoteId).toBe(genericState.matchingNotes[1].id);
+    expect(genericState.activeNoteId).toBe(genericState.matchingNotes![1].id);
   });
 
   it("Navigates to the first note if none is selected", async () => {
@@ -119,12 +113,10 @@ describe("handleDownArrowPress()", () => {
     genericState.matchingNotes = wrapper?.props("noteList");
     genericState.activeNoteId = null;
 
-    // @ts-ignore: Property 'currentQuery' does not exist on type 'ComponentPublicInstance ts(2339)
-    wrapper.vm.currentQuery = "e";
+    genericState.noteListCurrentQuery = "e";
     await wrapper?.find("input").trigger("keydown.down");
 
-    // @ts-ignore: Property 'currentQuery' does not exist on type 'ComponentPublicInstance ts(2339)
-    expect(genericState.activeNoteId).toBe(genericState.matchingNotes[0].id);
+    expect(genericState.activeNoteId).toBe(genericState.matchingNotes![0].id);
   });
 });
 
@@ -134,11 +126,9 @@ describe("handleDownPreviousPress()", () => {
     genericState.matchingNotes = wrapper?.props("noteList");
     genericState.activeNoteId = wrapper?.props("noteList")[1].id;
 
-    // @ts-ignore: Property 'currentQuery' does not exist on type 'ComponentPublicInstance ts(2339)
-    wrapper.vm.currentQuery = "e";
+    genericState.noteListCurrentQuery = "e";
     await wrapper?.find("input").trigger("keydown.up");
 
-    // @ts-ignore: Property 'currentQuery' does not exist on type 'ComponentPublicInstance ts(2339)
-    expect(genericState.activeNoteId).toBe(genericState.matchingNotes[0].id);
+    expect(genericState.activeNoteId).toBe(genericState.matchingNotes![0].id);
   });
 });

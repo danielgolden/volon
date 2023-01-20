@@ -10,11 +10,10 @@ import { useGenericStateStore } from "../stores/store.genericState";
 import { useNotebookStore } from "../stores/store.notebook";
 
 const props = defineProps(["noteList"]);
-const currentQuery = ref(``);
 const noteWasSelectedDuringSearch = ref(false);
 const searchInput = ref<HTMLInputElement | null>(null);
 const keyboardShortcutIndicatorVisible = computed(() => {
-  return currentQuery.value.length < 32;
+  return genericState.noteListCurrentQuery.length < 32;
 });
 const elementRefs = useElementRefsStore();
 const genericState = useGenericStateStore();
@@ -30,7 +29,7 @@ const handleInputChange = (currentContent: string) => {
 
 const clearQuery = () => {
   handleInputChange("");
-  currentQuery.value = "";
+  genericState.noteListCurrentQuery = "";
 };
 
 const handleSearchKeydownEnter = (e: Event) => {
@@ -41,7 +40,7 @@ const handleSearchKeydownEnter = (e: Event) => {
     e.preventDefault();
     elementRefs.codeMirror?.focus();
   } else {
-    createNewNote(`# ${currentQuery.value} \n`);
+    createNewNote(`# ${genericState.noteListCurrentQuery} \n`);
     clearQuery();
     genericState.searchJustCreatedNote = true;
   }
@@ -67,6 +66,11 @@ const handleUpArrowPress = (e: Event) => {
 
 onMounted(() => {
   elementRefs.asideSearchInput = searchInput.value;
+
+  if (genericState.urlHasSearch) {
+    handleInputChange(genericState.noteListCurrentQuery);
+    elementRefs.asideSearchInput?.focus();
+  }
 });
 </script>
 
@@ -82,7 +86,7 @@ onMounted(() => {
     <input
       class="search-input"
       type="text"
-      v-model="currentQuery"
+      v-model="genericState.noteListCurrentQuery"
       @input="(currentValue) => handleInputChange((currentValue.target as HTMLInputElement)?.value)"
       @keydown.enter="(e) => handleSearchKeydownEnter(e)"
       @keydown.down="(e) => handleDownArrowPress(e)"

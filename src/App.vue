@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted, ref } from "vue";
+import { onMounted, ref, watch } from "vue";
 import Aside from "./components/Aside.vue";
 import AsideNoteList from "./components/AsideNoteList.vue";
 import Editor from "./components/Editor.vue";
@@ -12,6 +12,8 @@ import {
   setWindowDimensions,
   downloadBackupOfData,
   displayCommandPalette,
+  processUrlParams,
+  setUrlParams,
 } from "./lib/utils";
 import {
   saveAppSettingsToLocalStorage,
@@ -26,6 +28,14 @@ const elementRefs = useElementRefsStore();
 const settings = useSettingsStore();
 const genericState = useGenericStateStore();
 
+// Update the URL with the noteId when it changes
+watch(
+  () => genericState.activeNoteId,
+  (newValue) => {
+    setUrlParams({ noteId: newValue });
+  }
+);
+
 onMounted(async () => {
   setWindowDimensions();
   await getSession();
@@ -38,6 +48,8 @@ onMounted(async () => {
     intializeLocalStorageData();
     notesDataLoaded.value = true;
   }
+
+  processUrlParams();
 
   window.addEventListener("keydown", (event) => {
     if (event.altKey && event.metaKey && event.code === "KeyN") {

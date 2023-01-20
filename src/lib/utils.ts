@@ -186,3 +186,30 @@ export const displayCommandPalette = () => {
     elementRefs.commandPaletteSearchInput?.focus();
   });
 };
+
+export const processUrlParams = (testParams?: string) => {
+  // testParams is only used for testing this function
+
+  const notebook = useNotebookStore();
+  const genericState = useGenericStateStore();
+  const urlParamsString = window.location.search;
+  const urlParams = new URLSearchParams(testParams ?? urlParamsString);
+
+  if (urlParams.has("noteId")) {
+    const requestedNote = notebook.getNoteById(urlParams.get("noteId"));
+    genericState.activeNoteId = requestedNote.id;
+    genericState.activeNoteContents = requestedNote.content;
+  }
+
+  if (urlParams.has("search")) {
+    genericState.noteListCurrentQuery = urlParams.get("search")!;
+    genericState.urlHasSearch = true;
+  }
+};
+
+export const setUrlParams = (desiredUrlParams: { [key: string]: any }) => {
+  const urlParams = new URLSearchParams(desiredUrlParams);
+
+  // Clear any existing urlParams
+  history.replaceState(null, "", `${location.origin}?${urlParams}`);
+};
