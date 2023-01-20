@@ -1,6 +1,6 @@
 import { mount, VueWrapper } from "@vue/test-utils";
-import App from "./App.vue";
-import { useNotebookStore } from "./stores/store.notebook";
+import App from "../App.vue";
+import { useNotebookStore } from "../stores/store.notebook";
 import { createApp } from "vue";
 import { describe, it, expect, beforeEach, afterEach } from "vitest";
 import { createPinia } from "pinia";

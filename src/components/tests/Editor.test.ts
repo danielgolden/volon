@@ -1,12 +1,12 @@
 import { mount, VueWrapper } from "@vue/test-utils";
-import App from "../App.vue";
-import Editor from "./Editor.vue";
+import App from "../../App.vue";
+import Editor from "../Editor.vue";
 import { describe, it, expect, beforeEach, afterEach } from "vitest";
 import { createPinia } from "pinia";
 import { createApp } from "vue";
-import { useNotebookStore } from "../stores/store.notebook";
-import { useSettingsStore } from "../stores/store.settings";
-import { useGenericStateStore } from "../stores/store.genericState";
+import { useNotebookStore } from "../../stores/store.notebook";
+import { useSettingsStore } from "../../stores/store.settings";
+import { useGenericStateStore } from "../../stores/store.genericState";
 
 // TODO: Figure out how to test keyboard shortcuts with vue test utils or another library.
 // The best lead I have so far: https://testing-library.com/docs/user-event/keyboard

@@ -1,9 +1,9 @@
 import { mount, VueWrapper } from "@vue/test-utils";
-import CommandPalette from "./CommandPalette.vue";
-import { randomIntFromInterval, Note } from "../lib/utils";
-import { createSampleDataInLocalStorage } from "../lib/localStorage";
-import { useGenericStateStore } from "../stores/store.genericState";
-import { useNotebookStore } from "../stores/store.notebook";
+import CommandPalette from "../CommandPalette.vue";
+import { randomIntFromInterval, Note } from "../../lib/utils";
+import { createSampleDataInLocalStorage } from "../../lib/localStorage";
+import { useGenericStateStore } from "../../stores/store.genericState";
+import { useNotebookStore } from "../../stores/store.notebook";
 import { describe, it, expect, beforeEach, afterEach } from "vitest";
 import { createPinia } from "pinia";
 import { createApp } from "vue";

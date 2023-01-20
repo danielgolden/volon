@@ -1,4 +1,4 @@
-import App from "./App.vue";
+import App from "../../App.vue";
 import {
   saveCurrentNoteChange,
   createNewNote,
@@ -10,12 +10,12 @@ import {
   navigateToNoteByRelativeIndex,
   processUrlParams,
   setUrlParams,
-} from "./lib/utils";
-import { createSampleDataInLocalStorage } from "./lib/localStorage";
+} from "../utils";
+import { createSampleDataInLocalStorage } from "../localStorage";
 import { describe, it, expect, beforeEach } from "vitest";
 import { createPinia, _StoreWithState } from "pinia";
-import { useGenericStateStore } from "./stores/store.genericState";
-import { useNotebookStore } from "./stores/store.notebook";
+import { useGenericStateStore } from "../../stores/store.genericState";
+import { useNotebookStore } from "../../stores/store.notebook";
 import { createApp } from "vue";
 import { mount } from "@vue/test-utils";
 
