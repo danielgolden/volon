@@ -12,7 +12,6 @@ import {
   navigateToNextNote,
   getIndexOfNoteById,
 } from "../lib/utils";
-import { storeToRefs } from "pinia";
 
 const notebook = useNotebookStore();
 const genericState = useGenericStateStore();

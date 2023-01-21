@@ -34,33 +34,39 @@ const positionTooltip = () => {
 
   const sideReferenceValue: string = sideReference[props.position ?? "top"];
 
-  if (props.position === "right") {
-    tooltip.value!.style[sideReferenceValue] =
-      sourceElementPosition.right.toString() + "px";
-    tooltip.value!.style.top =
-      sourceElementPosition.top + topValueForCenteringY + "px";
-  } else if (props.position === "left") {
-    tooltip.value!.style[sideReferenceValue] =
-      (sourceElementPosition.left - tooltip.value!.scrollWidth).toString() +
-      "px";
-    tooltip.value!.style.top =
-      sourceElementPosition.top + topValueForCenteringY + "px";
-  } else if (props.position === "top") {
-    tooltip.value!.style[sideReferenceValue] =
-      (sourceElementPosition.top - sourceElementPosition.height).toString() +
-      "px";
-    tooltip.value!.style.left =
-      sourceElementPosition.left + topValueForCenteringX + "px";
-  } else if (props.position === "bottom") {
-    tooltip.value!.style[sideReferenceValue] =
-      sourceElementPosition.bottom.toString() + "px";
-    tooltip.value!.style.left =
-      sourceElementPosition.left + topValueForCenteringX + "px";
+  switch (props.position) {
+    case "right":
+      tooltip.value!.style[sideReferenceValue] =
+        sourceElementPosition.right.toString() + "px";
+      tooltip.value!.style.top =
+        sourceElementPosition.top + topValueForCenteringY + "px";
+      break;
+    case "left":
+      tooltip.value!.style[sideReferenceValue] =
+        (sourceElementPosition.left - tooltip.value!.scrollWidth).toString() +
+        "px";
+      tooltip.value!.style.top =
+        sourceElementPosition.top + topValueForCenteringY + "px";
+      break;
+    case "top":
+      tooltip.value!.style[sideReferenceValue] =
+        (sourceElementPosition.top - sourceElementPosition.height).toString() +
+        "px";
+      tooltip.value!.style.left =
+        sourceElementPosition.left + topValueForCenteringX + "px";
+      break;
+    case "bottom":
+      tooltip.value!.style[sideReferenceValue] =
+        sourceElementPosition.bottom.toString() + "px";
+      tooltip.value!.style.left =
+        sourceElementPosition.left + topValueForCenteringX + "px";
+      break;
   }
 };
 
 onMounted(() => {
-  const waitTime = 300;
+  const sourceElement = tooltipContainer.value!.children[1];
+  const waitTime = 400;
 
   tooltipContainer.value?.addEventListener("mouseenter", () => {
     clearTimeout(displayTimer.value);
@@ -71,6 +77,11 @@ onMounted(() => {
   });
 
   tooltipContainer.value?.addEventListener("mouseleave", () => {
+    clearTimeout(displayTimer.value);
+    tooltipVisible.value = false;
+  });
+
+  sourceElement.addEventListener("click", () => {
     clearTimeout(displayTimer.value);
     tooltipVisible.value = false;
   });

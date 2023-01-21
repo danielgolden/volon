@@ -80,7 +80,7 @@ onMounted(() => {
           </Tooltip>
         </li>
         <li class="primary-menu-item">
-          <Tooltip value="Search notes" position="right">
+          <Tooltip value="Search notes (⌘K)" position="right">
             <button class="btn-menu btn-search" @click="displayCommandPalette">
               <Icon name="search" class="btn-menu-icon" />
             </button>
