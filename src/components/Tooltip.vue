@@ -60,7 +60,7 @@ const positionTooltip = () => {
 };
 
 onMounted(() => {
-  const waitTime = 200;
+  const waitTime = 300;
 
   tooltipContainer.value?.addEventListener("mouseenter", () => {
     clearTimeout(displayTimer.value);

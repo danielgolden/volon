@@ -87,7 +87,7 @@ onMounted(() => {
           </Tooltip>
         </li>
         <li class="primary-menu-item">
-          <Tooltip value="Show/hide notes list" position="right">
+          <Tooltip value="Notes list" position="right">
             <button
               class="btn-menu btn-toggle-note-list"
               @click="handleAsideButtonClick"
