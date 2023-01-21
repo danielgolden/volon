@@ -36,12 +36,14 @@ const positionTooltip = () => {
 
   switch (props.position) {
     case "right":
+      // @ts-expect-error Element implicitly has an 'any' type because index expression is not of type 'number'.ts(7015)
       tooltip.value!.style[sideReferenceValue] =
         sourceElementPosition.right.toString() + "px";
       tooltip.value!.style.top =
         sourceElementPosition.top + topValueForCenteringY + "px";
       break;
     case "left":
+      // @ts-expect-error Element implicitly has an 'any' type because index expression is not of type 'number'.ts(7015)
       tooltip.value!.style[sideReferenceValue] =
         (sourceElementPosition.left - tooltip.value!.scrollWidth).toString() +
         "px";
@@ -49,6 +51,7 @@ const positionTooltip = () => {
         sourceElementPosition.top + topValueForCenteringY + "px";
       break;
     case "top":
+      // @ts-expect-error Element implicitly has an 'any' type because index expression is not of type 'number'.ts(7015)
       tooltip.value!.style[sideReferenceValue] =
         (sourceElementPosition.top - sourceElementPosition.height).toString() +
         "px";
@@ -56,6 +59,7 @@ const positionTooltip = () => {
         sourceElementPosition.left + topValueForCenteringX + "px";
       break;
     case "bottom":
+      // @ts-expect-error Element implicitly has an 'any' type because index expression is not of type 'number'.ts(7015)
       tooltip.value!.style[sideReferenceValue] =
         sourceElementPosition.bottom.toString() + "px";
       tooltip.value!.style.left =
