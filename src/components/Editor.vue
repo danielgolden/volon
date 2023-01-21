@@ -196,6 +196,7 @@ const resetCodemirrorView = () => {
       markdown({
         base: markdownLanguage,
       }),
+      handleLinkPaste(),
       editorTheme,
       placeholder("Jot something down..."),
       EditorView.lineWrapping,
@@ -210,10 +211,10 @@ const resetCodemirrorView = () => {
           run: insertItalicMarker,
         },
         ...defaultKeymap,
-        {
-          key: "Mod-v",
-          run: handleCommandV,
-        },
+        // {
+        //   key: "Mod-v",
+        //   run: handleCommandV,
+        // },
         {
           key: "Mod-b",
           run: insertBoldMarker,
@@ -255,33 +256,33 @@ watch(
   }
 );
 
-const handleCommandV = () => {
-  const controlledPaste = async () => {
-    const firstSelection = myCodemirrorView.state.selection.ranges.at(0)!;
-    const selectionText = myCodemirrorView.state.doc
-      .toString()
-      .substring(firstSelection.from, firstSelection.to);
-    const clipBoardText = await navigator.clipboard.readText();
-    const isURL =
-      clipBoardText.startsWith("https://") ||
-      clipBoardText.startsWith("http://") ||
-      clipBoardText.startsWith("www");
+const handleLinkPaste = () => {
+  return EditorState.transactionFilter.of((tr) => {
+    if (tr.isUserEvent("input.paste")) {
+      const firstSelection = myCodemirrorView.state.selection.ranges.at(0)!;
+      const selectionText = myCodemirrorView.state.doc
+        .toString()
+        .substring(firstSelection.from, firstSelection.to);
+      // @ts-expect-error Property 'inserted' does not exist on type 'ChangeSet'.ts(2339)
+      const pastedText = tr.changes.inserted.toString();
+      const isURL =
+        pastedText.startsWith("https://") ||
+        pastedText.startsWith("http://") ||
+        pastedText.startsWith("www");
 
-    if (selectionText && isURL) {
-      myCodemirrorView.dispatch(
-        myCodemirrorView.state.replaceSelection(
-          `[${selectionText}](${clipBoardText})`
-        )
-      );
-    } else {
-      myCodemirrorView.dispatch(
-        myCodemirrorView.state.replaceSelection(clipBoardText)
-      );
+      if (selectionText && isURL) {
+        return myCodemirrorView.state.update({
+          changes: {
+            from: firstSelection.from,
+            to: firstSelection.to,
+            insert: `[${selectionText}](${pastedText})`,
+          },
+        });
+      }
     }
-  };
 
-  controlledPaste();
-  return true;
+    return tr;
+  });
 };
 </script>
 
