@@ -141,6 +141,7 @@ onMounted(() => {
   color: var(--color-text-primary);
   font-family: var(--font-family-primary);
   transition: box-shadow 200ms var(--ease-out-cubic);
+  caret-color: #5fa9ff;
 }
 
 @media (prefers-color-scheme: light) {

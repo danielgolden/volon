@@ -104,6 +104,7 @@ onMounted(() => {
   border: none;
   color: var(--color-text-primary);
   font-family: var(--font-family-primary);
+  caret-color: #5fa9ff;
 }
 
 @media (prefers-color-scheme: light) {
