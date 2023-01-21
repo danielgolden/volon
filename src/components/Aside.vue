@@ -9,6 +9,7 @@ import {
 import { onMounted, ref } from "vue";
 import { useGenericStateStore } from "../stores/store.genericState";
 import Icon from "./Icon.vue";
+import Tooltip from "./Tooltip.vue";
 
 const accountMenuActive = ref(false);
 const asideElement = ref<HTMLElement | null>(null);
@@ -56,19 +57,7 @@ onMounted(() => {
 <template>
   <section class="aside-container" ref="asideElement">
     <a href="/" class="logo" title="Volón">
-      <svg
-        width="18"
-        height="13"
-        viewBox="0 0 18 13"
-        fill="none"
-        xmlns="http://www.w3.org/2000/svg"
-        class="logo-svg"
-      >
-        <path
-          d="M14.256 0L11.25 5.4L8.676 10.242L6.12 5.4L3.114 0H0L7.128 12.6H10.242L17.37 0H14.256Z"
-          fill="var(--color-text-primary)"
-        />
-      </svg>
+      <img src="../assets/logo-volon.svg" class="volon-logo" />
     </a>
 
     <hr class="logo-separator" />
@@ -76,46 +65,47 @@ onMounted(() => {
     <div class="menu-items">
       <ul class="primary-menu-items">
         <li class="primary-menu-item">
-          <button
-            :class="{
-              'btn-menu': true,
-              'btn-account': true,
-              'btn-active': accountMenuActive,
-            }"
-            @click="accountMenuActive = !accountMenuActive"
-            ref="accountButton"
-            title="Your notes data"
-          >
-            <Icon name="user" class="btn-menu-icon" />
-          </button>
+          <Tooltip value="Your data" position="right">
+            <button
+              :class="{
+                'btn-menu': true,
+                'btn-account': true,
+                'btn-active': accountMenuActive,
+              }"
+              @click="accountMenuActive = !accountMenuActive"
+              ref="accountButton"
+            >
+              <Icon name="user" class="btn-menu-icon" />
+            </button>
+          </Tooltip>
         </li>
         <li class="primary-menu-item">
-          <button
-            class="btn-menu btn-search"
-            @click="displayCommandPalette"
-            title="Search your notes"
-          >
-            <Icon name="search" class="btn-menu-icon" />
-          </button>
+          <Tooltip value="Search notes" position="right">
+            <button class="btn-menu btn-search" @click="displayCommandPalette">
+              <Icon name="search" class="btn-menu-icon" />
+            </button>
+          </Tooltip>
         </li>
         <li class="primary-menu-item">
-          <button
-            class="btn-menu btn-toggle-note-list"
-            @click="handleAsideButtonClick"
-            title="Search your notes"
-          >
-            <Icon name="aside" class="btn-menu-icon" />
-          </button>
+          <Tooltip value="Show/hide notes list" position="right">
+            <button
+              class="btn-menu btn-toggle-note-list"
+              @click="handleAsideButtonClick"
+            >
+              <Icon name="aside" class="btn-menu-icon" />
+            </button>
+          </Tooltip>
         </li>
       </ul>
-
-      <button
-        class="btn-menu btn-backup"
-        @click="downloadBackupOfData"
-        title="Download a backup of your data"
-      >
-        <Icon name="download" class="btn-menu-icon" />
-      </button>
+      <Tooltip value="Download a backup" position="right">
+        <button
+          class="btn-menu btn-backup"
+          @click="downloadBackupOfData"
+          title="Download a backup of your data"
+        >
+          <Icon name="download" class="btn-menu-icon" />
+        </button>
+      </Tooltip>
     </div>
 
     <div
@@ -225,13 +215,13 @@ onMounted(() => {
   flex-shrink: 0;
   padding: 8px;
   align-items: center;
-  overflow: hidden;
   grid-template-rows: min-content 1fr;
   background-color: var(--color-bg-surface-2);
   border-right: 1px solid var(--color-border-secondary);
 }
 .logo {
   display: flex;
+  align-items: flex-start;
   padding: 8px;
 }
 

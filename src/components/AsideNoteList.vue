@@ -12,6 +12,7 @@ import {
   navigateToNextNote,
   getIndexOfNoteById,
 } from "../lib/utils";
+import { storeToRefs } from "pinia";
 
 const notebook = useNotebookStore();
 const genericState = useGenericStateStore();
@@ -88,11 +89,13 @@ watch(
 );
 
 onMounted(() => {
-  updateNoteListIsScrolled();
-
-  noteListUl.value?.addEventListener("scroll", () => {
+  if (settings.asideActive) {
     updateNoteListIsScrolled();
-  });
+
+    noteListUl.value?.addEventListener("scroll", () => {
+      updateNoteListIsScrolled();
+    });
+  }
 });
 
 watch(
@@ -237,7 +240,7 @@ watch(
   right: 0;
   background-image: linear-gradient(
     180deg,
-    var(--color-bg-surface-2) 20%,
+    var(--color-bg-surface-2) 10%,
     transparent
   );
   transition: opacity 200ms var(--ease-out-quad);
