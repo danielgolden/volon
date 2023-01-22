@@ -32,6 +32,7 @@ const notesToBeDisplayed = computed(() => {
     return sortNotesByModificationDate(genericState.noteListMatchingNotes!);
   }
 });
+
 const handleNoteItemClick = (noteId: string | null) => {
   if (noteId) {
     genericState.activeNoteId = noteId;
@@ -44,6 +45,7 @@ const handleNoteItemClick = (noteId: string | null) => {
     }
   }
 };
+
 const formatRelativeDate = (relativeDate: string) => {
   const capitalizedFirstLetter = relativeDate[0].toUpperCase();
   const dateWithCapitalizedFirstChar =
@@ -103,6 +105,24 @@ watch(
   (oldValue, newValue) => {
     if (!newValue) {
       genericState.selectedCommandPaletteNote = null;
+    }
+  }
+);
+
+watch(
+  () => settings.asideActive,
+  (newValue, oldValue) => {
+    if (newValue) {
+      nextTick(() => {
+        noteListUl.value?.addEventListener("scroll", () => {
+          updateNoteListIsScrolled();
+        });
+        updateNoteListIsScrolled();
+      });
+    } else {
+      noteListUl.value?.removeEventListener("scroll", () => {
+        updateNoteListIsScrolled();
+      });
     }
   }
 );
@@ -328,7 +348,7 @@ watch(
 .expand-aside-enter-active .note-list,
 .expand-aside-enter-active .search-container {
   transition: translate 400ms var(--ease-out-quint),
-    opacity 300ms var(--ease-out-quad);
+    opacity 300ms var(--ease-out-quad), scale 300ms var(--ease-out-quad);
 }
 .expand-aside-leave-active .note-list,
 .expand-aside-leave-active .search-container {
@@ -340,8 +360,9 @@ watch(
   opacity: 0;
 }
 .expand-aside-enter-from .search-container {
-  translate: 0 -8px;
+  translate: 0 3px;
   opacity: 0;
+  scale: 0.98;
 }
 .expand-aside-leave-to .note-list,
 .expand-aside-leave-to .search-container {
