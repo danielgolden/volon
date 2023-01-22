@@ -71,6 +71,7 @@ const getActiveSelectionStatus = (matchingNotes?: Note[]) => {
 };
 
 const updateNoteListIsScrolled = () => {
+  if (!noteListUl.value) return;
   const scrollPosition = noteListUl.value!.scrollTop;
 
   if (scrollPosition > 0) {
