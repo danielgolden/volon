@@ -18,14 +18,16 @@ const genericState = useGenericStateStore();
 const notebook = useNotebookStore();
 
 const searchIsActive = computed(() => {
-  return genericState.matchingNotes !== null;
+  return genericState.commandPaletteMatchingNotes !== null;
 });
 
 const notesToBeDisplayed = computed(() => {
   if (!searchIsActive.value) {
     return sortNotesByModificationDate(notebook.notes);
   } else {
-    return sortNotesByModificationDate(genericState.matchingNotes!);
+    return sortNotesByModificationDate(
+      genericState.commandPaletteMatchingNotes!
+    );
   }
 });
 const handleNoteItemClick = (noteId: string | null) => {
@@ -45,14 +47,15 @@ const formatRelativeDate = (relativeDate: string) => {
   return dateWithCapitalizedFirstChar.replace("AM", "am").replace("PM", "pm");
 };
 
-const getActiveSelectionStatus = (matchingNotes?: Note[]) => {
-  let selectionFoundInMatchingNotes = false;
+const getActiveSelectionStatus = (commandPaletteMatchingNotes?: Note[]) => {
+  let selectionFoundIncommandPaletteMatchingNotes = false;
 
-  // selected item found in `matchingNotes`?
-  if (matchingNotes) {
-    selectionFoundInMatchingNotes = matchingNotes.some(
-      (note: Note) => note.id === genericState.activeNoteId
-    );
+  // selected item found in `commandPaletteMatchingNotes`?
+  if (commandPaletteMatchingNotes) {
+    selectionFoundIncommandPaletteMatchingNotes =
+      commandPaletteMatchingNotes.some(
+        (note: Note) => note.id === genericState.activeNoteId
+      );
   }
 
   // selcted item in all `notesToBeDisplayed`?
@@ -60,11 +63,13 @@ const getActiveSelectionStatus = (matchingNotes?: Note[]) => {
     (note: Note) => note.id === genericState.activeNoteId
   );
 
-  return selectionFoundInMatchingNotes || selectionFoundAmongAllNotes;
+  return (
+    selectionFoundIncommandPaletteMatchingNotes || selectionFoundAmongAllNotes
+  );
 };
 
 watch(
-  () => genericState.matchingNotes as Note[],
+  () => genericState.commandPaletteMatchingNotes as Note[],
   (newValue) => {
     activeNoteSelectionMade.value = getActiveSelectionStatus(newValue);
   }
@@ -83,7 +88,7 @@ watch(
     );
 
     activeNoteSelectionMade.value = getActiveSelectionStatus(
-      <Note[]>genericState.matchingNotes
+      <Note[]>genericState.commandPaletteMatchingNotes
     );
 
     // Find out of the selected note list item is scrolled into view
@@ -173,12 +178,12 @@ watch(
         <footer class="command-palette-footer">
           <span
             class="footer-meta note-count"
-            v-if="!genericState.matchingNotes"
+            v-if="!genericState.commandPaletteMatchingNotes"
             >{{ notebook.totalNotesCount }} notes</span
           >
           <span
             class="footer-meta query-results-count"
-            v-if="genericState.matchingNotes"
+            v-if="genericState.commandPaletteMatchingNotes"
             >{{ notesToBeDisplayed.length }} matching notes</span
           >
           <span
@@ -207,6 +212,7 @@ watch(
   position: absolute;
   z-index: 100;
   background-color: rgb(10 13 17 / 70%);
+  backdrop-filter: blur(5px);
 }
 .container {
   display: grid;
@@ -304,7 +310,7 @@ watch(
 }
 
 .lift-enter-active {
-  transition: all 100ms var(--ease-out-quad);
+  transition: all 150ms var(--ease-out-quad);
 }
 
 .lift-leave-active {

@@ -22,14 +22,14 @@ const noteListUl = ref<HTMLUListElement | null>(null);
 const noteListItemRefs = ref<HTMLElement[] | []>([]);
 
 const searchIsActive = computed(() => {
-  return genericState.matchingNotes !== null;
+  return genericState.noteListMatchingNotes !== null;
 });
 
 const notesToBeDisplayed = computed(() => {
   if (!searchIsActive.value || genericState.commandPaletteActive) {
     return sortNotesByModificationDate(notebook.notes);
   } else {
-    return sortNotesByModificationDate(genericState.matchingNotes!);
+    return sortNotesByModificationDate(genericState.noteListMatchingNotes!);
   }
 });
 const handleNoteItemClick = (noteId: string | null) => {
@@ -52,12 +52,12 @@ const formatRelativeDate = (relativeDate: string) => {
   return dateWithCapitalizedFirstChar.replace("AM", "am").replace("PM", "pm");
 };
 
-const getActiveSelectionStatus = (matchingNotes?: Note[]) => {
-  let selectionFoundInMatchingNotes = false;
+const getActiveSelectionStatus = (noteListMatchingNotes?: Note[]) => {
+  let selectionFoundInnoteListMatchingNotes = false;
 
-  // selected item found in `matchingNotes`?
-  if (matchingNotes) {
-    selectionFoundInMatchingNotes = matchingNotes.some(
+  // selected item found in `noteListMatchingNotes`?
+  if (noteListMatchingNotes) {
+    selectionFoundInnoteListMatchingNotes = noteListMatchingNotes.some(
       (note: Note) => note.id === genericState.activeNoteId
     );
   }
@@ -67,7 +67,7 @@ const getActiveSelectionStatus = (matchingNotes?: Note[]) => {
     (note: Note) => note.id === genericState.activeNoteId
   );
 
-  return selectionFoundInMatchingNotes || selectionFoundAmongAllNotes;
+  return selectionFoundInnoteListMatchingNotes || selectionFoundAmongAllNotes;
 };
 
 const updateNoteListIsScrolled = () => {
@@ -82,7 +82,7 @@ const updateNoteListIsScrolled = () => {
 };
 
 watch(
-  () => genericState.matchingNotes as Note[],
+  () => genericState.noteListMatchingNotes as Note[],
   (newValue) => {
     activeNoteSelectionMade.value = getActiveSelectionStatus(newValue);
   }
@@ -119,7 +119,7 @@ watch(
     );
 
     activeNoteSelectionMade.value = getActiveSelectionStatus(
-      <Note[]>genericState.matchingNotes
+      <Note[]>genericState.noteListMatchingNotes
     );
 
     // Find out of the selected note list item is scrolled into view

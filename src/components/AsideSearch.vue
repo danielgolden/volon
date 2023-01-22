@@ -21,9 +21,10 @@ const notebook = useNotebookStore();
 
 const handleInputChange = (currentContent: string) => {
   if (currentContent === "") {
-    genericState.matchingNotes = null;
+    genericState.noteListMatchingNotes = null;
   } else {
-    genericState.matchingNotes = notebook.getNotesByContent(currentContent);
+    genericState.noteListMatchingNotes =
+      notebook.getNotesByContent(currentContent);
   }
 };
 
@@ -33,7 +34,7 @@ const clearQuery = () => {
 };
 
 const handleSearchKeydownEnter = (e: Event) => {
-  if (genericState.matchingNotes === null) return;
+  if (genericState.noteListMatchingNotes === null) return;
 
   if (noteWasSelectedDuringSearch.value) {
     clearQuery();

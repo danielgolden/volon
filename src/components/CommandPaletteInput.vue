@@ -6,7 +6,6 @@ import { useGenericStateStore } from "../stores/store.genericState";
 import { useNotebookStore } from "../stores/store.notebook";
 
 const props = defineProps(["noteList"]);
-const currentQuery = ref(``);
 const noteWasSelectedDuringSearch = ref(false);
 const searchInput = ref<HTMLInputElement | null>(null);
 const elementRefs = useElementRefsStore();
@@ -17,15 +16,16 @@ const handleInputChange = (currentContent: string) => {
   noteWasSelectedDuringSearch.value = false;
 
   if (currentContent === "") {
-    genericState.matchingNotes = null;
+    genericState.commandPaletteMatchingNotes = null;
   } else {
-    genericState.matchingNotes = notebook.getNotesByContent(currentContent);
+    genericState.commandPaletteMatchingNotes =
+      notebook.getNotesByContent(currentContent);
   }
 };
 
 const clearQuery = () => {
   handleInputChange("");
-  currentQuery.value = "";
+  genericState.commandPaletteCurrentQuery = "";
 };
 
 const handleSearchKeydownEnter = (e: Event) => {
@@ -36,7 +36,7 @@ const handleSearchKeydownEnter = (e: Event) => {
     elementRefs.codeMirror?.focus();
     genericState.activateSelectedNote();
   } else {
-    createNewNote(`# ${currentQuery.value} \n`);
+    createNewNote(`# ${genericState.commandPaletteCurrentQuery} \n`);
     clearQuery();
     genericState.searchJustCreatedNote = true;
   }
@@ -82,7 +82,7 @@ onMounted(() => {
   <input
     class="search-input"
     type="text"
-    v-model="currentQuery"
+    v-model="genericState.commandPaletteCurrentQuery"
     @input="(currentValue) => handleInputChange((currentValue.target as HTMLInputElement)?.value)"
     @keydown.enter="(e) => handleSearchKeydownEnter(e)"
     @keydown.down="(e) => handleDownArrowPress(e)"

@@ -40,6 +40,10 @@ export const globalKeyboardShortcuts = () => {
     if (event.code === "Escape") {
       if (!genericState.commandPaletteActive) return;
       genericState.commandPaletteActive = false;
+      setTimeout(() => {
+        genericState.commandPaletteMatchingNotes = null;
+        genericState.commandPaletteCurrentQuery = "";
+      }, 150);
     }
   });
 };
