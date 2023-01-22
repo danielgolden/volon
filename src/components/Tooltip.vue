@@ -124,6 +124,7 @@ onMounted(() => {
   border-radius: 6px;
   background-color: rgb(0 0 0 / 50%);
   backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
   z-index: 10000;
   color: var(--color-text-primary);
   font-family: var(--font-family-primary);

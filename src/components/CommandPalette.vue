@@ -213,6 +213,7 @@ watch(
   z-index: 100;
   background-color: rgb(10 13 17 / 70%);
   backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
 }
 .container {
   display: grid;
