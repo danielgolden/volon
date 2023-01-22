@@ -355,14 +355,10 @@ watch(
   transition: translate 400ms var(--ease-in-out-quad),
     opacity 200ms var(--ease-in-out-quad);
 }
-.expand-aside-enter-from .note-list {
-  translate: 0 8px;
-  opacity: 0;
-}
+.expand-aside-enter-from .note-list,
 .expand-aside-enter-from .search-container {
-  translate: 0 3px;
+  translate: -8px;
   opacity: 0;
-  scale: 0.98;
 }
 .expand-aside-leave-to .note-list,
 .expand-aside-leave-to .search-container {
