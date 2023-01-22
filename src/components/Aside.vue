@@ -107,101 +107,104 @@ onMounted(() => {
         </button>
       </Tooltip>
     </div>
+    <Transition name="popover-animation">
+      <div
+        class="menu-popover-container logged-out-menu-popover-container"
+        v-if="accountMenuActive && !genericState.userIsLoggedIn"
+      >
+        <div class="menu-popover logged-out-menu-popover">
+          <svg
+            width="10"
+            height="21"
+            viewBox="0 0 10 21"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+            class="popover-caret"
+          >
+            <path
+              d="M9.29453e-08 10.2065L10 0.411465L10 20.0015L9.29453e-08 10.2065Z"
+              fill="#181B20"
+            />
+            <path
+              fill-rule="evenodd"
+              clip-rule="evenodd"
+              d="M8.88867 1.49847L0 10.2049L8.88867 18.9114V17.2489L1.69725 10.2049L8.88867 3.16093V1.49847Z"
+              fill="#2A303A"
+            />
+          </svg>
 
-    <div
-      class="menu-popover-container logged-out-menu-popover-container"
-      v-if="accountMenuActive && !genericState.userIsLoggedIn"
-    >
-      <div class="menu-popover logged-out-menu-popover">
-        <svg
-          width="10"
-          height="21"
-          viewBox="0 0 10 21"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-          class="popover-caret"
-        >
-          <path
-            d="M9.29453e-08 10.2065L10 0.411465L10 20.0015L9.29453e-08 10.2065Z"
-            fill="#181B20"
-          />
-          <path
-            fill-rule="evenodd"
-            clip-rule="evenodd"
-            d="M8.88867 1.49847L0 10.2049L8.88867 18.9114V17.2489L1.69725 10.2049L8.88867 3.16093V1.49847Z"
-            fill="#2A303A"
-          />
-        </svg>
+          <div class="login-buttons">
+            <button class="btn-primary btn-login" @click="signInWithGitHub">
+              <img src="../assets/logo-github.svg" class="btn-login-icon" />
+              Log in with GitHub
+            </button>
+            <!-- <button class="btn-primary btn-login">
+              <img src="../assets/logo-google.svg" class="btn-login-icon" />
 
-        <div class="login-buttons">
-          <button class="btn-primary btn-login" @click="signInWithGitHub">
-            <img src="../assets/logo-github.svg" class="btn-login-icon" />
-            Log in with GitHub
-          </button>
-          <!-- <button class="btn-primary btn-login">
-            <img src="../assets/logo-google.svg" class="btn-login-icon" />
+              Log in with Google
+            </button>
+            <button class="btn-primary btn-login">
+              <img src="../assets/logo-apple.svg" class="btn-login-icon" />
 
-            Log in with Google
-          </button>
-          <button class="btn-primary btn-login">
-            <img src="../assets/logo-apple.svg" class="btn-login-icon" />
-
-            Log in with Apple
-          </button> -->
-        </div>
-        <hr />
-        <h3>
-          <Icon name="lock" class="btn-menu-icon" color="currentColor" />
-          Your notes live on this device
-        </h3>
-        <p>
-          Your notes are currently stored on this device. If you log in, your
-          notes will be store in the cloud and you will be able to use Volón
-          across different browsers and devices.
-        </p>
-      </div>
-    </div>
-    <div
-      class="menu-popover-container logged-in-menu-popover-container"
-      v-if="accountMenuActive && genericState.userIsLoggedIn"
-    >
-      <div class="menu-popover logged-in-menu-popover">
-        <svg
-          width="10"
-          height="21"
-          viewBox="0 0 10 21"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-          class="popover-caret"
-        >
-          <path
-            d="M9.29453e-08 10.2065L10 0.411465L10 20.0015L9.29453e-08 10.2065Z"
-            fill="#181B20"
-          />
-          <path
-            fill-rule="evenodd"
-            clip-rule="evenodd"
-            d="M8.88867 1.49847L0 10.2049L8.88867 18.9114V17.2489L1.69725 10.2049L8.88867 3.16093V1.49847Z"
-            fill="#2A303A"
-          />
-        </svg>
-
-        <span class="logged-in-meta"
-          >Logged in with
-          <strong>{{
-            genericState.session.user.app_metadata.provider
-          }}</strong></span
-        >
-
-        <hr />
-        <div class="logged-out-buttons">
-          <button class="btn-logout" @click="handleLogOutClick">
-            <Icon name="exit" class="btn-icon" />
-            Log out
-          </button>
+              Log in with Apple
+            </button> -->
+          </div>
+          <hr />
+          <h3>
+            <Icon name="lock" class="btn-menu-icon" color="currentColor" />
+            Your notes live on this device
+          </h3>
+          <p>
+            Your notes are currently stored on this device. If you log in, your
+            notes will be store in the cloud and you will be able to use Volón
+            across different browsers and devices.
+          </p>
         </div>
       </div>
-    </div>
+    </Transition>
+    <Transition name="popover-animation">
+      <div
+        class="menu-popover-container logged-in-menu-popover-container"
+        v-if="accountMenuActive && genericState.userIsLoggedIn"
+      >
+        <div class="menu-popover logged-in-menu-popover">
+          <svg
+            width="10"
+            height="21"
+            viewBox="0 0 10 21"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+            class="popover-caret"
+          >
+            <path
+              d="M9.29453e-08 10.2065L10 0.411465L10 20.0015L9.29453e-08 10.2065Z"
+              fill="#181B20"
+            />
+            <path
+              fill-rule="evenodd"
+              clip-rule="evenodd"
+              d="M8.88867 1.49847L0 10.2049L8.88867 18.9114V17.2489L1.69725 10.2049L8.88867 3.16093V1.49847Z"
+              fill="#2A303A"
+            />
+          </svg>
+
+          <span class="logged-in-meta"
+            >Logged in with
+            <strong>{{
+              genericState.session.user.app_metadata.provider
+            }}</strong></span
+          >
+
+          <hr />
+          <div class="logged-out-buttons">
+            <button class="btn-logout" @click="handleLogOutClick">
+              <Icon name="exit" class="btn-icon" />
+              Log out
+            </button>
+          </div>
+        </div>
+      </div>
+    </Transition>
   </section>
 </template>
 
@@ -438,5 +441,23 @@ onMounted(() => {
 
 .btn-logout:hover {
   background-color: var(--color-bg-surface-1);
+}
+
+.popover-animation-enter-active {
+  transition: all 150ms var(--ease-out-quad);
+  transform-origin: top left;
+}
+
+.popover-animation-leave-active {
+  transition: all 25ms var(--ease-in-out-quad);
+}
+
+.popover-animation-enter-from {
+  opacity: 0;
+  translate: -1px 0px;
+  scale: 0.975;
+}
+.popover-animation-leave-to {
+  opacity: 0;
 }
 </style>
