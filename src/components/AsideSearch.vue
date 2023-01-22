@@ -102,6 +102,7 @@ onMounted(() => {
 .search-container {
   position: relative;
   margin: 18px 22px 7px;
+  min-width: 305px;
   z-index: 100;
 }
 
@@ -116,7 +117,7 @@ onMounted(() => {
   color: var(--color-text-input-enabled-indicator);
   /* border: 1px solid var(--color-border-tertiary); */
   background-color: var(--color-bg-input-enabled-indicator);
-  transition: opacity 150ms var(--ease-in-out-cubic);
+  transition: opacity 150ms var(--ease-in-out-quad);
 }
 
 @media (prefers-color-scheme: light) {

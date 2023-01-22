@@ -156,44 +156,48 @@ watch(
 </script>
 
 <template>
-  <div class="aside-note-list-container" v-if="settings.asideActive">
-    <AsideSearch :noteList="notesToBeDisplayed" />
-    <ul
-      :class="{ 'note-list': true, scrolled: noteListIsScrolled }"
-      tabindex="0"
-      @keydown.up="navigateToPreviousNote(notesToBeDisplayed)"
-      @keydown.down="navigateToNextNote(notesToBeDisplayed)"
-      ref="noteListUl"
-      v-show="notesToBeDisplayed.length"
-    >
-      <li
-        v-for="note in notesToBeDisplayed"
-        :v-key="note.id"
-        :class="{
-          'active-note-list-item': genericState.activeNoteId === note.id,
-          'note-list-item': true,
-        }"
-        :data-note-id="note.id"
-        @click="handleNoteItemClick(note.id)"
-        ref="noteListItemRefs"
+  <Transition name="expand-aside">
+    <div class="aside-note-list-container" v-if="settings.asideActive">
+      <AsideSearch :noteList="notesToBeDisplayed" />
+      <ul
+        :class="{ 'note-list': true, scrolled: noteListIsScrolled }"
+        tabindex="0"
+        @keydown.up="navigateToPreviousNote(notesToBeDisplayed)"
+        @keydown.down="navigateToNextNote(notesToBeDisplayed)"
+        ref="noteListUl"
+        v-show="notesToBeDisplayed.length"
       >
-        <span class="note-list-item-preview">
-          {{ note.content.split(`\n`)[0].replaceAll("#", "").substring(0, 50) }}
-          <em v-if="note.content.length === 0" class="empty-list-item-preview"
-            >Empty note</em
-          >
-        </span>
-        <span class="note-list-item-meta">{{
-          formatRelativeDate(formatRelative(note.lastModified, new Date()))
-        }}</span>
-      </li>
-    </ul>
-    <div class="empty-state" v-show="notesToBeDisplayed.length === 0">
-      <p class="empty-state-description">
-        <KeyboardShortcutIndicator value="↵" /> Create a new note
-      </p>
+        <li
+          v-for="note in notesToBeDisplayed"
+          :v-key="note.id"
+          :class="{
+            'active-note-list-item': genericState.activeNoteId === note.id,
+            'note-list-item': true,
+          }"
+          :data-note-id="note.id"
+          @click="handleNoteItemClick(note.id)"
+          ref="noteListItemRefs"
+        >
+          <span class="note-list-item-preview">
+            {{
+              note.content.split(`\n`)[0].replaceAll("#", "").substring(0, 50)
+            }}
+            <em v-if="note.content.length === 0" class="empty-list-item-preview"
+              >Empty note</em
+            >
+          </span>
+          <span class="note-list-item-meta">{{
+            formatRelativeDate(formatRelative(note.lastModified, new Date()))
+          }}</span>
+        </li>
+      </ul>
+      <div class="empty-state" v-show="notesToBeDisplayed.length === 0">
+        <p class="empty-state-description">
+          <KeyboardShortcutIndicator value="↵" /> Create a new note
+        </p>
+      </div>
     </div>
-  </div>
+  </Transition>
 </template>
 
 <style scoped>
@@ -203,13 +207,16 @@ watch(
   width: 350px;
   flex-shrink: 0;
   flex-direction: column;
+  overflow: hidden;
   border-right: 1px solid var(--color-border-secondary);
   background-color: var(--color-bg-surface-2);
+  will-change: width;
 }
 .note-list {
   display: flex;
   flex-direction: column;
   height: 100%;
+  min-width: 349px;
   margin: 0;
   padding: calc(var(--padding-block) / 2) 12px var(--padding-block);
   overflow-y: auto;
@@ -303,7 +310,46 @@ watch(
 .empty-state .keyboard-shortcut-indicator {
   margin-right: 3px;
 }
-/* 
+
+.expand-aside-enter-active {
+  transition: all 300ms var(--ease-out-quint);
+}
+
+.expand-aside-leave-active {
+  transition: all 200ms var(--ease-in-out-quad);
+}
+
+.expand-aside-enter-from {
+  width: 0;
+}
+.expand-aside-leave-to {
+  width: 0;
+}
+.expand-aside-enter-active .note-list,
+.expand-aside-enter-active .search-container {
+  transition: translate 400ms var(--ease-out-quint),
+    opacity 300ms var(--ease-out-quad);
+}
+.expand-aside-leave-active .note-list,
+.expand-aside-leave-active .search-container {
+  transition: translate 400ms var(--ease-in-out-quad),
+    opacity 200ms var(--ease-in-out-quad);
+}
+.expand-aside-enter-from .note-list {
+  translate: 0 8px;
+  opacity: 0;
+}
+.expand-aside-enter-from .search-container {
+  translate: 0 -8px;
+  opacity: 0;
+}
+.expand-aside-leave-to .note-list,
+.expand-aside-leave-to .search-container {
+  translate: -14px;
+  opacity: 0;
+}
+
+/*
 @media (prefers-color-scheme: light) {
   .active-note-list-item .note-list-item-preview {
     color: var(--color-text-primary-interactive-inverted);
