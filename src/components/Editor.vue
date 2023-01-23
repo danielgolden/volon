@@ -264,12 +264,11 @@ const handleLinkPaste = () => {
         .toString()
         .substring(firstSelection.from, firstSelection.to);
       // @ts-expect-error Property 'inserted' does not exist on type 'ChangeSet'.ts(2339)
-      const pastedText = tr.changes.inserted.toString();
+      const pastedText = tr.changes.inserted.toString().substring(1);
       const isURL =
         pastedText.startsWith("https://") ||
         pastedText.startsWith("http://") ||
         pastedText.startsWith("www");
-
       if (selectionText && isURL) {
         return myCodemirrorView.state.update({
           changes: {
