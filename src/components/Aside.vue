@@ -124,12 +124,14 @@ onMounted(() => {
             <path
               d="M9.29453e-08 10.2065L10 0.411465L10 20.0015L9.29453e-08 10.2065Z"
               fill="#181B20"
+              class="popover-caret-fill"
             />
             <path
               fill-rule="evenodd"
               clip-rule="evenodd"
               d="M8.88867 1.49847L0 10.2049L8.88867 18.9114V17.2489L1.69725 10.2049L8.88867 3.16093V1.49847Z"
               fill="#2A303A"
+              class="popover-caret-stroke"
             />
           </svg>
 
@@ -179,12 +181,14 @@ onMounted(() => {
             <path
               d="M9.29453e-08 10.2065L10 0.411465L10 20.0015L9.29453e-08 10.2065Z"
               fill="#181B20"
+              class="popover-caret-fill"
             />
             <path
               fill-rule="evenodd"
               clip-rule="evenodd"
               d="M8.88867 1.49847L0 10.2049L8.88867 18.9114V17.2489L1.69725 10.2049L8.88867 3.16093V1.49847Z"
               fill="#2A303A"
+              class="popover-caret-stroke"
             />
           </svg>
 
@@ -459,5 +463,35 @@ onMounted(() => {
 }
 .popover-animation-leave-to {
   opacity: 0;
+}
+
+@media (prefers-color-scheme: light) {
+  .btn-menu:hover,
+  .btn-active {
+    box-shadow: none;
+  }
+
+  .btn-menu:active {
+    box-shadow: inset 0 0 0 1px var(--color-border-secondary);
+  }
+
+  .menu-popover {
+    position: relative;
+    max-width: 370px;
+    background-color: var(--color-bg-surface-1);
+    border-radius: 6px;
+    border: none;
+    box-shadow: 0px 14px 25px rgba(0, 0, 0, 0.1),
+      0px 4px 14px rgba(0, 0, 0, 0.1), 0px 2px 3px rgba(0, 0, 0, 0.15);
+  }
+
+  .popover-caret-stroke,
+  .popover-caret-fill {
+    fill: #ffffff;
+  }
+
+  .btn-logout:hover {
+    background-color: var(--color-bg-surface-2);
+  }
 }
 </style>

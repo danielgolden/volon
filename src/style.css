@@ -85,13 +85,21 @@
     --color-bg-interactive-active-hover: var(--color-bg-interactive-active);
     --color-bg-interactive-focused: var(--color-border-primary);
 
-    --color-bg-button: transparent;
-    --color-bg-button-hover: rgba(0 0 0 / 8%);
-    --color-text-button: #646464;
-    --color-text-button-hover: #575757;
+    --color-bg-button-primary: #243249;
+    --color-bg-button-secondary: transparent;
+    --color-bg-button-hover-primary: #131e31;
+    --color-bg-button-hover-secondary: var(--color-bg-surface-1);
+    --color-border-button-primary: transparent;
+    --color-border-button-hover-primary: transparent;
+    --color-border-button-secondary: var(--color-border-tertiary);
+    --color-border-button-hover-secondary: var(--color-border-button-secondary);
+    --color-text-button-primary: #fff;
+    --color-text-button-secondary: #c3c3c3;
+    --color-text-button-hover-primary: var(--color-text-primary);
+    --color-text-button-hover-secondary: #ededed;
 
     --color-border-primary: #eaeaf2;
-    --color-border-secondary: #e9e9e9;
+    --color-border-secondary: #d2d5e3;
     --color-border-tertiary: #e9e9e9;
 
     --color-box-shadow: rgba(0, 0, 0, 0.05);
