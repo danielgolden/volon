@@ -228,7 +228,7 @@ watch(
   flex-shrink: 0;
   flex-direction: column;
   overflow: hidden;
-  border-right: 1px solid var(--color-border-secondary);
+  border-right: 1px solid var(--color-border-primary);
   background-color: var(--color-bg-surface-2);
   will-change: width;
 }
@@ -246,11 +246,11 @@ watch(
 
 .note-list:focus-visible {
   outline: none;
-  box-shadow: inset 0 0 0 2px var(--color-text-tertiary);
+  box-shadow: inset 0 0 0 2px var(--color-bg-interactive-focused);
 }
 
 .note-list.scrolled:focus-visible:before {
-  box-shadow: inset 0 2px 0 var(--color-text-tertiary);
+  box-shadow: inset 0 2px 0 var(--color-bg-interactive-focused);
 }
 
 .note-list:before {
@@ -289,7 +289,7 @@ watch(
   cursor: pointer;
 }
 .note-list-item-preview {
-  font-size: 17px;
+  font-size: 16px;
   font-weight: 500;
   width: 100%;
   overflow: hidden;

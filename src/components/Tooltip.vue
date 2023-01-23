@@ -122,7 +122,7 @@ onMounted(() => {
   font-size: 14px;
   padding: 3px 8px 5px;
   border-radius: 6px;
-  background-color: rgb(0 0 0 / 50%);
+  background-color: var(--color-bg-overlay);
   backdrop-filter: blur(6px);
   -webkit-backdrop-filter: blur(6px);
   z-index: 10000;
@@ -139,5 +139,11 @@ onMounted(() => {
 }
 .tooltip.visible.right {
   translate: 2px 0;
+}
+
+@media (prefers-color-scheme: light) {
+  .tooltip {
+    color: var(--color-text-interactive-inverted);
+  }
 }
 </style>

@@ -211,7 +211,7 @@ watch(
   inset: 0;
   position: absolute;
   z-index: 100;
-  background-color: rgb(10 13 17 / 70%);
+  background-color: var(--color-bg-overlay);
   backdrop-filter: blur(5px);
   -webkit-backdrop-filter: blur(5px);
 }
@@ -229,7 +229,7 @@ watch(
   grid-template-rows: min-content 1fr;
   background-color: var(--color-bg-surface-1);
   border-radius: 8px;
-  border: 1px solid var(--color-border-secondary);
+  border: 1px solid var(--color-border-primary);
   box-shadow: 0px 30px 70px rgba(0, 0, 0, 0.35),
     0px 14px 34px rgba(0, 0, 0, 0.21), 0px 4px 7px rgba(0, 0, 0, 0.35);
   transform-origin: 0 0;
@@ -241,7 +241,7 @@ watch(
   padding-left: 20px;
   border-radius: 0;
   background-color: var(--color-bg-surface-1);
-  border-bottom: 1px solid var(--color-border-secondary);
+  border-bottom: 1px solid var(--color-border-primary);
   box-shadow: none;
 }
 
@@ -353,7 +353,7 @@ watch(
   align-items: center;
   justify-content: space-between;
   padding: 0 22px;
-  border-top: 1px solid var(--color-border-secondary);
+  border-top: 1px solid var(--color-border-primary);
   background-color: var(--color-bg-surface-3);
 }
 

@@ -220,7 +220,7 @@ onMounted(() => {
   align-items: center;
   grid-template-rows: min-content 1fr;
   background-color: var(--color-bg-surface-2);
-  border-right: 1px solid var(--color-border-secondary);
+  border-right: 1px solid var(--color-border-primary);
 }
 .logo {
   display: flex;
@@ -237,7 +237,7 @@ onMounted(() => {
   height: 1px;
   padding: 0;
   margin-block: 8px;
-  background-color: var(--color-border-secondary);
+  background-color: var(--color-border-primary);
   border: none;
 }
 
@@ -283,7 +283,7 @@ onMounted(() => {
 .btn-menu:hover,
 .btn-active {
   background-color: var(--color-bg-button-hover);
-  box-shadow: inset 0 0 0 1px var(--color-border-secondary);
+  box-shadow: inset 0 0 0 1px var(--color-border-primary);
 }
 
 .btn-menu:active {
@@ -313,7 +313,7 @@ onMounted(() => {
   max-width: 370px;
   background-color: var(--color-bg-surface-2);
   border-radius: 6px;
-  border: 1px solid var(--color-border-secondary);
+  border: 1px solid var(--color-border-primary);
   box-shadow: 0px 14px 25px rgba(0, 0, 0, 0.1), 0px 4px 14px rgba(0, 0, 0, 0.1),
     0px 2px 3px rgba(0, 0, 0, 0.15);
 }
@@ -362,7 +362,7 @@ onMounted(() => {
 .menu-popover hr {
   margin: 21px 0 24px;
   border: none;
-  border-top: 1px dotted var(--color-border-secondary);
+  border-top: 1px dotted var(--color-border-primary);
 }
 
 .logged-in-menu-popover hr {

@@ -138,19 +138,12 @@ onMounted(() => {
   font-size: 16px;
   background-color: var(--color-bg-input-enabled);
   border-radius: 4px;
-  box-shadow: 0 0 0 1px var(--color-bg-input-border-enabled);
   border: none;
+  box-shadow: 0 0 0 1px var(--color-bg-input-border-enabled);
   color: var(--color-text-primary);
   font-family: var(--font-family-primary);
-  transition: box-shadow 200ms var(--ease-out-cubic);
-  caret-color: #5fa9ff;
-}
-
-@media (prefers-color-scheme: light) {
-  .search-input {
-    box-shadow: 0 3px 5px var(--color-box-shadow),
-      0 1px 2px var(--color-box-shadow);
-  }
+  transition: box-shadow 100ms var(--ease-out-cubic);
+  /* caret-color: var(--color-accent); */
 }
 
 .search-input:focus {
