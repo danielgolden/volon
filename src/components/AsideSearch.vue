@@ -122,7 +122,7 @@ onMounted(() => {
 
 @media (prefers-color-scheme: light) {
   .keyboard-shortcut-indicator {
-    box-shadow: inset 0 0 0 1px var(--color-border-input-enabled-indicator);
+    box-shadow: inset 0 0 0 1px var(--color-border-primary);
     background-color: transparent;
     transition: opacity 150ms var(--ease-in-out-cubic);
   }
