@@ -35,6 +35,7 @@ const props = defineProps({
   justify-content: center;
   align-items: center;
   gap: 10px;
+  padding-inline: 8px;
   border-radius: 4px;
   font-family: var(--font-family-primary);
   font-size: 14px;
@@ -43,6 +44,8 @@ const props = defineProps({
   cursor: pointer;
   transition: all 50ms var(--ease-out-quad);
 }
+
+/*-- Primary buttons --*/
 .btn-primary {
   padding: 7px 0 10px;
   background-color: var(--color-bg-button-primary);
@@ -70,5 +73,35 @@ const props = defineProps({
 
 .btn-primary:active {
   translate: 0 1px;
+}
+
+/*-- Secondary buttons --*/
+.btn-secondary {
+  height: 31px;
+  background-color: var(--color-bg-button);
+  border: none;
+}
+
+.btn-secondary:hover,
+.btn-active {
+  background-color: var(--color-bg-button-hover);
+  box-shadow: inset 0 0 0 1px var(--color-border-primary);
+}
+
+.btn-secondary:active {
+  box-shadow: inset 0 0 0 1px var(--color-border-tertiary);
+}
+
+.btn-secondary-icon {
+  pointer-events: none;
+}
+
+.btn-secondary-icon path {
+  transition: all 50ms var(--ease-out-quad);
+}
+
+.btn-secondary:hover .btn-secondary-icon path,
+.btn-active .btn-secondary-icon path {
+  fill: var(--color-text-primary);
 }
 </style>

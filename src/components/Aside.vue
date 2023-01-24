@@ -9,11 +9,11 @@ import {
 import { onMounted, ref } from "vue";
 import { useGenericStateStore } from "../stores/store.genericState";
 import Icon from "./Icon.vue";
+import Button from "./Button.vue";
 import Tooltip from "./Tooltip.vue";
 
 const accountMenuActive = ref(false);
 const asideElement = ref<HTMLElement | null>(null);
-const accountButton = ref<HTMLElement | null>(null);
 const settings = useSettingsStore();
 const genericState = useGenericStateStore();
 
@@ -30,7 +30,8 @@ const handleAsideButtonClick = () => {
 
 onMounted(() => {
   document.addEventListener("click", (e) => {
-    const didntClickAccountButton = e.target !== accountButton.value;
+    const accountButton = asideElement.value!.querySelector(".btn-account");
+    const didntClickAccountButton = e.target !== accountButton;
     const didntClickPopover = e.target !== asideElement.value;
     const isntChildOfPopover = !(e.target as HTMLElement).closest(
       ".menu-popover"
@@ -66,45 +67,46 @@ onMounted(() => {
       <ul class="primary-menu-items">
         <li class="primary-menu-item">
           <Tooltip value="Your data" position="right">
-            <button
+            <!-- the problem is the the ref isn't taking. See lines 40-47 -->
+            <Button
+              type="secondary"
               :class="{
                 'btn-menu': true,
                 'btn-account': true,
                 'btn-active': accountMenuActive,
               }"
               @click="accountMenuActive = !accountMenuActive"
-              ref="accountButton"
+              icon="user"
             >
-              <Icon name="user" class="btn-menu-icon" />
-            </button>
+            </Button>
           </Tooltip>
         </li>
         <li class="primary-menu-item">
           <Tooltip value="Search notes (⌘K)" position="right">
-            <button class="btn-menu btn-search" @click="displayCommandPalette">
-              <Icon name="search" class="btn-menu-icon" />
-            </button>
+            <Button
+              type="secondary"
+              icon="search"
+              @click="displayCommandPalette"
+            />
           </Tooltip>
         </li>
         <li class="primary-menu-item">
           <Tooltip value="Notes list" position="right">
-            <button
-              class="btn-menu btn-toggle-note-list"
+            <Button
+              type="secondary"
               @click="handleAsideButtonClick"
-            >
-              <Icon name="aside" class="btn-menu-icon" />
-            </button>
+              icon="aside"
+            />
           </Tooltip>
         </li>
       </ul>
       <Tooltip value="Download a backup" position="right">
-        <button
-          class="btn-menu btn-backup"
+        <Button
+          type="secondary"
+          icon="download"
           @click="downloadBackupOfData"
           title="Download a backup of your data"
-        >
-          <Icon name="download" class="btn-menu-icon" />
-        </button>
+        />
       </Tooltip>
     </div>
     <Transition name="popover-animation">
@@ -136,10 +138,10 @@ onMounted(() => {
           </svg>
 
           <div class="login-buttons">
-            <button class="btn-primary btn-login" @click="signInWithGitHub">
+            <Button class="btn-primary btn-login" :click="signInWithGitHub">
               <img src="../assets/logo-github.svg" class="btn-login-icon" />
               Log in with GitHub
-            </button>
+            </Button>
             <!-- <button class="btn-primary btn-login">
               <img src="../assets/logo-google.svg" class="btn-login-icon" />
 
@@ -271,42 +273,6 @@ onMounted(() => {
   width: 100%;
 }
 
-.btn-menu {
-  display: grid;
-  width: 100%;
-  height: 31px;
-  place-items: center;
-  padding: 0;
-  background-color: var(--color-bg-button);
-  cursor: pointer;
-  border-radius: 4px;
-  border: none;
-  transition: all 50ms var(--ease-out-quad);
-}
-
-.btn-menu:hover,
-.btn-active {
-  background-color: var(--color-bg-button-hover);
-  box-shadow: inset 0 0 0 1px var(--color-border-primary);
-}
-
-.btn-menu:active {
-  box-shadow: inset 0 0 0 1px var(--color-border-tertiary);
-}
-
-.btn-menu-icon {
-  pointer-events: none;
-}
-
-.btn-menu-icon path {
-  transition: all 50ms var(--ease-out-quad);
-}
-
-.btn-menu:hover .btn-menu-icon path,
-.btn-active .btn-menu-icon path {
-  fill: var(--color-text-primary);
-}
-
 .menu-popover-container {
   position: absolute;
   z-index: 1000;
@@ -389,33 +355,6 @@ onMounted(() => {
   font-size: 13px;
   height: 35px;
   color: var(--color-text-secondary);
-}
-
-.btn-primary {
-  border: none;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  border-radius: 4px;
-  padding: 7px 0 10px;
-  gap: 10px;
-  font-family: var(--font-family-primary);
-  font-size: 14px;
-  font-weight: 500;
-  background-color: var(--color-bg-button-primary);
-  box-shadow: inset 0 0 0 1px var(--color-border-button-primary);
-  color: var(--color-text-button-primary);
-  cursor: pointer;
-  transition: all 50ms var(--ease-out-quad);
-}
-
-.btn-primary:hover {
-  background-color: var(--color-bg-button-hover-primary);
-  box-shadow: inset 0 0 0 1px var(--color-border-button-hover-primary);
-}
-
-.btn-primary:active {
-  translate: 0 1px;
 }
 
 .logged-out-buttons {
