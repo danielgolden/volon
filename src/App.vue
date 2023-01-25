@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { onMounted, ref, watch } from "vue";
-import Aside from "./components/Aside.vue";
+import PrimaryNav from "./components/PrimaryNav.vue";
 import AsideNoteList from "./components/AsideNoteList.vue";
 import Editor from "./components/Editor.vue";
 import MarkdownPreview from "./components/MarkdownPreview.vue";
@@ -60,7 +60,7 @@ onMounted(async () => {
       'markdown-preview-active': settings.markdownPreviewActive,
     }"
   >
-    <Aside />
+    <PrimaryNav />
     <AsideNoteList />
     <Editor v-model="genericState.activeNoteContents" />
     <MarkdownPreview v-if="settings.markdownPreviewActive" />

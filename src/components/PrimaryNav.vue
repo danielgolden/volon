@@ -13,7 +13,7 @@ import Button from "./Button.vue";
 import Tooltip from "./Tooltip.vue";
 
 const accountMenuActive = ref(false);
-const asideElement = ref<HTMLElement | null>(null);
+const primaryNavElement = ref<HTMLElement | null>(null);
 const settings = useSettingsStore();
 const genericState = useGenericStateStore();
 
@@ -30,9 +30,10 @@ const handleAsideButtonClick = () => {
 
 onMounted(() => {
   document.addEventListener("click", (e) => {
-    const accountButton = asideElement.value!.querySelector(".btn-account");
+    const accountButton =
+      primaryNavElement.value!.querySelector(".btn-account");
     const didntClickAccountButton = e.target !== accountButton;
-    const didntClickPopover = e.target !== asideElement.value;
+    const didntClickPopover = e.target !== primaryNavElement.value;
     const isntChildOfPopover = !(e.target as HTMLElement).closest(
       ".menu-popover"
     );
@@ -56,7 +57,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <section class="aside-container" ref="asideElement">
+  <section class="primary-nav-container" ref="primaryNavElement">
     <a href="/" class="logo" title="Volón">
       <img src="../assets/logo-volon.svg" class="volon-logo" />
     </a>
@@ -215,7 +216,7 @@ onMounted(() => {
 </template>
 
 <style scoped>
-.aside-container {
+.primary-nav-container {
   display: flex;
   flex-direction: column;
   grid-area: aside;
