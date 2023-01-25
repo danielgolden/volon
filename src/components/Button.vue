@@ -48,7 +48,7 @@ const props = defineProps({
 
 /*-- Primary buttons --*/
 .btn-primary {
-  padding: 7px 0 10px;
+  padding: 7px 14px 10px;
   background-color: var(--color-bg-button-primary);
   box-shadow: inset 0 0 0 1px var(--color-border-button-primary);
   color: var(--color-text-button-primary);
@@ -109,9 +109,15 @@ const props = defineProps({
 /*-- Danger button --*/
 
 .btn-danger {
-  padding: 7px 0 10px;
+  padding: 7px 14px 10px;
   background-color: var(--color-bg-button-danger);
   box-shadow: inset 0 0 0 1px var(--color-border-button-danger);
+  color: var(--color-text-button-danger);
+}
+.btn-danger:hover {
+  padding: 7px 14px 10px;
+  background-color: var(--color-bg-button-hover-danger);
+  box-shadow: inset 0 0 0 1px var(--color-border-button-hover-danger);
   color: var(--color-text-button-danger);
 }
 

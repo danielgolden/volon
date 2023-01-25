@@ -89,10 +89,12 @@
     --color-bg-button-primary: #243249;
     --color-bg-button-secondary: transparent;
     --color-bg-button-hover-primary: #131e31;
+    --color-bg-button-hover-danger: #131e31;
     --color-bg-button-hover-secondary: var(--color-bg-surface-1);
     --color-bg-button-danger: #612e2d;
     --color-border-button-primary: transparent;
     --color-border-button-hover-primary: transparent;
+    --color-border-button-hover-danger: transparent;
     --color-border-button-secondary: var(--color-border-tertiary);
     --color-border-button-hover-secondary: var(--color-border-button-secondary);
     --color-border-button-danger: #803b39;
@@ -113,7 +115,7 @@
 @media (prefers-color-scheme: dark) {
   :root {
     --font-smoothing: antialiased;
-    --color-accent: #264777;
+    --color-accent: #6399e1;
 
     --color-bg-surface-1: #1e242d;
     --color-bg-surface-2: #171b20;
@@ -172,10 +174,12 @@
     --color-bg-button-primary: #252d3a;
     --color-bg-button-secondary: transparent;
     --color-bg-button-hover-primary: #2e3848;
+    --color-bg-button-hover-danger: #74302f;
     --color-bg-button-hover-secondary: var(--color-bg-surface-1);
     --color-bg-button-danger: #612e2d;
     --color-border-button-primary: #344054;
     --color-border-button-hover-primary: #415069;
+    --color-border-button-hover-danger: #a04e4c;
     --color-border-button-secondary: var(--color-border-tertiary);
     --color-border-button-hover-secondary: var(--color-border-button-secondary);
     --color-border-button-danger: #803b39;
