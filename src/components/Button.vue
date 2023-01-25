@@ -5,7 +5,7 @@ import { PropType } from "vue";
 const props = defineProps({
   type: {
     required: false,
-    type: String as PropType<"primary" | "secondary" | "tertiary">,
+    type: String as PropType<"primary" | "secondary" | "tertiary" | "danger">,
   },
   icon: {
     required: false,
@@ -21,6 +21,7 @@ const props = defineProps({
       'btn-primary': props.type === 'primary' || !props.type,
       'btn-secondary': props.type === 'secondary',
       'btn-tertiary': props.type === 'tertiary',
+      'btn-danger': props.type === 'danger',
     }"
     v-bind="$attrs"
   >
@@ -34,7 +35,7 @@ const props = defineProps({
   display: flex;
   justify-content: center;
   align-items: center;
-  gap: 10px;
+  gap: 6px;
   padding-inline: 8px;
   border-radius: 4px;
   font-family: var(--font-family-primary);
@@ -103,5 +104,18 @@ const props = defineProps({
 .btn-secondary:hover .btn-secondary-icon path,
 .btn-active .btn-secondary-icon path {
   fill: var(--color-text-primary);
+}
+
+/*-- Danger button --*/
+
+.btn-danger {
+  padding: 7px 0 10px;
+  background-color: var(--color-bg-button-danger);
+  box-shadow: inset 0 0 0 1px var(--color-border-button-danger);
+  color: var(--color-text-button-danger);
+}
+
+.btn-danger :deep path {
+  fill: var(--color-icon-danger);
 }
 </style>
