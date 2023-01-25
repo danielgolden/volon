@@ -139,7 +139,7 @@ onMounted(() => {
           </svg>
 
           <div class="login-buttons">
-            <Button class="btn-primary btn-login" :click="signInWithGitHub">
+            <Button class="btn-primary btn-login" @click="signInWithGitHub">
               <img src="../assets/logo-github.svg" class="btn-login-icon" />
               Log in with GitHub
             </Button>
