@@ -23,7 +23,9 @@ onMounted(() => {
       class="select"
       v-bind="$attrs"
       :modelValue="props.modelValue"
-      @change="emit('update:model-value', $event.target!.value)"
+      @change="
+        emit('update:model-value', ($event.target as HTMLSelectElement).value)
+      "
       ref="selectElement"
     >
       <slot></slot>
