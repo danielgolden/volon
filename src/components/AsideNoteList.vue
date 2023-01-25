@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import { useSettingsStore } from "../stores/store.settings";
+import SettingsView from "./SettingsView.vue";
 import AsideSearch from "./AsideSearch.vue";
 import { onMounted, ref, computed, watch, nextTick } from "vue";
 import { useGenericStateStore } from "../stores/store.genericState";
@@ -177,7 +178,10 @@ watch(
 
 <template>
   <Transition name="expand-aside">
-    <div class="aside-note-list-container" v-if="settings.asideActive">
+    <div
+      class="aside-note-list-container"
+      v-if="settings.asideActive && !genericState.settingsViewActive"
+    >
       <AsideSearch :noteList="notesToBeDisplayed" />
       <ul
         :class="{ 'note-list': true, scrolled: noteListIsScrolled }"
@@ -218,6 +222,7 @@ watch(
       </div>
     </div>
   </Transition>
+  <SettingsView />
 </template>
 
 <style scoped>

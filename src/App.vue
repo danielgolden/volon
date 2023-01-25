@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { onMounted, ref, watch } from "vue";
-import Settings from "./components/Settings.vue";
-import PrimaryNav from "./components/PrimaryNav.vue";
 import AsideNoteList from "./components/AsideNoteList.vue";
+import SettingsView from "./components/SettingsView.vue";
+import PrimaryNav from "./components/PrimaryNav.vue";
 import Editor from "./components/Editor.vue";
 import MarkdownPreview from "./components/MarkdownPreview.vue";
 import CommandPalette from "./components/CommandPalette.vue";
@@ -62,8 +62,7 @@ onMounted(async () => {
     }"
   >
     <PrimaryNav />
-    <Settings />
-    <!-- <AsideNoteList /> -->
+    <AsideNoteList />
     <Editor v-model="genericState.activeNoteContents" />
     <MarkdownPreview v-if="settings.markdownPreviewActive" />
     <CommandPalette />

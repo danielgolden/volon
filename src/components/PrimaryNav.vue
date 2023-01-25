@@ -101,11 +101,13 @@ onMounted(() => {
           </Tooltip>
         </li>
       </ul>
-      <Tooltip value="Download a backup" position="right">
+      <Tooltip value="Settings" position="right">
         <Button
           type="secondary"
-          icon="download"
-          @click="downloadBackupOfData"
+          icon="settings"
+          @click="
+            genericState.settingsViewActive = !genericState.settingsViewActive
+          "
           title="Download a backup of your data"
         />
       </Tooltip>

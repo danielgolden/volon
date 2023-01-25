@@ -3,17 +3,20 @@ import Icon from "./Icon.vue";
 import Button from "./Button.vue";
 import Select from "./Select.vue";
 import { signInWithGitHub } from "../lib/supabase";
+import { useGenericStateStore } from "../stores/store.genericState";
+const genericState = useGenericStateStore();
 </script>
 
 <template>
-  <article class="settings-container">
+  <article class="settings-container" v-if="genericState.settingsViewActive">
     <header class="settings-header">
-      <a href="#" class="back-button">
-        <Icon name="chevron-left" color="var(--color-accent)" />
-        Notes
-      </a>
-
       <h2 class="settings-heading">Settings</h2>
+      <Button
+        icon="cross-1"
+        type="secondary"
+        class="close-button"
+        @click="genericState.settingsViewActive = false"
+      />
     </header>
     <div class="settings-primary-content">
       <div class="sync-notes-container">
@@ -99,7 +102,8 @@ import { signInWithGitHub } from "../lib/supabase";
 
 .settings-header {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
+  justify-content: space-between;
   gap: 2px;
 }
 

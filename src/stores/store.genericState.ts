@@ -6,6 +6,7 @@ export const useGenericStateStore = defineStore("genericState", {
       activeNoteContents: "",
       activeNoteId: <string | null>"",
       commandPaletteActive: false,
+      settingsViewActive: false,
       noteListMatchingNotes: <Note[] | null>null,
       commandPaletteMatchingNotes: <Note[] | null>null,
       searchJustCreatedNote: false,
