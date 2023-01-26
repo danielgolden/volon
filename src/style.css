@@ -31,7 +31,7 @@
   --ease-in-out-circ: cubic-bezier(0.785, 0.135, 0.15, 0.86);
 }
 
-main[color-mode="light"] {
+main[data-theme="light"] {
   --font-smoothing: normal;
   --color-accent: #5282d5;
 
@@ -110,7 +110,7 @@ main[color-mode="light"] {
   --color-box-shadow: rgba(0, 0, 0, 0.05);
 }
 
-main[color-mode="dark"] {
+main[data-theme="dark"] {
   --font-smoothing: antialiased;
   --color-accent: #6399e1;
 
