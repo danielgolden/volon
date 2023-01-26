@@ -12,7 +12,6 @@ import {
   deleteAllNotes,
   loadExistingLocalStorageData,
 } from "../lib/localStorage";
-import { generateKey } from "crypto";
 const genericState = useGenericStateStore();
 const settings = useSettingsStore();
 

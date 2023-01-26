@@ -108,3 +108,11 @@ export const loadExistingDBData = async () => {
     })
   );
 };
+
+export const sendLocalNotesToDB = async () => {
+  const localNotesData = JSON.parse(localStorage.getItem("volon")!).notes;
+
+  localNotesData.forEach((note: Note) => {
+    createNoteInDB(note);
+  });
+};
