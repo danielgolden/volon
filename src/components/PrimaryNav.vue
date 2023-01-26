@@ -151,9 +151,9 @@ onMounted(() => {
           </h3>
           <p>
             Your notes only stored locally and on this device. If you
-            <a href="#" @click="handleLoginLinkClick">log in</a>, your notes
-            will be store in the cloud and you will be able to use Volón across
-            different browsers and devices.
+            <a href="#" @click="handleLoginLinkClick">log in</a>,
+            <em>your notes will be store in the cloud</em> and you will be able
+            to use Volón across different browsers and devices.
           </p>
         </div>
       </div>
@@ -365,6 +365,7 @@ onMounted(() => {
   padding: 8px 10px;
   font-size: 14px;
   font-weight: 500;
+  color: var(--color-text-primary);
   background-color: transparent;
   border: none;
   cursor: pointer;

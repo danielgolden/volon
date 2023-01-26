@@ -67,6 +67,7 @@ const props = defineProps({
 
 .btn-secondary {
   background-color: var(--color-bg-button);
+  color: var(--color-text-primary);
 }
 
 .btn-primary:hover {
