@@ -131,3 +131,15 @@ export const createSampleDataInLocalStorage = () => {
     saveAllNoteDataToLocalStorage();
   });
 };
+
+export const deleteAllNotes = () => {
+  const localData = localStorage.getItem("volon");
+  const localDataFound = !!localData;
+
+  if (!localDataFound) return;
+
+  const localDataParsed = JSON.parse(localStorage.getItem("volon")!);
+  localDataParsed.notes = [];
+
+  localStorage.setItem("volon", JSON.stringify(localDataParsed));
+};

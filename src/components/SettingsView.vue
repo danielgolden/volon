@@ -9,6 +9,8 @@ import { downloadBackupOfData } from "../lib/utils";
 import {
   intializeLocalStorageData,
   saveAppSettingsToLocalStorage,
+  deleteAllNotes,
+  loadExistingLocalStorageData,
 } from "../lib/localStorage";
 const genericState = useGenericStateStore();
 const settings = useSettingsStore();
@@ -17,6 +19,15 @@ const handleLogOutClick = () => {
   signout();
   intializeLocalStorageData();
   genericState.clearActiveNoteState();
+};
+
+const handleDeleteAllNotes = () => {
+  const confirmDelete = confirm("Permanently delete all of your notes?");
+
+  if (confirmDelete) {
+    deleteAllNotes();
+    loadExistingLocalStorageData();
+  }
 };
 </script>
 
@@ -150,7 +161,9 @@ const handleLogOutClick = () => {
                   undone.
                 </p>
               </div>
-              <Button type="danger" icon="trash">Delete all notes</Button>
+              <Button type="danger" icon="trash" @click="handleDeleteAllNotes"
+                >Delete all notes</Button
+              >
             </div>
           </div>
         </div>
