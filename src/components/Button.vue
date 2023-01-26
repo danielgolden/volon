@@ -45,6 +45,7 @@ const props = defineProps({
   border: none;
   cursor: pointer;
   transition: all 50ms var(--ease-out-quad);
+  white-space: nowrap;
 }
 
 /*-- Primary buttons --*/

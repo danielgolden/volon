@@ -2,9 +2,17 @@
 import Icon from "./Icon.vue";
 import Button from "./Button.vue";
 import Select from "./Select.vue";
-import { signInWithGitHub } from "../lib/supabase";
+import { signInWithGitHub, signout } from "../lib/supabase";
 import { useGenericStateStore } from "../stores/store.genericState";
+import { downloadBackupOfData } from "../lib/utils";
+import { intializeLocalStorageData } from "../lib/localStorage";
 const genericState = useGenericStateStore();
+
+const handleLogOutClick = () => {
+  signout();
+  intializeLocalStorageData();
+  genericState.clearActiveNoteState();
+};
 </script>
 
 <template>
@@ -27,23 +35,47 @@ const genericState = useGenericStateStore();
               <div class="settings-row-copy">
                 <h4 class="settings-row-heading">
                   Sync notes:
-                  <span class="sync-notes-status">
-                    Off
-                    <Icon name="minus-circled" color="currentColor"
+                  <span
+                    :class="{
+                      'sync-notes-status': true,
+                      'logged-in': genericState.userIsLoggedIn,
+                    }"
+                  >
+                    {{ genericState.userIsLoggedIn ? "On" : "Off" }}
+                    <Icon
+                      :name="
+                        genericState.userIsLoggedIn ? 'check' : 'minus-circled'
+                      "
+                      :color="
+                        genericState.userIsLoggedIn
+                          ? 'var(--color-text-attention-success)'
+                          : 'currentColor'
+                      "
                   /></span>
                 </h4>
-                <p class="settings-row-description">
+                <p
+                  class="settings-row-description"
+                  v-if="!genericState.userIsLoggedIn"
+                >
                   <em>Log in to turn on notes sync</em>. Your notes will be
                   stored in the cloud and you will be able to use Volón across
                   different browsers and devices.
                 </p>
+                <p class="settings-row-description" v-else>
+                  You're notes are being synced (you are currently logged in
+                  with
+                  {{ genericState.session.user.app_metadata.provider }}).
+                </p>
               </div>
-              <div class="login-buttons">
-                <Button :click="signInWithGitHub">
+              <div class="login-buttons" v-if="!genericState.userIsLoggedIn">
+                <Button @click="signInWithGitHub">
                   <img src="../assets/logo-github.svg" class="btn-login-icon" />
                   Log in with GitHub
                 </Button>
               </div>
+              <Button @click="handleLogOutClick" icon="exit" v-else>
+                Log out
+              </Button>
             </div>
           </div>
         </div>
@@ -93,14 +125,16 @@ const genericState = useGenericStateStore();
                   Download a JSON file of your data.
                 </p>
               </div>
-              <Button icon="download">Download a backup</Button>
+              <Button icon="download" @click="downloadBackupOfData"
+                >Download a backup</Button
+              >
             </div>
             <div class="settings-row">
               <div class="settings-row-copy">
                 <h4 class="settings-row-heading">Delete your data</h4>
                 <p class="settings-row-description">
-                  This action cannot be undone. Your notes will be permanently
-                  deleted.
+                  Your notes will be permanently deleted. This action cannot be
+                  undone.
                 </p>
               </div>
               <Button type="danger" icon="trash">Delete all notes</Button>
@@ -194,11 +228,17 @@ const genericState = useGenericStateStore();
 }
 
 .sync-notes-status {
+  margin-left: 2px;
   display: inline-flex;
   align-items: center;
   font-weight: 400;
-  gap: 5px;
+  gap: 4px;
   color: var(--color-text-secondary);
+}
+
+.sync-notes-status.logged-in {
+  gap: 2px;
+  color: var(--color-text-attention-success);
 }
 
 :deep .sync-notes-status svg {
@@ -216,7 +256,6 @@ const genericState = useGenericStateStore();
   gap: 8px;
   flex-direction: column;
   justify-content: stretch;
-  width: 100%;
   margin-top: 4px;
 }
 
