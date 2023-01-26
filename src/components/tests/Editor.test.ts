@@ -19,20 +19,6 @@ import { useGenericStateStore } from "../../stores/store.genericState";
 // TODO: Figure out how to test keyboard shortcuts with vue test utils or another library.
 // The best lead I have so far: https://testing-library.com/docs/user-event/keyboard
 
-beforeAll(() => {
-  Object.defineProperty(window, "matchMedia", {
-    writable: true,
-    value: vi.fn().mockImplementation((query) => ({
-      matches: false,
-      media: query,
-      onchange: null,
-      addEventListener: vi.fn(),
-      removeEventListener: vi.fn(),
-      dispatchEvent: vi.fn(),
-    })),
-  });
-});
-
 let editorWrapper: VueWrapper | null = null;
 let appWrapper: VueWrapper | null = null;
 beforeEach(() => {
