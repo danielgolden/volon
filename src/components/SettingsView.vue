@@ -288,7 +288,7 @@ hr {
   align-items: center;
   gap: 5%;
   padding: 20px;
-  border-bottom: 1px dotted var(--color-border-primary);
+  border-bottom: 1px solid var(--color-border-primary);
 }
 
 .settings-row:last-child {

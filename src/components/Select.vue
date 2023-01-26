@@ -62,18 +62,30 @@ onMounted(() => {
 .select-ui-container {
   position: relative;
   border-radius: 4px;
-  border: 1px solid var(--color-border-primary);
+  box-shadow: inset 0 0 0 1px var(--color-border-button-primary);
+  background-color: var(--color-bg-button-primary);
+  overflow: hidden;
 }
 
 .select {
   padding: 6px 36px 10px 12px;
   font-size: 14px;
   font-family: var(--font-family-primary);
-  color: var(--color-text-primary);
+  font-weight: 500;
   background-color: transparent;
+  color: var(--color-text-button-primary);
   appearance: none;
   border: none;
   cursor: pointer;
+}
+
+.select-ui-container:hover {
+  background-color: var(--color-bg-button-hover-primary);
+  box-shadow: inset 0 0 0 1px var(--color-border-button-hover-primary);
+}
+
+.select * {
+  font-family: var(--font-family-primary);
 }
 
 :deep .select-caret {
