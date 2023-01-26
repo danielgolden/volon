@@ -72,6 +72,14 @@ export const sortNotesByModificationDate = (notes: Note[]): Note[] => {
   return sortedNotes;
 };
 
+export const sortNotesByCreationDate = (notes: Note[]): Note[] => {
+  const sortedNotes = notes.sort((currentNote, nextNote) => {
+    return nextNote.dateCreated.getTime() - currentNote.dateCreated.getTime();
+  });
+
+  return sortedNotes;
+};
+
 export const getIndexOfNoteById = (id: string | null, noteList?: Note[]) => {
   const notebook = useNotebookStore();
   const genericState = useGenericStateStore();

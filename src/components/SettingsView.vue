@@ -116,7 +116,11 @@ const handleLogOutClick = () => {
                   Choose the default sorting order for your notes.
                 </p>
               </div>
-              <Select id="notes-sorting">
+              <Select
+                id="notes-sorting"
+                v-model="settings.noteOrderPreference"
+                @change="saveAppSettingsToLocalStorage"
+              >
                 <option value="dateModified">Last modified</option>
                 <option value="dateCreated">Date created</option>
               </Select>

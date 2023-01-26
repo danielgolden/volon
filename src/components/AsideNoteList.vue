@@ -9,6 +9,7 @@ import { formatRelative } from "date-fns";
 import KeyboardShortcutIndicator from "./KeyboardShortcutIndicator.vue";
 import {
   sortNotesByModificationDate,
+  sortNotesByCreationDate,
   navigateToPreviousNote,
   navigateToNextNote,
   getIndexOfNoteById,
@@ -27,10 +28,15 @@ const searchIsActive = computed(() => {
 });
 
 const notesToBeDisplayed = computed(() => {
+  const sortingFunction =
+    settings.noteOrderPreference === "dateModified"
+      ? sortNotesByModificationDate
+      : sortNotesByCreationDate;
+
   if (!searchIsActive.value || genericState.commandPaletteActive) {
-    return sortNotesByModificationDate(notebook.notes);
+    return sortingFunction(notebook.notes);
   } else {
-    return sortNotesByModificationDate(genericState.noteListMatchingNotes!);
+    return sortingFunction(genericState.noteListMatchingNotes!);
   }
 });
 
