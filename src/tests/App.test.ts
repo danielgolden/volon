@@ -2,8 +2,30 @@ import { mount, VueWrapper } from "@vue/test-utils";
 import App from "../App.vue";
 import { useNotebookStore } from "../stores/store.notebook";
 import { createApp } from "vue";
-import { describe, it, expect, beforeEach, afterEach } from "vitest";
+import {
+  describe,
+  it,
+  expect,
+  beforeEach,
+  afterEach,
+  beforeAll,
+  vi,
+} from "vitest";
 import { createPinia } from "pinia";
+
+beforeAll(() => {
+  Object.defineProperty(window, "matchMedia", {
+    writable: true,
+    value: vi.fn().mockImplementation((query) => ({
+      matches: false,
+      media: query,
+      onchange: null,
+      addEventListener: vi.fn(),
+      removeEventListener: vi.fn(),
+      dispatchEvent: vi.fn(),
+    })),
+  });
+});
 
 let wrapper: VueWrapper | null = null;
 beforeEach(() => {

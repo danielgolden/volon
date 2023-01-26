@@ -12,12 +12,26 @@ import {
   setUrlParams,
 } from "../utils";
 import { createSampleDataInLocalStorage } from "../localStorage";
-import { describe, it, expect, beforeEach } from "vitest";
+import { describe, it, expect, beforeEach, beforeAll, vi } from "vitest";
 import { createPinia, _StoreWithState } from "pinia";
 import { useGenericStateStore } from "../../stores/store.genericState";
 import { useNotebookStore } from "../../stores/store.notebook";
 import { createApp } from "vue";
 import { mount } from "@vue/test-utils";
+
+beforeAll(() => {
+  Object.defineProperty(window, "matchMedia", {
+    writable: true,
+    value: vi.fn().mockImplementation((query) => ({
+      matches: false,
+      media: query,
+      onchange: null,
+      addEventListener: vi.fn(),
+      removeEventListener: vi.fn(),
+      dispatchEvent: vi.fn(),
+    })),
+  });
+});
 
 const pinia = createPinia();
 const app = createApp(App);

@@ -1,7 +1,15 @@
 import { mount, VueWrapper } from "@vue/test-utils";
 import App from "../../App.vue";
 import Editor from "../Editor.vue";
-import { describe, it, expect, beforeEach, afterEach, vi } from "vitest";
+import {
+  describe,
+  it,
+  expect,
+  beforeEach,
+  afterEach,
+  beforeAll,
+  vi,
+} from "vitest";
 import { createPinia } from "pinia";
 import { createApp } from "vue";
 import { useNotebookStore } from "../../stores/store.notebook";
@@ -11,14 +19,7 @@ import { useGenericStateStore } from "../../stores/store.genericState";
 // TODO: Figure out how to test keyboard shortcuts with vue test utils or another library.
 // The best lead I have so far: https://testing-library.com/docs/user-event/keyboard
 
-let editorWrapper: VueWrapper | null = null;
-let appWrapper: VueWrapper | null = null;
-beforeEach(() => {
-  const pinia = createPinia();
-  const app = createApp(App);
-  app.use(pinia);
-  appWrapper = mount(App);
-
+beforeAll(() => {
   Object.defineProperty(window, "matchMedia", {
     writable: true,
     value: vi.fn().mockImplementation((query) => ({
@@ -30,6 +31,15 @@ beforeEach(() => {
       dispatchEvent: vi.fn(),
     })),
   });
+});
+
+let editorWrapper: VueWrapper | null = null;
+let appWrapper: VueWrapper | null = null;
+beforeEach(() => {
+  const pinia = createPinia();
+  const app = createApp(App);
+  app.use(pinia);
+  appWrapper = mount(App);
 
   const notebook = useNotebookStore();
   const settings = useSettingsStore();

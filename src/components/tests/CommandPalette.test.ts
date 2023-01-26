@@ -4,11 +4,34 @@ import { randomIntFromInterval, Note } from "../../lib/utils";
 import { createSampleDataInLocalStorage } from "../../lib/localStorage";
 import { useGenericStateStore } from "../../stores/store.genericState";
 import { useNotebookStore } from "../../stores/store.notebook";
-import { describe, it, expect, beforeEach, afterEach } from "vitest";
+import {
+  describe,
+  it,
+  expect,
+  beforeEach,
+  afterEach,
+  beforeAll,
+  vi,
+} from "vitest";
 import { createPinia } from "pinia";
 import { createApp } from "vue";
 
+beforeAll(() => {
+  Object.defineProperty(window, "matchMedia", {
+    writable: true,
+    value: vi.fn().mockImplementation((query) => ({
+      matches: false,
+      media: query,
+      onchange: null,
+      addEventListener: vi.fn(),
+      removeEventListener: vi.fn(),
+      dispatchEvent: vi.fn(),
+    })),
+  });
+});
+
 let wrapper: VueWrapper | null = null;
+
 beforeEach(() => {
   const pinia = createPinia();
   const app = createApp(CommandPalette);
