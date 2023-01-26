@@ -15,5 +15,26 @@ export const useSettingsStore = defineStore("settings", {
     toggleMarkdownPreviewActive() {
       this.markdownPreviewActive = !this.markdownPreviewActive;
     },
+    systemThemePreference() {
+      if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
+        return "dark";
+      } else if (window.matchMedia("(prefers-color-scheme: light)").matches) {
+        return "light";
+      }
+    },
+  },
+  getters: {
+    themeResult: (state) => {
+      const systemPreferenceIsDark = window.matchMedia(
+        "(prefers-color-scheme: dark)"
+      ).matches;
+      const systemPreferenceResult = systemPreferenceIsDark ? "dark" : "light";
+
+      if (state.theme === "dark" || state.theme === "light") {
+        return state.theme;
+      } else {
+        return systemPreferenceResult;
+      }
+    },
   },
 });

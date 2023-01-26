@@ -59,8 +59,8 @@ onMounted(async () => {
     :class="{
       'aside-active': settings.asideActive,
       'markdown-preview-active': settings.markdownPreviewActive,
-      [`theme-${settings.theme}`]: settings.theme,
     }"
+    :color-mode="settings.themeResult"
   >
     <PrimaryNav />
     <AsideNoteList />
