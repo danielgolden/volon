@@ -69,6 +69,15 @@ export const deleteNoteInDB = async (noteToDelete: Note) => {
   return error;
 };
 
+export const deleteAllUserNotes = async () => {
+  const genericState = useGenericStateStore();
+  const userID = genericState.session.user.id;
+
+  const { error } = await supabase.from("notes").delete().eq("user_id", userID);
+
+  return error;
+};
+
 export const loadExistingDBData = async () => {
   const notebook = useNotebookStore();
   let dbNotes = await loadNotesFromDB();
@@ -98,4 +107,12 @@ export const loadExistingDBData = async () => {
       lastModified: new Date(note.modified_at),
     })
   );
+};
+
+export const sendLocalNotesToDB = async () => {
+  const localNotesData = JSON.parse(localStorage.getItem("volon")!).notes;
+
+  localNotesData.forEach((note: Note) => {
+    createNoteInDB(note);
+  });
 };

@@ -4,11 +4,20 @@ import { randomIntFromInterval, Note } from "../../lib/utils";
 import { createSampleDataInLocalStorage } from "../../lib/localStorage";
 import { useGenericStateStore } from "../../stores/store.genericState";
 import { useNotebookStore } from "../../stores/store.notebook";
-import { describe, it, expect, beforeEach, afterEach } from "vitest";
+import {
+  describe,
+  it,
+  expect,
+  beforeEach,
+  afterEach,
+  beforeAll,
+  vi,
+} from "vitest";
 import { createPinia } from "pinia";
 import { createApp } from "vue";
 
 let wrapper: VueWrapper | null = null;
+
 beforeEach(() => {
   const pinia = createPinia();
   const app = createApp(CommandPalette);

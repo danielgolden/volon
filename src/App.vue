@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import { onMounted, ref, watch } from "vue";
-import PrimaryNav from "./components/PrimaryNav.vue";
 import AsideNoteList from "./components/AsideNoteList.vue";
+import SettingsView from "./components/SettingsView.vue";
+import PrimaryNav from "./components/PrimaryNav.vue";
 import Editor from "./components/Editor.vue";
 import MarkdownPreview from "./components/MarkdownPreview.vue";
 import CommandPalette from "./components/CommandPalette.vue";
@@ -59,11 +60,18 @@ onMounted(async () => {
       'aside-active': settings.asideActive,
       'markdown-preview-active': settings.markdownPreviewActive,
     }"
+    :data-theme="settings.themeResult"
   >
     <PrimaryNav />
     <AsideNoteList />
-    <Editor v-model="genericState.activeNoteContents" />
-    <MarkdownPreview v-if="settings.markdownPreviewActive" />
+    <Editor
+      v-model="genericState.activeNoteContents"
+      v-if="!genericState.settingsViewActive"
+    />
+    <MarkdownPreview
+      v-if="settings.markdownPreviewActive && !genericState.settingsViewActive"
+    />
+    <SettingsView v-if="genericState.settingsViewActive" />
     <CommandPalette />
   </main>
 </template>

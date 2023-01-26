@@ -1,10 +1,12 @@
 import { defineStore } from "pinia";
 
 export const useSettingsStore = defineStore("settings", {
-  state: () => {
+  state: (): settingsStore => {
     return {
       asideActive: true,
       markdownPreviewActive: false,
+      theme: "system",
+      noteOrderPreference: "dateModified",
     };
   },
   actions: {
@@ -13,6 +15,20 @@ export const useSettingsStore = defineStore("settings", {
     },
     toggleMarkdownPreviewActive() {
       this.markdownPreviewActive = !this.markdownPreviewActive;
+    },
+  },
+  getters: {
+    themeResult: (state) => {
+      const systemPreferenceIsDark = window.matchMedia(
+        "(prefers-color-scheme: dark)"
+      ).matches;
+      const systemThemePreference = systemPreferenceIsDark ? "dark" : "light";
+
+      if (state.theme === "dark" || state.theme === "light") {
+        return state.theme;
+      } else {
+        return systemThemePreference;
+      }
     },
   },
 });

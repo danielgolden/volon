@@ -2,18 +2,21 @@
 import { computed, watch, ref, nextTick } from "vue";
 import {
   sortNotesByModificationDate,
+  sortNotesByCreationDate,
   navigateToPreviousNote,
   navigateToNextNote,
 } from "../lib/utils";
 import CommandPaletteInput from "./CommandPaletteInput.vue";
 import KeyboardShortcutIndicator from "./KeyboardShortcutIndicator.vue";
 import { formatRelative } from "date-fns";
+import { useSettingsStore } from "../stores/store.settings";
 import { useGenericStateStore } from "../stores/store.genericState";
 import { useNotebookStore } from "../stores/store.notebook";
 
 const noteListItemRefs = ref<HTMLElement[] | []>([]);
 const noteList = ref<HTMLUListElement | null>(null);
 const activeNoteSelectionMade = ref(false);
+const settings = useSettingsStore();
 const genericState = useGenericStateStore();
 const notebook = useNotebookStore();
 
@@ -22,12 +25,14 @@ const searchIsActive = computed(() => {
 });
 
 const notesToBeDisplayed = computed(() => {
+  const sortingFunction =
+    settings.noteOrderPreference === "dateModified"
+      ? sortNotesByModificationDate
+      : sortNotesByCreationDate;
   if (!searchIsActive.value) {
-    return sortNotesByModificationDate(notebook.notes);
+    return sortingFunction(notebook.notes);
   } else {
-    return sortNotesByModificationDate(
-      genericState.commandPaletteMatchingNotes!
-    );
+    return sortingFunction(genericState.commandPaletteMatchingNotes!);
   }
 });
 const handleNoteItemClick = (noteId: string | null) => {

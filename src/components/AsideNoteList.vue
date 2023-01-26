@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import { useSettingsStore } from "../stores/store.settings";
+import SettingsView from "./SettingsView.vue";
 import AsideSearch from "./AsideSearch.vue";
 import { onMounted, ref, computed, watch, nextTick } from "vue";
 import { useGenericStateStore } from "../stores/store.genericState";
@@ -8,6 +9,7 @@ import { formatRelative } from "date-fns";
 import KeyboardShortcutIndicator from "./KeyboardShortcutIndicator.vue";
 import {
   sortNotesByModificationDate,
+  sortNotesByCreationDate,
   navigateToPreviousNote,
   navigateToNextNote,
   getIndexOfNoteById,
@@ -26,10 +28,15 @@ const searchIsActive = computed(() => {
 });
 
 const notesToBeDisplayed = computed(() => {
+  const sortingFunction =
+    settings.noteOrderPreference === "dateModified"
+      ? sortNotesByModificationDate
+      : sortNotesByCreationDate;
+
   if (!searchIsActive.value || genericState.commandPaletteActive) {
-    return sortNotesByModificationDate(notebook.notes);
+    return sortingFunction(notebook.notes);
   } else {
-    return sortNotesByModificationDate(genericState.noteListMatchingNotes!);
+    return sortingFunction(genericState.noteListMatchingNotes!);
   }
 });
 

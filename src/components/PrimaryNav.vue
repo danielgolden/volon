@@ -28,6 +28,11 @@ const handleAsideButtonClick = () => {
   saveAppSettingsToLocalStorage();
 };
 
+const handleLoginLinkClick = () => {
+  genericState.settingsViewActive = true;
+  accountMenuActive.value = false;
+};
+
 onMounted(() => {
   document.addEventListener("click", (e) => {
     const accountButton =
@@ -101,11 +106,13 @@ onMounted(() => {
           </Tooltip>
         </li>
       </ul>
-      <Tooltip value="Download a backup" position="right">
+      <Tooltip value="Settings" position="right">
         <Button
           type="secondary"
-          icon="download"
-          @click="downloadBackupOfData"
+          icon="settings"
+          @click="
+            genericState.settingsViewActive = !genericState.settingsViewActive
+          "
           title="Download a backup of your data"
         />
       </Tooltip>
@@ -138,31 +145,15 @@ onMounted(() => {
             />
           </svg>
 
-          <div class="login-buttons">
-            <Button class="btn-primary btn-login" @click="signInWithGitHub">
-              <img src="../assets/logo-github.svg" class="btn-login-icon" />
-              Log in with GitHub
-            </Button>
-            <!-- <button class="btn-primary btn-login">
-              <img src="../assets/logo-google.svg" class="btn-login-icon" />
-
-              Log in with Google
-            </button>
-            <button class="btn-primary btn-login">
-              <img src="../assets/logo-apple.svg" class="btn-login-icon" />
-
-              Log in with Apple
-            </button> -->
-          </div>
-          <hr />
           <h3>
             <Icon name="lock" class="btn-menu-icon" color="currentColor" />
-            Your notes live on this device
+            Your notes are stored on this device
           </h3>
           <p>
-            Your notes are currently stored on this device. If you log in, your
-            notes will be store in the cloud and you will be able to use Volón
-            across different browsers and devices.
+            Your notes only stored locally and on this device. If you
+            <a href="#" @click="handleLoginLinkClick">log in</a>,
+            <em>your notes will be store in the cloud</em> and you will be able
+            to use Volón across different browsers and devices.
           </p>
         </div>
       </div>
@@ -374,6 +365,7 @@ onMounted(() => {
   padding: 8px 10px;
   font-size: 14px;
   font-weight: 500;
+  color: var(--color-text-primary);
   background-color: transparent;
   border: none;
   cursor: pointer;

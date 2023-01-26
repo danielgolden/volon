@@ -1,7 +1,15 @@
 import { mount, VueWrapper } from "@vue/test-utils";
 import AsideSearch from "../AsideSearch.vue";
 import { Note } from "../../lib/utils";
-import { describe, it, expect, beforeEach, afterEach } from "vitest";
+import {
+  describe,
+  it,
+  expect,
+  beforeEach,
+  afterEach,
+  beforeAll,
+  vi,
+} from "vitest";
 import { useGenericStateStore } from "../../stores/store.genericState";
 import { useSettingsStore } from "../../stores/store.settings";
 import { useNotebookStore } from "../../stores/store.notebook";

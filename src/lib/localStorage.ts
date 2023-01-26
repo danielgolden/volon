@@ -25,8 +25,8 @@ export const saveAppSettingsToLocalStorage = () => {
     const localDataParsed = JSON.parse(localData);
     localDataParsed.asideActive = settings.asideActive;
     localDataParsed.markdownPreviewActive = settings.markdownPreviewActive;
-
-    localDataParsed.asideActive = settings.asideActive;
+    localDataParsed.noteOrderPreference = settings.noteOrderPreference;
+    localDataParsed.theme = settings.theme;
 
     localStorage.setItem("volon", JSON.stringify(localDataParsed));
   } else {
@@ -41,6 +41,8 @@ export const createNewAppSettingsInLocalStorage = () => {
     JSON.stringify({
       asideActive: settings.asideActive,
       markdownPreviewActive: settings.markdownPreviewActive,
+      noteOrderPreference: settings.noteOrderPreference,
+      theme: settings.theme,
     })
   );
 };
@@ -54,6 +56,8 @@ export const loadAppSettingsFromLocalStorage = () => {
     const localDataParsed = JSON.parse(localData);
     settings.asideActive = localDataParsed.asideActive;
     settings.markdownPreviewActive = localDataParsed.markdownPreviewActive;
+    settings.noteOrderPreference = localDataParsed.noteOrderPreference;
+    settings.theme = localDataParsed.theme ?? "system";
   } else {
     createNewAppSettingsInLocalStorage();
   }
@@ -126,4 +130,16 @@ export const createSampleDataInLocalStorage = () => {
     notebook.notes.push(newNoteData);
     saveAllNoteDataToLocalStorage();
   });
+};
+
+export const deleteAllNotes = () => {
+  const localData = localStorage.getItem("volon");
+  const localDataFound = !!localData;
+
+  if (!localDataFound) return;
+
+  const localDataParsed = JSON.parse(localStorage.getItem("volon")!);
+  localDataParsed.notes = [];
+
+  localStorage.setItem("volon", JSON.stringify(localDataParsed));
 };
