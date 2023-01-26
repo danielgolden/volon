@@ -2,7 +2,7 @@
 import Icon from "./Icon.vue";
 import Button from "./Button.vue";
 import Select from "./Select.vue";
-import { signInWithGitHub, signout } from "../lib/supabase";
+import { signInWithGitHub, signout, deleteAllUserNotes } from "../lib/supabase";
 import { useGenericStateStore } from "../stores/store.genericState";
 import { useSettingsStore } from "../stores/store.settings";
 import { downloadBackupOfData } from "../lib/utils";
@@ -12,6 +12,7 @@ import {
   deleteAllNotes,
   loadExistingLocalStorageData,
 } from "../lib/localStorage";
+import { generateKey } from "crypto";
 const genericState = useGenericStateStore();
 const settings = useSettingsStore();
 
@@ -25,6 +26,10 @@ const handleDeleteAllNotes = () => {
   const confirmDelete = confirm("Permanently delete all of your notes?");
 
   if (confirmDelete) {
+    if (genericState.userIsLoggedIn) {
+      deleteAllUserNotes();
+    }
+
     deleteAllNotes();
     loadExistingLocalStorageData();
   }

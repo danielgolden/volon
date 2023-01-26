@@ -69,6 +69,15 @@ export const deleteNoteInDB = async (noteToDelete: Note) => {
   return error;
 };
 
+export const deleteAllUserNotes = async () => {
+  const genericState = useGenericStateStore();
+  const userID = genericState.session.user.id;
+
+  const { error } = await supabase.from("notes").delete().eq("user_id", userID);
+
+  return error;
+};
+
 export const loadExistingDBData = async () => {
   const notebook = useNotebookStore();
   let dbNotes = await loadNotesFromDB();
