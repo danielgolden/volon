@@ -223,3 +223,7 @@ button {
   font-family: var(--font-family-primary);
   overflow: hidden;
 }
+
+p a {
+  color: var(--color-accent);
+}

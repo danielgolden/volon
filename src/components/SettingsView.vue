@@ -207,8 +207,9 @@ const handleDeleteAllNotes = () => {
 .settings-content {
   display: flex;
   flex-direction: column;
-  gap: 48px;
   max-width: 600px;
+  height: 100%;
+  gap: 48px;
 }
 
 .settings-header {
