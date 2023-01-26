@@ -3,7 +3,7 @@ import { onMounted, ref } from "vue";
 import Icon from "./Icon.vue";
 
 const emit = defineEmits(["update:model-value"]);
-const props = defineProps(["modelValue", "label", "label-for"]);
+const props = defineProps(["modelValue", "label", "label-for", "description"]);
 const selectElement = ref<HTMLSelectElement | null>(null);
 
 onMounted(() => {
@@ -23,9 +23,14 @@ onMounted(() => {
 
 <template>
   <div class="select-container">
-    <label class="select-label" v-if="props.label" :for="props['label-for']">{{
-      props.label
-    }}</label>
+    <div class="select-meta">
+      <label class="select-label" v-if="props.label" :for="props['label-for']">
+        {{ props.label }}
+      </label>
+      <p class="select-description" v-if="props.description">
+        {{ props.description }}
+      </p>
+    </div>
     <div class="select-ui-container">
       <select
         class="select"
@@ -53,7 +58,6 @@ onMounted(() => {
   display: flex;
   flex-direction: column;
   gap: 8px;
-  margin-block: 12px;
 }
 .select-ui-container {
   position: relative;
@@ -62,8 +66,7 @@ onMounted(() => {
 }
 
 .select {
-  width: 100%;
-  padding: 8px 12px;
+  padding: 6px 36px 10px 12px;
   font-size: 14px;
   font-family: var(--font-family-primary);
   color: var(--color-text-primary);
@@ -75,15 +78,27 @@ onMounted(() => {
 
 :deep .select-caret {
   top: 10px;
-  right: 12px;
+  right: 10px;
   position: absolute;
+}
+
+.select-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
 }
 
 .select-label {
   display: inline-block;
-  font-size: 14px;
+  font-size: 16px;
   font-weight: 600;
   font-family: var(--font-family-primary);
   color: var(--color-text-primary);
+}
+
+.select-description {
+  margin: 0 0 4px;
+  font-size: 14px;
+  color: var(--color-text-secondary);
 }
 </style>

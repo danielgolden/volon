@@ -8,101 +8,149 @@ const genericState = useGenericStateStore();
 </script>
 
 <template>
-  <article class="settings-container" v-if="genericState.settingsViewActive">
-    <header class="settings-header">
-      <h2 class="settings-heading">Settings</h2>
-      <Button
-        icon="cross-1"
-        type="secondary"
-        class="close-button"
-        @click="genericState.settingsViewActive = false"
-      />
-    </header>
-    <div class="settings-primary-content">
-      <div class="sync-notes-container">
-        <h5 class="sync-notes-heading">
-          Sync notes:
-          <span class="sync-notes-status">
-            Off
-            <Icon name="minus-circled" color="currentColor"
-          /></span>
-        </h5>
-        <p class="settings-section-description">
-          <em>Log in to turn on notes sync</em>. Your notes will be stored in
-          the cloud and you will be able to use Volón across different browsers
-          and devices.
-        </p>
+  <div class="settings-container">
+    <article class="settings-content" v-if="genericState.settingsViewActive">
+      <header class="settings-header">
+        <h2 class="settings-heading">Settings</h2>
+        <Button
+          icon="cross-1"
+          type="secondary"
+          class="close-button"
+          @click="genericState.settingsViewActive = false"
+        />
+      </header>
+      <div class="settings-primary-content">
+        <div class="settings-section">
+          <h3 class="settings-section-heading">Sync your notes</h3>
+          <div class="settings-box">
+            <div class="settings-row">
+              <div class="settings-row-copy">
+                <h4 class="settings-row-heading">
+                  Sync notes:
+                  <span class="sync-notes-status">
+                    Off
+                    <Icon name="minus-circled" color="currentColor"
+                  /></span>
+                </h4>
+                <p class="settings-row-description">
+                  <em>Log in to turn on notes sync</em>. Your notes will be
+                  stored in the cloud and you will be able to use Volón across
+                  different browsers and devices.
+                </p>
+              </div>
+              <div class="login-buttons">
+                <Button :click="signInWithGitHub">
+                  <img src="../assets/logo-github.svg" class="btn-login-icon" />
+                  Log in with GitHub
+                </Button>
+              </div>
+            </div>
+          </div>
+        </div>
 
-        <div class="login-buttons">
-          <Button :click="signInWithGitHub">
-            <img src="../assets/logo-github.svg" class="btn-login-icon" />
-            Log in with GitHub
-          </Button>
+        <div class="settings-section">
+          <h3 class="settings-section-heading">Appearance</h3>
+          <div class="settings-box">
+            <div class="settings-row">
+              <div class="settings-row-copy">
+                <label class="settings-row-heading" for="theme">Theme</label>
+                <p class="settings-row-description">
+                  Choose how Volón looks to you. Select a single theme, or sync
+                  with your system and automatically switch between dark and
+                  light themes.
+                </p>
+              </div>
+              <Select id="theme">
+                <option value="system">System</option>
+                <option value="dark">Dark</option>
+                <option value="light">Light</option>
+              </Select>
+            </div>
+            <div class="settings-row">
+              <div class="settings-row-copy">
+                <label class="settings-row-heading" for="notes-sorting"
+                  >Sort notes by</label
+                >
+                <p class="settings-row-description">
+                  Choose the default sorting order for your notes.
+                </p>
+              </div>
+              <Select id="notes-sorting">
+                <option value="dateModified">Last modified</option>
+                <option value="dateCreated">Date created</option>
+              </Select>
+            </div>
+          </div>
+        </div>
+
+        <div class="settings-section">
+          <h3 class="settings-section-heading">Manage your data</h3>
+          <div class="settings-box">
+            <div class="settings-row">
+              <div class="settings-row-copy">
+                <h4 class="settings-row-heading">Backup your data</h4>
+                <p class="settings-row-description">
+                  Download a JSON file of your data.
+                </p>
+              </div>
+              <Button icon="download">Download a backup</Button>
+            </div>
+            <div class="settings-row">
+              <div class="settings-row-copy">
+                <h4 class="settings-row-heading">Delete your data</h4>
+                <p class="settings-row-description">
+                  This action cannot be undone. Your notes will be permanently
+                  deleted.
+                </p>
+              </div>
+              <Button type="danger" icon="trash">Delete all notes</Button>
+            </div>
+          </div>
         </div>
       </div>
-
-      <hr />
-
-      <Select label="Theme preferences" label-for="theme">
-        <option value="system">System</option>
-        <option value="dark">Dark</option>
-        <option value="light">Light</option>
-      </Select>
-
-      <Select label="Sort notes by" label-for="notes-sorting">
-        <option value="dateModified">Last modified</option>
-        <option value="dateCreated">Date created</option>
-      </Select>
-
-      <div class="settings-section">
-        <h6 class="settings-section-heading">Backup your data</h6>
-        <p class="settings-section-description">
-          Download a JSON file of your data.
+      <footer class="settings-footer">
+        <p class="credits">
+          Made in PA
+          <a href="https://en.wikipedia.org/wiki/Pennsylvania"
+            ><Icon name="pennsylvania" color="var(--color-accent)"
+          /></a>
+          by
+          <a href="https://danielgolden.me/">Daniel Golden</a>
         </p>
-        <Button icon="download">Download a backup</Button>
-      </div>
-
-      <div class="settings-section">
-        <h6 class="settings-section-heading">Delete your data</h6>
-        <p class="settings-section-description">
-          This action cannot be undone. Your notes will be permanently deleted.
-        </p>
-        <Button type="danger" icon="trash">Delete all notes</Button>
-      </div>
-    </div>
-    <footer class="settings-footer">
-      <p class="credits">
-        Made in PA
-        <a href="https://en.wikipedia.org/wiki/Pennsylvania"
-          ><Icon name="pennsylvania" color="var(--color-accent)"
-        /></a>
-        by
-        <a href="https://danielgolden.me/">Daniel Golden</a>
-      </p>
-    </footer>
-  </article>
+      </footer>
+    </article>
+  </div>
 </template>
 
 <style scoped>
 .settings-container {
-  width: 350px;
+  width: 100%;
   border-right: 1px solid var(--color-border-primary);
-  background-color: var(--color-bg-surface-2);
+  background-color: var(--color-bg-surface-1);
   display: flex;
+  align-items: center;
   flex-direction: column;
   height: 100%;
   min-width: 349px;
   margin: 0;
-  padding: 20px 24px;
+  padding: 48px 24px 20px;
   overflow-y: auto;
   position: relative;
   gap: 32px;
   color: var(--color-text-primary);
 }
 
+.settings-content {
+  display: flex;
+  flex-direction: column;
+  gap: 48px;
+  max-width: 600px;
+}
+
 .settings-header {
   display: flex;
   flex-direction: row;
+  align-items: center;
   justify-content: space-between;
   gap: 2px;
 }
@@ -120,8 +168,8 @@ const genericState = useGenericStateStore();
 }
 
 .settings-heading {
-  font-size: 24px;
-  font-weight: 500;
+  font-size: 32px;
+  font-weight: 600;
   margin: 0;
 }
 
@@ -129,7 +177,7 @@ const genericState = useGenericStateStore();
   display: flex;
   flex-direction: column;
   flex-grow: 1;
-  gap: 2px;
+  gap: 16px;
 }
 
 .sync-notes-container {
@@ -141,7 +189,7 @@ const genericState = useGenericStateStore();
 
 .sync-notes-heading {
   margin: 0;
-  font-size: 14px;
+  font-size: 16px;
   font-weight: bold;
 }
 
@@ -182,17 +230,52 @@ hr {
   margin: 12px 0;
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 20px;
 }
 
 .settings-section-heading {
-  font-size: 14px;
+  font-size: 20px;
   font-weight: 600;
   margin: 0;
 }
 
-.settings-section .btn {
-  margin-top: 4px;
+.settings-box {
+  border: 1px solid var(--color-border-primary);
+  border-radius: 4px;
+}
+
+.settings-row {
+  display: flex;
+  align-items: center;
+  gap: 5%;
+  padding: 20px;
+  border-bottom: 1px dotted var(--color-border-primary);
+}
+
+.settings-row:last-child {
+  border-bottom: none;
+}
+
+.settings-row-copy {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  flex-grow: 1;
+}
+
+.settings-row-heading {
+  font-size: 14px;
+  font-weight: 600;
+  margin: 0;
+  grid-area: rowHeading;
+  color: var(--color-text-primary);
+}
+
+.settings-row-description {
+  font-size: 14px;
+  margin: 0;
+  grid-area: rowDescription;
+  color: var(--color-text-secondary);
 }
 
 .credits {

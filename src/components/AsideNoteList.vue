@@ -178,10 +178,7 @@ watch(
 
 <template>
   <Transition name="expand-aside">
-    <div
-      class="aside-note-list-container"
-      v-if="settings.asideActive && !genericState.settingsViewActive"
-    >
+    <div class="aside-note-list-container" v-if="settings.asideActive">
       <AsideSearch :noteList="notesToBeDisplayed" />
       <ul
         :class="{ 'note-list': true, scrolled: noteListIsScrolled }"
@@ -222,7 +219,6 @@ watch(
       </div>
     </div>
   </Transition>
-  <SettingsView />
 </template>
 
 <style scoped>

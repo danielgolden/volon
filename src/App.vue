@@ -63,8 +63,14 @@ onMounted(async () => {
   >
     <PrimaryNav />
     <AsideNoteList />
-    <Editor v-model="genericState.activeNoteContents" />
-    <MarkdownPreview v-if="settings.markdownPreviewActive" />
+    <Editor
+      v-model="genericState.activeNoteContents"
+      v-if="!genericState.settingsViewActive"
+    />
+    <MarkdownPreview
+      v-if="settings.markdownPreviewActive && !genericState.settingsViewActive"
+    />
+    <SettingsView v-if="genericState.settingsViewActive" />
     <CommandPalette />
   </main>
 </template>

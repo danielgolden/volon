@@ -36,6 +36,7 @@ const props = defineProps({
   justify-content: center;
   align-items: center;
   gap: 6px;
+  flex-shrink: 0;
   padding-inline: 8px;
   border-radius: 4px;
   font-family: var(--font-family-primary);
