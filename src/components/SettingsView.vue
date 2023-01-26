@@ -4,9 +4,14 @@ import Button from "./Button.vue";
 import Select from "./Select.vue";
 import { signInWithGitHub, signout } from "../lib/supabase";
 import { useGenericStateStore } from "../stores/store.genericState";
+import { useSettingsStore } from "../stores/store.settings";
 import { downloadBackupOfData } from "../lib/utils";
-import { intializeLocalStorageData } from "../lib/localStorage";
+import {
+  intializeLocalStorageData,
+  saveAppSettingsToLocalStorage,
+} from "../lib/localStorage";
 const genericState = useGenericStateStore();
+const settings = useSettingsStore();
 
 const handleLogOutClick = () => {
   signout();
@@ -92,7 +97,11 @@ const handleLogOutClick = () => {
                   light themes.
                 </p>
               </div>
-              <Select id="theme">
+              <Select
+                id="theme"
+                v-model="settings.theme"
+                @change="saveAppSettingsToLocalStorage"
+              >
                 <option value="system">System</option>
                 <option value="dark">Dark</option>
                 <option value="light">Light</option>
@@ -280,7 +289,7 @@ hr {
 
 .settings-box {
   border: 1px solid var(--color-border-primary);
-  border-radius: 4px;
+  border-radius: 10px;
 }
 
 .settings-row {
@@ -304,6 +313,7 @@ hr {
 
 .settings-row-heading {
   font-size: 14px;
+  line-height: 14px;
   font-weight: 600;
   margin: 0;
   grid-area: rowHeading;

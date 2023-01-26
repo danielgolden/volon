@@ -1,10 +1,11 @@
 import { defineStore } from "pinia";
 
 export const useSettingsStore = defineStore("settings", {
-  state: () => {
+  state: (): settingsStore => {
     return {
       asideActive: true,
       markdownPreviewActive: false,
+      theme: "system",
     };
   },
   actions: {

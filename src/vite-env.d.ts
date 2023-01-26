@@ -12,3 +12,9 @@ interface LoadedNotesData {
   asideActive: boolean;
   notes: Note[];
 }
+
+interface settingsStore {
+  asideActive: boolean;
+  markdownPreviewActive: boolean;
+  theme: "system" | "dark" | "light";
+}

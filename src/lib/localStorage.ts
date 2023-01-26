@@ -25,8 +25,7 @@ export const saveAppSettingsToLocalStorage = () => {
     const localDataParsed = JSON.parse(localData);
     localDataParsed.asideActive = settings.asideActive;
     localDataParsed.markdownPreviewActive = settings.markdownPreviewActive;
-
-    localDataParsed.asideActive = settings.asideActive;
+    localDataParsed.theme = settings.theme;
 
     localStorage.setItem("volon", JSON.stringify(localDataParsed));
   } else {
@@ -41,6 +40,7 @@ export const createNewAppSettingsInLocalStorage = () => {
     JSON.stringify({
       asideActive: settings.asideActive,
       markdownPreviewActive: settings.markdownPreviewActive,
+      theme: settings.theme,
     })
   );
 };
@@ -54,6 +54,7 @@ export const loadAppSettingsFromLocalStorage = () => {
     const localDataParsed = JSON.parse(localData);
     settings.asideActive = localDataParsed.asideActive;
     settings.markdownPreviewActive = localDataParsed.markdownPreviewActive;
+    settings.theme = localDataParsed.theme ?? "system";
   } else {
     createNewAppSettingsInLocalStorage();
   }

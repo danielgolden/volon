@@ -59,6 +59,7 @@ onMounted(async () => {
     :class="{
       'aside-active': settings.asideActive,
       'markdown-preview-active': settings.markdownPreviewActive,
+      [`theme-${settings.theme}`]: settings.theme,
     }"
   >
     <PrimaryNav />
