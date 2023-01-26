@@ -1,7 +1,7 @@
 import { mount, VueWrapper } from "@vue/test-utils";
 import AsideSearch from "../AsideSearch.vue";
 import { Note } from "../../lib/utils";
-import { describe, it, expect, beforeEach, afterEach } from "vitest";
+import { describe, it, expect, beforeEach, afterEach, vi } from "vitest";
 import { useGenericStateStore } from "../../stores/store.genericState";
 import { useSettingsStore } from "../../stores/store.settings";
 import { useNotebookStore } from "../../stores/store.notebook";
@@ -19,6 +19,18 @@ const genericState = useGenericStateStore();
 let wrapper: VueWrapper | null = null;
 
 beforeEach(() => {
+  Object.defineProperty(window, "matchMedia", {
+    writable: true,
+    value: vi.fn().mockImplementation((query) => ({
+      matches: false,
+      media: query,
+      onchange: null,
+      addEventListener: vi.fn(),
+      removeEventListener: vi.fn(),
+      dispatchEvent: vi.fn(),
+    })),
+  });
+
   wrapper = mount(AsideSearch, {
     props: {
       noteList: [
