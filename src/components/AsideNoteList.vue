@@ -20,7 +20,6 @@ const settings = useSettingsStore();
 const activeNoteSelectionMade = ref(false);
 const noteListIsScrolled = ref(false);
 const noteListUl = ref<HTMLUListElement | null>(null);
-const noteListItemRefs = ref<HTMLElement[] | []>([]);
 
 const searchIsActive = computed(() => {
   return genericState.noteListMatchingNotes !== null;
@@ -130,8 +129,9 @@ watch(
   () => {
     updateNoteListIsScrolled();
 
-    const activeListItem = noteListItemRefs.value.find(
-      (noteListItem: HTMLElement) => {
+    const listItems = noteListUl.value!.querySelectorAll(".note-list-item");
+    const activeListItem = (Array.from(listItems) as HTMLLIElement[]).find(
+      (noteListItem) => {
         return noteListItem.dataset.noteId === genericState.activeNoteId;
       }
     );
