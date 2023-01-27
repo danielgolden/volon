@@ -29,6 +29,7 @@ watch(
   () => genericState.activeNoteId,
   (newValue) => {
     setUrlParams({ noteId: newValue });
+    genericState.settingsViewActive = false;
   }
 );
 
