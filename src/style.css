@@ -200,7 +200,6 @@ main[data-theme="dark"] {
 html,
 body {
   margin: 0;
-  -webkit-font-smoothing: var(--font-smoothing);
 }
 
 h1,
@@ -222,6 +221,10 @@ button {
   inset: 0;
   font-family: var(--font-family-primary);
   overflow: hidden;
+}
+
+main {
+  -webkit-font-smoothing: var(--font-smoothing);
 }
 
 p a {
