@@ -18,4 +18,5 @@ interface settingsStore {
   markdownPreviewActive: boolean;
   theme: "system" | "dark" | "light";
   noteOrderPreference: "dateModified" | "dateCreated";
+  notePreviewContents: "dateModified" | "noteBody";
 }

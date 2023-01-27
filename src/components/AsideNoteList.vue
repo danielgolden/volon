@@ -14,6 +14,7 @@ import {
   navigateToNextNote,
   getIndexOfNoteById,
 } from "../lib/utils";
+import { saveAppSettingsToLocalStorage } from "../lib/localStorage";
 
 const notebook = useNotebookStore();
 const genericState = useGenericStateStore();
@@ -87,6 +88,19 @@ const updateNoteListIsScrolled = () => {
     noteListIsScrolled.value = true;
   } else {
     noteListIsScrolled.value = false;
+  }
+};
+
+const renderNoteSecondaryContent = (note: Note) => {
+  if (settings.notePreviewContents === "dateModified") {
+    return formatRelativeDate(formatRelative(note.lastModified, new Date()));
+  } else if (settings.notePreviewContents === "noteBody") {
+    const noteBodyArray = note.content.split(`\n`).slice(1, 5);
+    const firstCharOfNoteBodyIsSpace = !noteBodyArray[0];
+
+    if (firstCharOfNoteBodyIsSpace) noteBodyArray.shift();
+
+    return noteBodyArray.join(" ");
   }
 };
 
@@ -214,7 +228,7 @@ watch(
             >
           </span>
           <span class="note-list-item-meta">{{
-            formatRelativeDate(formatRelative(note.lastModified, new Date()))
+            renderNoteSecondaryContent(note)
           }}</span>
         </li>
       </ul>
@@ -307,6 +321,9 @@ watch(
 .note-list-item-meta {
   font-size: 13px;
   color: var(--color-text-tertiary);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
 }
 .active-note-list-item {
   background-color: var(--color-bg-interactive-active);

@@ -7,6 +7,7 @@ export const useSettingsStore = defineStore("settings", {
       markdownPreviewActive: false,
       theme: "system",
       noteOrderPreference: "dateModified",
+      notePreviewContents: "dateModified",
     };
   },
   actions: {

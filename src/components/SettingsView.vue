@@ -136,8 +136,27 @@ const handleDeleteAllNotes = () => {
                 v-model="settings.noteOrderPreference"
                 @change="saveAppSettingsToLocalStorage"
               >
-                <option value="dateModified">Last modified</option>
+                <option value="dateModified">Modification date</option>
                 <option value="dateCreated">Date created</option>
+              </Select>
+            </div>
+            <div class="settings-row">
+              <div class="settings-row-copy">
+                <label class="settings-row-heading" for="notes-sorting"
+                  >Note list meta data</label
+                >
+                <p class="settings-row-description">
+                  Choose what data shows just below the note title in your note
+                  list.
+                </p>
+              </div>
+              <Select
+                id="notes-sorting"
+                v-model="settings.notePreviewContents"
+                @change="saveAppSettingsToLocalStorage"
+              >
+                <option value="dateModified">Modification date</option>
+                <option value="noteBody">Note contents</option>
               </Select>
             </div>
           </div>

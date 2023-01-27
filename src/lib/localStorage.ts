@@ -25,8 +25,9 @@ export const saveAppSettingsToLocalStorage = () => {
     const localDataParsed = JSON.parse(localData);
     localDataParsed.asideActive = settings.asideActive;
     localDataParsed.markdownPreviewActive = settings.markdownPreviewActive;
-    localDataParsed.noteOrderPreference = settings.noteOrderPreference;
     localDataParsed.theme = settings.theme;
+    localDataParsed.noteOrderPreference = settings.noteOrderPreference;
+    localDataParsed.notePreviewContents = settings.notePreviewContents;
 
     localStorage.setItem("volon", JSON.stringify(localDataParsed));
   } else {
@@ -41,8 +42,9 @@ export const createNewAppSettingsInLocalStorage = () => {
     JSON.stringify({
       asideActive: settings.asideActive,
       markdownPreviewActive: settings.markdownPreviewActive,
-      noteOrderPreference: settings.noteOrderPreference,
       theme: settings.theme,
+      noteOrderPreference: settings.noteOrderPreference,
+      notePreviewContents: settings.notePreviewContents,
     })
   );
 };
@@ -55,9 +57,10 @@ export const loadAppSettingsFromLocalStorage = () => {
   if (localDataFound) {
     const localDataParsed = JSON.parse(localData);
     settings.asideActive = localDataParsed.asideActive;
+    settings.theme = localDataParsed.theme ?? "system";
     settings.markdownPreviewActive = localDataParsed.markdownPreviewActive;
     settings.noteOrderPreference = localDataParsed.noteOrderPreference;
-    settings.theme = localDataParsed.theme ?? "system";
+    settings.notePreviewContents = localDataParsed.notePreviewContents;
   } else {
     createNewAppSettingsInLocalStorage();
   }
