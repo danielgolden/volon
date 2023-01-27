@@ -3,6 +3,7 @@ import { PropType } from "vue";
 import { useGenericStateStore } from "../stores/store.genericState";
 import { useSettingsStore } from "../stores/store.settings";
 import { formatRelative } from "date-fns";
+import Button from "./Button.vue";
 
 const settings = useSettingsStore();
 const genericState = useGenericStateStore();
@@ -53,23 +54,33 @@ const renderNoteSecondaryContent = (note: Note) => {
     <span class="note-list-item-meta">{{
       renderNoteSecondaryContent(note)
     }}</span>
-    <!-- <Button type="secondary" icon="dots-horizontal" class="btn-note-options" /> -->
+    <Button type="secondary" icon="dots-horizontal" class="btn-note-options" />
   </li>
 </template>
 
 <style scoped>
 .note-list-item {
   padding: 8px 10px;
-  display: flex;
-  flex-direction: column;
-  gap: 1px;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  grid-template-rows: auto auto;
+  grid-template-areas:
+    "primaryContent primaryContent"
+    "secondaryContent secondaryContent";
+  align-items: center;
+  row-gap: 2px;
+  column-gap: 8px;
   border-radius: 4px;
 }
 .note-list-item:hover {
+  grid-template-areas:
+    "primaryContent noteActionsButton"
+    "secondaryContent noteActionsButton";
   background-color: var(--color-bg-interactive-hover);
   cursor: pointer;
 }
 .note-list-item-preview {
+  grid-area: primaryContent;
   font-size: 16px;
   font-weight: 500;
   width: 100%;
@@ -79,13 +90,28 @@ const renderNoteSecondaryContent = (note: Note) => {
   color: var(--color-text-primary);
 }
 .note-list-item-meta {
+  grid-area: secondaryContent;
   font-size: 13px;
   color: var(--color-text-tertiary);
   text-overflow: ellipsis;
   white-space: nowrap;
   overflow: hidden;
 }
+
+.btn-note-options {
+  display: none;
+  grid-area: noteActionsButton;
+}
+
+.note-list-item:hover .btn-note-options,
+.active-note-list-item .btn-note-options {
+  display: flex;
+}
+
 .active-note-list-item {
+  grid-template-areas:
+    "primaryContent noteActionsButton"
+    "secondaryContent noteActionsButton";
   background-color: var(--color-bg-interactive-active);
 }
 .active-note-list-item:hover {
