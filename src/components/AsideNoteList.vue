@@ -1,11 +1,10 @@
 <script lang="ts" setup>
 import { useSettingsStore } from "../stores/store.settings";
-import SettingsView from "./SettingsView.vue";
+import NoteListItem from "./NoteListItem.vue";
 import AsideSearch from "./AsideSearch.vue";
 import { onMounted, ref, computed, watch, nextTick } from "vue";
 import { useGenericStateStore } from "../stores/store.genericState";
 import { useNotebookStore } from "../stores/store.notebook";
-import { formatRelative } from "date-fns";
 import KeyboardShortcutIndicator from "./KeyboardShortcutIndicator.vue";
 import {
   sortNotesByModificationDate,
@@ -14,7 +13,6 @@ import {
   navigateToNextNote,
   getIndexOfNoteById,
 } from "../lib/utils";
-import { saveAppSettingsToLocalStorage } from "../lib/localStorage";
 
 const notebook = useNotebookStore();
 const genericState = useGenericStateStore();
@@ -54,14 +52,6 @@ const handleNoteItemClick = (noteId: string | null) => {
   }
 };
 
-const formatRelativeDate = (relativeDate: string) => {
-  const capitalizedFirstLetter = relativeDate[0].toUpperCase();
-  const dateWithCapitalizedFirstChar =
-    capitalizedFirstLetter + relativeDate.substring(1);
-
-  return dateWithCapitalizedFirstChar.replace("AM", "am").replace("PM", "pm");
-};
-
 const getActiveSelectionStatus = (noteListMatchingNotes?: Note[]) => {
   let selectionFoundInnoteListMatchingNotes = false;
 
@@ -88,19 +78,6 @@ const updateNoteListIsScrolled = () => {
     noteListIsScrolled.value = true;
   } else {
     noteListIsScrolled.value = false;
-  }
-};
-
-const renderNoteSecondaryContent = (note: Note) => {
-  if (settings.notePreviewContents === "dateModified") {
-    return formatRelativeDate(formatRelative(note.lastModified, new Date()));
-  } else if (settings.notePreviewContents === "noteBody") {
-    const noteBodyArray = note.content.split(`\n`).slice(1, 5);
-    const firstCharOfNoteBodyIsSpace = !noteBodyArray[0];
-
-    if (firstCharOfNoteBodyIsSpace) noteBodyArray.shift();
-
-    return noteBodyArray.join(" ");
   }
 };
 
@@ -208,29 +185,11 @@ watch(
         ref="noteListUl"
         v-show="notesToBeDisplayed.length"
       >
-        <li
+        <NoteListItem
           v-for="note in notesToBeDisplayed"
-          :v-key="note.id"
-          :class="{
-            'active-note-list-item': genericState.activeNoteId === note.id,
-            'note-list-item': true,
-          }"
-          :data-note-id="note.id"
+          :note="note"
           @click="handleNoteItemClick(note.id)"
-          ref="noteListItemRefs"
-        >
-          <span class="note-list-item-preview">
-            {{
-              note.content.split(`\n`)[0].replaceAll("#", "").substring(0, 50)
-            }}
-            <em v-if="note.content.length === 0" class="empty-list-item-preview"
-              >Empty note</em
-            >
-          </span>
-          <span class="note-list-item-meta">{{
-            renderNoteSecondaryContent(note)
-          }}</span>
-        </li>
+        />
       </ul>
       <div class="empty-state" v-show="notesToBeDisplayed.length === 0">
         <p class="empty-state-description">
@@ -297,42 +256,6 @@ watch(
 
 .note-list.scrolled:before {
   opacity: 1;
-}
-.note-list-item {
-  padding: 8px 10px;
-  display: flex;
-  flex-direction: column;
-  gap: 1px;
-  border-radius: 4px;
-}
-.note-list-item:hover {
-  background-color: var(--color-bg-interactive-hover);
-  cursor: pointer;
-}
-.note-list-item-preview {
-  font-size: 16px;
-  font-weight: 500;
-  width: 100%;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  color: var(--color-text-primary);
-}
-.note-list-item-meta {
-  font-size: 13px;
-  color: var(--color-text-tertiary);
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  overflow: hidden;
-}
-.active-note-list-item {
-  background-color: var(--color-bg-interactive-active);
-}
-.active-note-list-item:hover {
-  background-color: var(--color-bg-interactive-active-hover);
-}
-.active-note-list-item .note-list-item-meta {
-  color: var(--color-text-secondary);
 }
 
 .empty-state {
