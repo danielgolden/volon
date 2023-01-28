@@ -86,6 +86,7 @@ const menuItems: MenuItem[] = [
       class="note-options-menu"
       buttonType="secondary"
       icon="dots-horizontal"
+      :close-criteria="note.id !== genericState.activeNoteId"
     >
     </Menu>
   </li>
