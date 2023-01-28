@@ -38,7 +38,7 @@ const notesToBeDisplayed = computed(() => {
   }
 });
 
-const handleNoteItemClick = (e, noteId: string | null) => {
+const handleNoteItemClick = (e: Event, noteId: string | null) => {
   if (noteId && noteId !== genericState.activeNoteId) {
     genericState.activeNoteId = noteId;
     genericState.activeNoteContents = notebook.getNoteById(
