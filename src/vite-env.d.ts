@@ -20,3 +20,10 @@ interface settingsStore {
   noteOrderPreference: "dateModified" | "dateCreated";
   notePreviewContents: "dateModified" | "noteBody";
 }
+
+interface MenuItem {
+  label?: string;
+  icon?: string;
+  onClick?: () => void;
+  type?: "normal" | "destructive" | "separator";
+}

@@ -4,6 +4,7 @@ import { useGenericStateStore } from "../stores/store.genericState";
 import { useSettingsStore } from "../stores/store.settings";
 import { formatRelative } from "date-fns";
 import Button from "./Button.vue";
+import Menu from "./Menu.vue";
 
 const settings = useSettingsStore();
 const genericState = useGenericStateStore();
@@ -34,6 +35,32 @@ const renderNoteSecondaryContent = (note: Note) => {
     return noteBodyArray.join(" ");
   }
 };
+
+const menuItems: MenuItem[] = [
+  {
+    label: "Copy link",
+    onClick: () => {
+      return "hi";
+    },
+    icon: "link-2",
+  },
+  {
+    label: "Duplicate",
+    onClick: () => {
+      return "hi";
+    },
+    icon: "copy",
+  },
+  { type: "separator" },
+  {
+    label: "Delete",
+    onClick: () => {
+      return "hi";
+    },
+    icon: "trash",
+    type: "destructive",
+  },
+];
 </script>
 
 <template>
@@ -54,7 +81,13 @@ const renderNoteSecondaryContent = (note: Note) => {
     <span class="note-list-item-meta">{{
       renderNoteSecondaryContent(note)
     }}</span>
-    <Button type="secondary" icon="dots-horizontal" class="btn-note-options" />
+    <Menu
+      :menu-items="menuItems"
+      class="note-options-menu"
+      buttonType="secondary"
+      icon="dots-horizontal"
+    >
+    </Menu>
   </li>
 </template>
 
@@ -98,14 +131,14 @@ const renderNoteSecondaryContent = (note: Note) => {
   overflow: hidden;
 }
 
-.btn-note-options {
+.note-options-menu {
   display: none;
   grid-area: noteActionsButton;
 }
 
-.note-list-item:hover .btn-note-options,
-.active-note-list-item .btn-note-options {
-  display: flex;
+.note-list-item:hover .note-options-menu,
+.active-note-list-item .note-options-menu {
+  display: block;
 }
 
 .active-note-list-item {

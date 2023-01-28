@@ -207,7 +207,6 @@ watch(
   width: 350px;
   flex-shrink: 0;
   flex-direction: column;
-  overflow: hidden;
   border-right: 1px solid var(--color-border-primary);
   background-color: var(--color-bg-surface-2);
   will-change: width;
