@@ -3,8 +3,8 @@ import { PropType } from "vue";
 import { useGenericStateStore } from "../stores/store.genericState";
 import { useSettingsStore } from "../stores/store.settings";
 import { formatRelative } from "date-fns";
-import Button from "./Button.vue";
 import Menu from "./Menu.vue";
+import { deleteActiveNote, createNewNote } from "../lib/utils";
 
 const settings = useSettingsStore();
 const genericState = useGenericStateStore();
@@ -36,18 +36,26 @@ const renderNoteSecondaryContent = (note: Note) => {
   }
 };
 
+const copyNoteUrlToClipboard = async () => {
+  try {
+    await navigator.clipboard.writeText(
+      `${location.origin}?noteId=${genericState.activeNoteId}`
+    );
+  } catch (err) {
+    console.error("Failed to copy note URL to clipboard", err);
+  }
+};
+
 const menuItems: MenuItem[] = [
   {
     label: "Copy link",
-    onClick: () => {
-      return "hi";
-    },
+    onClick: copyNoteUrlToClipboard,
     icon: "link-2",
   },
   {
     label: "Duplicate",
     onClick: () => {
-      return "hi";
+      createNewNote(genericState.activeNoteContents);
     },
     icon: "copy",
   },
@@ -55,7 +63,8 @@ const menuItems: MenuItem[] = [
   {
     label: "Delete",
     onClick: () => {
-      return "hi";
+      deleteActiveNote();
+      genericState.clearActiveNoteState();
     },
     icon: "trash",
     type: "destructive",

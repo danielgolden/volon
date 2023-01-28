@@ -23,7 +23,12 @@ const props = defineProps({
   },
 });
 const menuOpen = ref(false);
-const genericState = useGenericStateStore();
+
+const handleMenuItemClick = (e: Event, menuItemClickFuntion: () => void) => {
+  e.stopPropagation();
+  menuItemClickFuntion();
+  menuOpen.value = false;
+};
 
 onMounted(() => {
   document.addEventListener("click", (e) => {
@@ -56,7 +61,7 @@ onMounted(() => {
             'menu-separator': menuItem.type === 'separator',
             destructive: menuItem.type === 'destructive',
           }"
-          @click="menuItem.onClick"
+          @click="(e) => handleMenuItemClick(e, menuItem.onClick!)"
         >
           <Icon
             v-if="menuItem.icon"
@@ -131,7 +136,7 @@ onMounted(() => {
 }
 
 .v-enter-active {
-  transition: all 200ms var(--ease-out-cubic);
+  transition: all 150ms var(--ease-out-cubic);
 }
 .v-leave-active {
   transition: all 50ms var(--ease-in-out-cubic);
@@ -140,7 +145,7 @@ onMounted(() => {
 .v-enter-from,
 .v-leave-to {
   opacity: 0;
-  translate: 4px -8px;
-  scale: 0.95;
+  translate: 2px -4px;
+  scale: 0.975;
 }
 </style>

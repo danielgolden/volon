@@ -38,8 +38,8 @@ const notesToBeDisplayed = computed(() => {
   }
 });
 
-const handleNoteItemClick = (noteId: string | null) => {
-  if (noteId) {
+const handleNoteItemClick = (e, noteId: string | null) => {
+  if (noteId && noteId !== genericState.activeNoteId) {
     genericState.activeNoteId = noteId;
     genericState.activeNoteContents = notebook.getNoteById(
       genericState.activeNoteId
@@ -188,7 +188,7 @@ watch(
         <NoteListItem
           v-for="note in notesToBeDisplayed"
           :note="note"
-          @click="handleNoteItemClick(note.id)"
+          @click="(e) => handleNoteItemClick(e, note.id)"
         />
       </ul>
       <div class="empty-state" v-show="notesToBeDisplayed.length === 0">
