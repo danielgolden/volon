@@ -24,11 +24,9 @@ const notesDataLoaded = ref(false);
 const settings = useSettingsStore();
 const genericState = useGenericStateStore();
 
-// Update the URL with the noteId when it changes
 watch(
   () => genericState.activeNoteId,
   (newValue) => {
-    setUrlParams({ noteId: newValue });
     genericState.settingsViewActive = false;
   }
 );
