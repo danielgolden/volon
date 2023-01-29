@@ -1,12 +1,41 @@
-# Vue 3 + TypeScript + Vite
+![readme HEader](https://user-images.githubusercontent.com/812989/215299854-049f8ae8-ca31-4468-a518-56679ea4a534.jpg)
 
-This template should help get you started developing with Vue 3 and TypeScript in Vite. The template uses Vue 3 `<script setup>` SFCs, check out the [script setup docs](https://v3.vuejs.org/api/sfc-script-setup.html#sfc-script-setup) to learn more.
+# [Volon](https://volon.app)
+Volon is a plain text, markdown-focused, local-first notes app with code editor keyboard shortcuts. It's meant to be operated with the keyboard so many common [editing shortcuts](#text-editing-shortcuts) from VS Code are built in. Other helpful features:
+- Multiple cursors, 
+- GitHub style markdown link pasting 
+- Command palette for finding notes (⌘K)
 
-## Recommended IDE Setup
+<img width="1581" alt="Captura de Pantalla 2023-01-28 a la(s) 9 08 02 p m" src="https://user-images.githubusercontent.com/812989/215300470-43ddba87-0fa0-4d83-beaa-ffff8ac554f2.png">
+<img width="1583" alt="Captura de Pantalla 2023-01-28 a la(s) 9 08 22 p m" src="https://user-images.githubusercontent.com/812989/215300483-404d5263-fd14-4b12-9b9f-bd0add897409.png">
+
+## Text editing shortcuts
+- Move line up: `Alt + Up`
+- Move line down: `Alt + Down`
+- Copy line up: `Shift + Alt + Up`
+- Copy line down: `Shift + Alt + Down`
+- Insert blank line: `Cmd + Enter` (`Ctrl + Enter` on Windows)
+- Select line: `Ctrl + l` (`Alt + l` on Windows)
+- Indent less: `Cmd + [` (Ctrl + [ on Windows)
+- Indent more: `Cmd + ]` (Ctrl + ] on Windows)
+- Delete line: `Shift + Cmd + k` (`Shift + Ctrl + k` on Windows)
+- Toggle comment: `Cmd + /` (`Ctrl + /` on Windows)
+- Bold: `Cmd + b`
+- Italicize: `Cmd + i`
+
+---
+
+## Local dev (Vue 3 + TypeScript + Vite)]
+(*Subtitute `pnpm` for your package manager of choice*)
+```bash
+pnpm install
+pnpm run dev
+```
+### Recommended IDE Setup
 
 - [VS Code](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur) + [TypeScript Vue Plugin (Volar)](https://marketplace.visualstudio.com/items?itemName=Vue.vscode-typescript-vue-plugin).
 
-## Type Support For `.vue` Imports in TS
+### Type Support For `.vue` Imports in TS
 
 TypeScript cannot handle type information for `.vue` imports by default, so we replace the `tsc` CLI with `vue-tsc` for type checking. In editors, we need [TypeScript Vue Plugin (Volar)](https://marketplace.visualstudio.com/items?itemName=Vue.vscode-typescript-vue-plugin) to make the TypeScript language service aware of `.vue` types.
 
