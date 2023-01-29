@@ -1,7 +1,7 @@
 ![readme HEader](https://user-images.githubusercontent.com/812989/215299854-049f8ae8-ca31-4468-a518-56679ea4a534.jpg)
 
 # [Volon](https://volon.app)
-Volon is a plain text, markdown-focused, local-first notes app with code editor keyboard shortcuts. It's meant to be operated with the keyboard so many common [editing shortcuts](#text-editing-shortcuts) from VS Code are built in. Other helpful features:
+Volon is a plain text, markdown-focused, local-first notes app with IDE like [text-editing keyboard shortcuts](#text-editing-shortcuts). It's meant the local storage of notes, but you can also log in to sync your notes across devices. Other helpful features:
 - Multiple cursors, 
 - GitHub style markdown link pasting 
 - Command palette for finding notes (⌘K)
@@ -23,6 +23,7 @@ Volon is a plain text, markdown-focused, local-first notes app with code editor 
 ### Screenshots
 ##### Minimal UI
 <img width="1581" alt="Captura de Pantalla 2023-01-28 a la(s) 9 08 02 p m" src="https://user-images.githubusercontent.com/812989/215300470-43ddba87-0fa0-4d83-beaa-ffff8ac554f2.png">
+
 ##### Notes list and markdown preview enabled
 <img width="1583" alt="Captura de Pantalla 2023-01-28 a la(s) 9 08 22 p m" src="https://user-images.githubusercontent.com/812989/215300483-404d5263-fd14-4b12-9b9f-bd0add897409.png">
 
