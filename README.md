@@ -6,10 +6,7 @@ Volon is a plain text, markdown-focused, local-first notes app with code editor 
 - GitHub style markdown link pasting 
 - Command palette for finding notes (⌘K)
 
-<img width="1581" alt="Captura de Pantalla 2023-01-28 a la(s) 9 08 02 p m" src="https://user-images.githubusercontent.com/812989/215300470-43ddba87-0fa0-4d83-beaa-ffff8ac554f2.png">
-<img width="1583" alt="Captura de Pantalla 2023-01-28 a la(s) 9 08 22 p m" src="https://user-images.githubusercontent.com/812989/215300483-404d5263-fd14-4b12-9b9f-bd0add897409.png">
-
-## Text editing shortcuts
+### Text editing shortcuts
 - Move line up: `Alt + Up`
 - Move line down: `Alt + Down`
 - Copy line up: `Shift + Alt + Up`
@@ -22,6 +19,12 @@ Volon is a plain text, markdown-focused, local-first notes app with code editor 
 - Toggle comment: `Cmd + /` (`Ctrl + /` on Windows)
 - Bold: `Cmd + b`
 - Italicize: `Cmd + i`
+
+### Screenshots
+##### Minimal UI
+<img width="1581" alt="Captura de Pantalla 2023-01-28 a la(s) 9 08 02 p m" src="https://user-images.githubusercontent.com/812989/215300470-43ddba87-0fa0-4d83-beaa-ffff8ac554f2.png">
+##### Notes list and markdown preview enabled
+<img width="1583" alt="Captura de Pantalla 2023-01-28 a la(s) 9 08 22 p m" src="https://user-images.githubusercontent.com/812989/215300483-404d5263-fd14-4b12-9b9f-bd0add897409.png">
 
 ---
 
