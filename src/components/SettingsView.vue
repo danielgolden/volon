@@ -2,7 +2,12 @@
 import Icon from "./Icon.vue";
 import Button from "./Button.vue";
 import Select from "./Select.vue";
-import { signInWithGitHub, signout, deleteAllUserNotes } from "../lib/supabase";
+import {
+  signInWithGitHub,
+  signInWithGoogle,
+  signout,
+  deleteAllUserNotes,
+} from "../lib/supabase";
 import { useGenericStateStore } from "../stores/store.genericState";
 import { useSettingsStore } from "../stores/store.settings";
 import { downloadBackupOfData } from "../lib/utils";
@@ -88,6 +93,10 @@ const handleDeleteAllNotes = () => {
                 </p>
               </div>
               <div class="login-buttons" v-if="!genericState.userIsLoggedIn">
+                <Button @click="signInWithGoogle">
+                  <img src="../assets/logo-google.svg" class="btn-login-icon" />
+                  Log in with Google
+                </Button>
                 <Button @click="signInWithGitHub">
                   <img src="../assets/logo-github.svg" class="btn-login-icon" />
                   Log in with GitHub

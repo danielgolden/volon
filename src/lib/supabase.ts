@@ -13,6 +13,13 @@ export const signInWithGitHub = async () => {
   return data;
 };
 
+export const signInWithGoogle = async () => {
+  const { data, error } = await supabase.auth.signInWithOAuth({
+    provider: "google",
+  });
+  return data;
+};
+
 export const signout = async () => {
   const genericState = useGenericStateStore();
   const { error } = await supabase.auth.signOut();
