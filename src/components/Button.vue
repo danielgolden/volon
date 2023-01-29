@@ -65,24 +65,11 @@ const props = defineProps({
   translate: 0 1px;
 }
 
-.btn-secondary {
-  background-color: var(--color-bg-button);
-  color: var(--color-text-primary);
-}
-
-.btn-primary:hover {
-  background-color: var(--color-bg-button-hover-primary);
-  box-shadow: inset 0 0 0 1px var(--color-border-button-hover-primary);
-}
-
-.btn-primary:active {
-  translate: 0 1px;
-}
-
 /*-- Secondary buttons --*/
 .btn-secondary {
   height: 31px;
   background-color: var(--color-bg-button);
+  color: var(--color-text-primary);
   border: none;
 }
 

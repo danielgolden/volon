@@ -36,7 +36,7 @@ main[data-theme="light"] {
   --color-accent: #5282d5;
 
   --color-bg-surface-1: #fff;
-  --color-bg-surface-2: #f5f6f8;
+  --color-bg-surface-2: #fff;
   --color-bg-surface-3: #f3f3f3; /*-- menus, popovers, etc. --*/
   --color-bg-overlay: rgb(10 13 17 / 70%);
 
@@ -68,9 +68,9 @@ main[data-theme="light"] {
   --color-text-input-enabled-placeholder: #8c8c8c;
   --color-bg-input-border-enabled: var(--color-border-primary);
   --color-bg-input-border-enabled-focused: var(--color-accent);
-  --color-text-input-enabled-indicator: #afafaf;
-  --color-border-input-enabled-indicator: #d5d5d5;
-  --color-bg-input-enabled-indicator: #999;
+  --color-text-input-enabled-indicator: rgb(0 0 0 / 40%);
+  --color-border-input-enabled-indicator: blue;
+  --color-bg-input-enabled-indicator: rgb(0 0 0 / 8%);
 
   --color-icon-primary: #464b55;
   --color-icon-primary-inverted: #fff;
@@ -85,26 +85,26 @@ main[data-theme="light"] {
   --color-bg-interactive-active-hover: var(--color-bg-interactive-active);
   --color-bg-interactive-focused: var(--color-border-primary);
 
-  --color-bg-button-primary: #243249;
+  --color-bg-button-primary: transparent;
   --color-bg-button-secondary: transparent;
   --color-bg-button-hover-primary: #131e31;
   --color-bg-button-hover-danger: #131e31;
   --color-bg-button-hover-secondary: var(--color-bg-surface-1);
   --color-bg-button-danger: #612e2d;
-  --color-border-button-primary: transparent;
+  --color-border-button-primary: #d7d7d7;
   --color-border-button-hover-primary: transparent;
   --color-border-button-hover-danger: transparent;
   --color-border-button-secondary: var(--color-border-tertiary);
   --color-border-button-hover-secondary: var(--color-border-button-secondary);
   --color-border-button-danger: #803b39;
-  --color-text-button-primary: #fff;
+  --color-text-button-primary: var(--color-text-primary);
   --color-text-button-secondary: #c3c3c3;
   --color-text-button-hover-primary: var(--color-text-primary);
   --color-text-button-hover-secondary: #ededed;
   --color-text-button-danger: #fff;
 
   --color-border-primary: #eaeaf2;
-  --color-border-secondary: #d2d5e3;
+  --color-border-secondary: #eaeaf2;
   --color-border-tertiary: #e9e9e9;
 
   --color-box-shadow: rgba(0, 0, 0, 0.05);
