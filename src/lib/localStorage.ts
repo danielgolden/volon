@@ -60,7 +60,8 @@ export const loadAppSettingsFromLocalStorage = () => {
     settings.theme = localDataParsed.theme ?? "system";
     settings.markdownPreviewActive = localDataParsed.markdownPreviewActive;
     settings.noteOrderPreference = localDataParsed.noteOrderPreference;
-    settings.notePreviewContents = localDataParsed.notePreviewContents;
+    settings.notePreviewContents =
+      localDataParsed.notePreviewContents ?? "noteBody";
   } else {
     createNewAppSettingsInLocalStorage();
   }
