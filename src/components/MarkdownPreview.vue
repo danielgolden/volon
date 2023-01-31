@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import DOMPurify from "dompurify";
+import Button from "./Button.vue";
 import { marked } from "marked";
 import { useGenericStateStore } from "../stores/store.genericState";
 
@@ -29,7 +30,24 @@ marked.use({ renderer });
 </script>
 
 <template>
-  <section class="markdown-preview-container">
+  <section
+    :class="{
+      'markdown-preview-container': true,
+      'fullscreen-markdown-preview': genericState.fullScreenPreviewActive,
+    }"
+  >
+    <Button
+      :icon="
+        genericState.fullScreenPreviewActive
+          ? 'exit-fullscreen'
+          : 'enter-fullscreen'
+      "
+      @click="
+        genericState.fullScreenPreviewActive =
+          !genericState.fullScreenPreviewActive
+      "
+      class="btn-fullscreen"
+    />
     <div
       class="markdown-preview"
       v-html="DOMPurify.sanitize(marked.parse(genericState.activeNoteContents))"
@@ -50,12 +68,23 @@ marked.use({ renderer });
   color: var(--color-text-primary);
 }
 
+.fullscreen-markdown-preview {
+  border-left: none;
+}
+
 .markdown-preview {
   max-width: 70ch;
   width: 100%;
   height: min-content;
   padding: 48px 48px;
   font-size: 20px;
+}
+
+.btn.btn-fullscreen {
+  padding: 8px;
+  position: absolute;
+  bottom: 16px;
+  right: 16px;
 }
 
 @media (max-width: 800px) {
@@ -239,7 +268,7 @@ marked.use({ renderer });
   font-weight: 600;
   padding-bottom: 0.3em;
   font-size: 2em;
-  border-bottom: 1px solid var(--color-border-muted);
+  /* border-bottom: 1px solid var(--color-border-muted); */
 }
 
 .markdown-preview mark {

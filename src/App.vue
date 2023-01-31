@@ -65,7 +65,10 @@ onMounted(async () => {
     <AsideNoteList />
     <Editor
       v-model="genericState.activeNoteContents"
-      v-if="!genericState.settingsViewActive"
+      v-if="
+        !genericState.settingsViewActive &&
+        !genericState.fullScreenPreviewActive
+      "
     />
     <MarkdownPreview
       v-if="settings.markdownPreviewActive && !genericState.settingsViewActive"
