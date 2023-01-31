@@ -430,11 +430,13 @@ marked.use({ renderer });
 }
 
 .markdown-preview h3 {
+  margin-top: 32px;
   font-weight: 600;
   font-size: 1.25em;
 }
 
 .markdown-preview h4 {
+  margin-top: 32px;
   font-weight: 600;
   font-size: 1em;
 }
