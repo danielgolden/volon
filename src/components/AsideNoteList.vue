@@ -5,6 +5,7 @@ import AsideSearch from "./AsideSearch.vue";
 import { onMounted, ref, computed, watch, nextTick } from "vue";
 import { useGenericStateStore } from "../stores/store.genericState";
 import { useNotebookStore } from "../stores/store.notebook";
+import { useElementRefsStore } from "../stores/store.elementRefs";
 import KeyboardShortcutIndicator from "./KeyboardShortcutIndicator.vue";
 import {
   sortNotesByModificationDate,
@@ -15,11 +16,13 @@ import {
 } from "../lib/utils";
 
 const notebook = useNotebookStore();
+const elementRefs = useElementRefsStore();
 const genericState = useGenericStateStore();
 const settings = useSettingsStore();
 const activeNoteSelectionMade = ref(false);
 const noteListIsScrolled = ref(false);
 const noteListUl = ref<HTMLUListElement | null>(null);
+const activeNoteListItemBg = ref<HTMLUListElement | null>(null);
 
 const searchIsActive = computed(() => {
   return genericState.noteListMatchingNotes !== null;
@@ -80,6 +83,29 @@ const updateNoteListIsScrolled = () => {
   }
 };
 
+const animateActiveNoteListItemBg = () => {
+  const activeNoteListItemPosition =
+    elementRefs.activeNoteListItem?.getBoundingClientRect()!;
+
+  activeNoteListItemBg.value!.style.width = `${activeNoteListItemPosition.width}px`;
+  activeNoteListItemBg.value!.style.height = `${activeNoteListItemPosition.height}px`;
+  // activeNoteListItemBg.value!.style.translate = `${activeNoteListItemPosition.left}px ${activeNoteListItemPosition.top}px`;
+
+  const keyframes = [
+    { translate: activeNoteListItemBg.value!.style.translate },
+    {
+      translate: `${activeNoteListItemPosition.left}px ${activeNoteListItemPosition.top}px`,
+    },
+  ];
+  const options = {
+    easing: "cubic-bezier(.645, .045, .355, 1)",
+    fill: "forwards",
+    duration: 70,
+  };
+
+  activeNoteListItemBg.value!.animate(keyframes, options);
+};
+
 watch(
   () => genericState.noteListMatchingNotes as Note[],
   (newValue) => {
@@ -121,6 +147,13 @@ watch(
         updateNoteListIsScrolled();
       });
     }
+  }
+);
+
+watch(
+  () => elementRefs.activeNoteListItem,
+  () => {
+    animateActiveNoteListItemBg();
   }
 );
 
@@ -177,6 +210,7 @@ watch(
   <Transition name="expand-aside">
     <div class="aside-note-list-container" v-if="settings.asideActive">
       <AsideSearch :noteList="notesToBeDisplayed" />
+      <span class="active-note-list-item-bg" ref="activeNoteListItemBg"></span>
       <ul
         :class="{ 'note-list': true, scrolled: noteListIsScrolled }"
         tabindex="0"
@@ -310,6 +344,14 @@ watch(
 .expand-aside-leave-to .search-container {
   translate: -14px;
   opacity: 0;
+}
+
+.active-note-list-item-bg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  border-radius: 4px;
+  background-color: var(--color-bg-interactive-active);
 }
 
 /*

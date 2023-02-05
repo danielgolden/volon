@@ -1,12 +1,15 @@
 <script lang="ts" setup>
-import { PropType } from "vue";
+import { PropType, onMounted, ref, watch } from "vue";
 import { useGenericStateStore } from "../stores/store.genericState";
 import { useSettingsStore } from "../stores/store.settings";
 import { formatRelative } from "date-fns";
 import Menu from "./Menu.vue";
-import { deleteActiveNote, createNewNote } from "../lib/utils";
+import { deleteActiveNote, createNewNote, Note } from "../lib/utils";
+import { useElementRefsStore } from "../stores/store.elementRefs";
 
+const noteListItem = ref<HTMLUListElement | null>(null);
 const settings = useSettingsStore();
+const elementRefs = useElementRefsStore();
 const genericState = useGenericStateStore();
 const props = defineProps({
   note: {
@@ -46,6 +49,12 @@ const copyNoteUrlToClipboard = async () => {
   }
 };
 
+const updateActiveListItemRef = () => {
+  if (props.note.id === genericState.activeNoteId) {
+    elementRefs.activeNoteListItem = noteListItem.value;
+  }
+};
+
 const menuItems: MenuItem[] = [
   {
     label: "Copy link",
@@ -70,6 +79,17 @@ const menuItems: MenuItem[] = [
     type: "destructive",
   },
 ];
+
+watch(
+  () => genericState.activeNoteId,
+  () => {
+    updateActiveListItemRef();
+  }
+);
+
+onMounted(() => {
+  updateActiveListItemRef();
+});
 </script>
 
 <template>
@@ -80,6 +100,7 @@ const menuItems: MenuItem[] = [
       'note-list-item': true,
     }"
     :data-note-id="note.id"
+    ref="noteListItem"
   >
     <span class="note-list-item-preview">
       {{ note.content.split(`\n`)[0].replaceAll("#", "").substring(0, 50) }}
@@ -155,10 +176,9 @@ const menuItems: MenuItem[] = [
   grid-template-areas:
     "primaryContent noteActionsButton"
     "secondaryContent noteActionsButton";
-  background-color: var(--color-bg-interactive-active);
 }
 .active-note-list-item:hover {
-  background-color: var(--color-bg-interactive-active-hover);
+  background-color: transparent;
 }
 .active-note-list-item .note-list-item-meta {
   color: var(--color-text-secondary);

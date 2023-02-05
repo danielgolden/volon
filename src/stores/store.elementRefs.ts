@@ -7,6 +7,7 @@ export const useElementRefsStore = defineStore("elementRefs", {
       codeMirror: <null | EditorView>null,
       asideSearchInput: <null | HTMLInputElement>null,
       commandPaletteSearchInput: <null | HTMLInputElement>null,
+      activeNoteListItem: <null | HTMLUListElement>null,
     };
   },
 });
