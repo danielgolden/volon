@@ -23,6 +23,7 @@ const activeNoteSelectionMade = ref(false);
 const noteListIsScrolled = ref(false);
 const noteListUl = ref<HTMLUListElement | null>(null);
 const activeNoteListItemBg = ref<HTMLUListElement | null>(null);
+const activeNoteListItemBgAnimation = ref<Animation | null>(null);
 
 const searchIsActive = computed(() => {
   return genericState.noteListMatchingNotes !== null;
@@ -83,13 +84,21 @@ const updateNoteListIsScrolled = () => {
   }
 };
 
+const updateActiveNoteListItemBgScrollPosition = () => {
+  const activeNoteListItemPosition =
+    elementRefs.activeNoteListItem?.getBoundingClientRect()!;
+
+  activeNoteListItemBg.value!.style.width = `${activeNoteListItemPosition.width}px`;
+  activeNoteListItemBg.value!.style.height = `${activeNoteListItemPosition.height}px`;
+  activeNoteListItemBg.value!.style.translate = `${activeNoteListItemPosition.left}px ${activeNoteListItemPosition.top}px`;
+};
+
 const animateActiveNoteListItemBg = () => {
   const activeNoteListItemPosition =
     elementRefs.activeNoteListItem?.getBoundingClientRect()!;
 
   activeNoteListItemBg.value!.style.width = `${activeNoteListItemPosition.width}px`;
   activeNoteListItemBg.value!.style.height = `${activeNoteListItemPosition.height}px`;
-  // activeNoteListItemBg.value!.style.translate = `${activeNoteListItemPosition.left}px ${activeNoteListItemPosition.top}px`;
 
   const keyframes = [
     { translate: activeNoteListItemBg.value!.style.translate },
@@ -98,12 +107,20 @@ const animateActiveNoteListItemBg = () => {
     },
   ];
   const options = {
-    easing: "cubic-bezier(.645, .045, .355, 1)",
+    easing: "cubic-bezier(.455, .03, .515, .955)",
     fill: "forwards",
-    duration: 70,
+    duration: 100,
   };
 
-  activeNoteListItemBg.value!.animate(keyframes, options);
+  activeNoteListItemBgAnimation.value = activeNoteListItemBg.value!.animate(
+    keyframes,
+    options
+  );
+};
+
+const handleNoteListUiScroll = () => {
+  activeNoteListItemBgAnimation.value!.cancel();
+  updateActiveNoteListItemBgScrollPosition();
 };
 
 watch(
@@ -218,6 +235,7 @@ watch(
         @keydown.down="navigateToNextNote(notesToBeDisplayed)"
         ref="noteListUl"
         v-show="notesToBeDisplayed.length"
+        @scroll="handleNoteListUiScroll"
       >
         <NoteListItem
           v-for="note in notesToBeDisplayed"
