@@ -16,6 +16,7 @@ export const globalKeyboardShortcuts = () => {
   window.addEventListener("keydown", (event) => {
     if (event.altKey && event.metaKey && event.code === "KeyN") {
       event.preventDefault();
+      elementRefs.codeMirror?.focus();
       genericState.clearActiveNoteState();
     } else if (event.metaKey && event.code === "Backspace") {
       event.preventDefault();
