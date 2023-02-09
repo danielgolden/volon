@@ -1,7 +1,7 @@
 <script lang="ts" setup>
-import { signInWithGitHub, signout } from "../lib/supabase";
+import { signout } from "../lib/supabase";
 import { useSettingsStore } from "../stores/store.settings";
-import { displayCommandPalette, downloadBackupOfData } from "../lib/utils";
+import { displayCommandPalette } from "../lib/utils";
 import {
   intializeLocalStorageData,
   saveAppSettingsToLocalStorage,
@@ -97,7 +97,10 @@ onMounted(() => {
           </Tooltip>
         </li>
         <li class="primary-menu-item">
-          <Tooltip value="Notes list" position="right">
+          <Tooltip
+            :value="`${settings.asideActive ? 'Hide' : 'Show'} notes list (⌘/)`"
+            position="right"
+          >
             <Button
               type="secondary"
               @click="handleAsideButtonClick"
