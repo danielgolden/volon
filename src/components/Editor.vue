@@ -298,7 +298,12 @@ const handleLinkPaste = () => {
   grid-area: editor;
   align-items: center;
   height: 100%;
+  margin: 24px 24px 0 8px;
+  border-radius: 8px 8px 0 0;
+  border: 1px solid var(--color-border-primary);
   background-color: var(--color-bg-surface-1);
+  box-shadow: 0px 14px 25px rgb(0 0 0 / 5%), 0px 4px 14px rgb(0 0 0 / 5%),
+    0px 2px 3px rgb(0 0 0 / 10%);
 }
 
 .cm-scroller {

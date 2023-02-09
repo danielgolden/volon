@@ -225,6 +225,7 @@ button {
 
 main {
   -webkit-font-smoothing: var(--font-smoothing);
+  background-color: var(--color-bg-surface-2);
 }
 
 p a {

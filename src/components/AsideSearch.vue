@@ -101,7 +101,7 @@ onMounted(() => {
 <style scoped>
 .search-container {
   position: relative;
-  margin: 18px 22px 7px;
+  margin: 24px 22px 7px;
   min-width: 305px;
   z-index: 100;
 }
