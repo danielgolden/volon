@@ -14,25 +14,30 @@ export const globalKeyboardShortcuts = () => {
   const settings = useSettingsStore();
 
   window.addEventListener("keydown", (event) => {
-    event.preventDefault();
-
     if (event.altKey && event.metaKey && event.code === "KeyN") {
+      event.preventDefault();
       genericState.clearActiveNoteState();
     } else if (event.metaKey && event.code === "Backspace") {
+      event.preventDefault();
       deleteActiveNote();
       genericState.clearActiveNoteState();
     } else if (event.metaKey && event.shiftKey && event.code === "KeyP") {
+      event.preventDefault();
       settings.toggleMarkdownPreviewActive();
       saveAppSettingsToLocalStorage();
     } else if (event.metaKey && event.code === "KeyK") {
+      event.preventDefault();
+
       if (settings.asideActive) {
         elementRefs.asideSearchInput?.focus();
       } else {
         displayCommandPalette();
       }
     } else if (event.metaKey && event.shiftKey && event.code === "KeyS") {
+      event.preventDefault();
       downloadBackupOfData();
     } else if (event.metaKey && event.code == "Slash") {
+      event.preventDefault();
       settings.asideActive = !settings.asideActive;
     }
     if (event.code === "Escape") {
