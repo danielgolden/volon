@@ -10,6 +10,10 @@ const props = defineProps({
     type: String,
     required: true,
   },
+  shortcut: {
+    type: String,
+    required: false,
+  },
 });
 const tooltipVisible = ref(false);
 let displayTimer = ref(setTimeout(() => {}, 0));
@@ -97,10 +101,14 @@ onMounted(() => {
     <span
       :class="`tooltip ${props.position ?? ''} ${
         tooltipVisible ? 'visible' : ''
-      }`"
+      } ${props.shortcut && 'has-shortcut'}`"
       ref="tooltip"
-      >{{ props.value }}</span
     >
+      {{ props.value }}
+      <span v-if="props.shortcut" class="keyboard-shortcut">
+        {{ props.shortcut }}
+      </span>
+    </span>
     <slot ref="slotElement"></slot>
   </div>
 </template>
@@ -118,6 +126,7 @@ onMounted(() => {
   pointer-events: none;
 
   display: flex;
+  gap: 8px;
   position: fixed;
   font-size: 14px;
   padding: 3px 8px 5px;
@@ -139,6 +148,14 @@ onMounted(() => {
 }
 .tooltip.visible.right {
   translate: 2px 0;
+}
+
+.keyboard-shortcut {
+  font-size: 14px;
+  letter-spacing: 1.5px;
+  color: var(--color-text-tertiary);
+  font-family: var(--font-family-primary);
+  /* border-left: 1px solid var(--color-border-primary); */
 }
 
 @media (prefers-color-scheme: light) {
