@@ -26,7 +26,7 @@ export const globalKeyboardShortcuts = () => {
       event.preventDefault();
       settings.toggleMarkdownPreviewActive();
       saveAppSettingsToLocalStorage();
-    } else if (event.metaKey && event.code === "KeyK") {
+    } else if (event.metaKey && event.code === "KeyK" && !event.shiftKey) {
       event.preventDefault();
 
       if (settings.asideActive) {

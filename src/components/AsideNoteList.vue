@@ -127,8 +127,8 @@ watch(
 watch(
   () => genericState.activeNoteId,
   () => {
+    if (!settings.asideActive) return;
     updateNoteListIsScrolled();
-
     const listItems = noteListUl.value!.querySelectorAll(".note-list-item");
     const activeListItem = (Array.from(listItems) as HTMLLIElement[]).find(
       (noteListItem) => {
