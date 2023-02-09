@@ -88,7 +88,11 @@ onMounted(() => {
           </Tooltip>
         </li>
         <li class="primary-menu-item">
-          <Tooltip value="Search notes" position="right" shortcut="⌘K">
+          <Tooltip
+            value="Search notes"
+            position="right"
+            :shortcut="`${settings.asideActive ? '' : '⌘K'}`"
+          >
             <Button
               type="secondary"
               icon="search"
