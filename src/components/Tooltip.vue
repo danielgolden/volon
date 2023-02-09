@@ -146,6 +146,9 @@ onMounted(() => {
 .tooltip.right {
   margin-left: 10px;
 }
+.tooltip.left {
+  translate: -10px 0;
+}
 .tooltip.visible.right {
   translate: 2px 0;
 }
