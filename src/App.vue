@@ -41,6 +41,7 @@ onMounted(async () => {
     notesDataLoaded.value = true;
   } else {
     intializeLocalStorageData();
+    loadAppSettingsFromLocalStorage();
     notesDataLoaded.value = true;
   }
 
