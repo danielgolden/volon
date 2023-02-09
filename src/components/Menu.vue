@@ -2,7 +2,6 @@
 import { onMounted, PropType, ref } from "vue";
 import Icon from "./Icon.vue";
 import Button from "./Button.vue";
-import { useGenericStateStore } from "../stores/store.genericState";
 
 const props = defineProps({
   menuItems: {
