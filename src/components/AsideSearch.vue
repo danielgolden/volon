@@ -82,7 +82,7 @@ onMounted(() => {
         'keyboard-shortcut-indicator': true,
         'hidden-keyboard-indicator': !keyboardShortcutIndicatorVisible,
       }"
-      >⌘/</span
+      >⌘K</span
     >
     <input
       class="search-input"

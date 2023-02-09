@@ -25,18 +25,19 @@ export const globalKeyboardShortcuts = () => {
       event.preventDefault();
       settings.toggleMarkdownPreviewActive();
       saveAppSettingsToLocalStorage();
-    } else if (event.metaKey && event.code === "Slash") {
+    } else if (event.metaKey && event.code === "KeyK") {
       event.preventDefault();
-      elementRefs.asideSearchInput?.focus();
+
+      if (settings.asideActive) {
+        elementRefs.asideSearchInput?.focus();
+      } else {
+        displayCommandPalette();
+      }
     } else if (event.metaKey && event.shiftKey && event.code === "KeyS") {
       event.preventDefault();
       downloadBackupOfData();
-    } else if (event.metaKey && event.code === "KeyK") {
-      // Aside is inactive, trigger command palette
-      // and focus it's input
-      event.preventDefault();
-      displayCommandPalette();
     }
+
     if (event.code === "Escape") {
       if (!genericState.commandPaletteActive) return;
       genericState.commandPaletteActive = false;
