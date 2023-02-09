@@ -225,11 +225,11 @@ watch(
 
 .note-list:focus-visible {
   outline: none;
-  box-shadow: inset 0 0 0 2px var(--color-bg-interactive-focused);
+  box-shadow: inset 0 0 0 1px var(--color-bg-interactive-focused);
 }
 
 .note-list.scrolled:focus-visible:before {
-  box-shadow: inset 0 2px 0 var(--color-bg-interactive-focused);
+  box-shadow: inset 0 1px 0 var(--color-bg-interactive-focused);
 }
 
 .note-list:before {
