@@ -93,12 +93,30 @@ const updateActiveNoteListItemBgScrollPosition = () => {
   activeNoteListItemBg.value!.style.translate = `${activeNoteListItemPosition.left}px ${activeNoteListItemPosition.top}px`;
 };
 
+const clearActiveNoteListItemBgAnimation = () => {
+  if (activeNoteListItemBgAnimation.value) {
+    activeNoteListItemBgAnimation.value!.commitStyles();
+    activeNoteListItemBgAnimation.value!.cancel();
+  }
+};
+
 const animateActiveNoteListItemBg = () => {
   const activeNoteListItemPosition =
     elementRefs.activeNoteListItem?.getBoundingClientRect()!;
+  const activeNoteListItemBgPosition =
+    activeNoteListItemBg.value?.getBoundingClientRect()!;
 
   activeNoteListItemBg.value!.style.width = `${activeNoteListItemPosition.width}px`;
   activeNoteListItemBg.value!.style.height = `${activeNoteListItemPosition.height}px`;
+
+  if (
+    activeNoteListItemPosition.top - activeNoteListItemBgPosition.top > 65 ||
+    activeNoteListItemPosition.top - activeNoteListItemBgPosition.top < -65
+  ) {
+    clearActiveNoteListItemBgAnimation();
+    activeNoteListItemBg.value!.style.translate = `${activeNoteListItemPosition.left}px ${activeNoteListItemPosition.top}px`;
+    return;
+  }
 
   const keyframes = [
     { translate: activeNoteListItemBg.value!.style.translate },
@@ -116,10 +134,14 @@ const animateActiveNoteListItemBg = () => {
     keyframes,
     options
   );
+
+  activeNoteListItemBgAnimation.value.onfinish = (event) => {
+    activeNoteListItemBgAnimation.value?.commitStyles();
+  };
 };
 
 const handleNoteListUiScroll = () => {
-  activeNoteListItemBgAnimation.value!.cancel();
+  clearActiveNoteListItemBgAnimation();
   updateActiveNoteListItemBgScrollPosition();
 };
 
