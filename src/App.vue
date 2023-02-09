@@ -54,6 +54,8 @@ onMounted(async () => {
 </script>
 
 <template>
+  <PrimaryNav :data-theme="settings.themeResult" />
+
   <main
     v-if="notesDataLoaded"
     :class="{
@@ -62,7 +64,6 @@ onMounted(async () => {
     }"
     :data-theme="settings.themeResult"
   >
-    <PrimaryNav />
     <AsideNoteList />
     <Editor
       v-model="genericState.activeNoteContents"
@@ -91,7 +92,7 @@ main {
 
 .aside-active {
   grid-template-columns: 1fr 1fr;
-  grid-template-areas: "aside editor";
+  grid-template-areas: "primary-nav editor";
 }
 
 .markdown-preview-active {
@@ -101,7 +102,7 @@ main {
 
 .aside-active.markdown-preview-active {
   grid-template-columns: 1fr 1fr 1fr;
-  grid-template-areas: "aside editor markdown-preview";
+  grid-template-areas: "primary-nav editor markdown-preview";
 }
 
 @media (max-width: 1400px) {

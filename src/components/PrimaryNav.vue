@@ -62,69 +62,65 @@ onMounted(() => {
 </script>
 
 <template>
-  <section class="primary-nav-container" ref="primaryNavElement">
+  <nav class="primary-nav-container" ref="primaryNavElement" v-bind="$attrs">
     <a href="/" class="logo" title="Volón">
       <img src="../assets/logo-volon.svg" class="volon-logo" />
     </a>
 
-    <hr class="logo-separator" />
-
-    <div class="menu-items">
-      <ul class="primary-menu-items">
-        <li class="primary-menu-item">
-          <Tooltip value="Your data" position="right">
-            <!-- the problem is the the ref isn't taking. See lines 40-47 -->
-            <Button
-              type="secondary"
-              :class="{
-                'btn-menu': true,
-                'btn-account': true,
-                'btn-active': accountMenuActive,
-              }"
-              @click="accountMenuActive = !accountMenuActive"
-              icon="user"
-            >
-            </Button>
-          </Tooltip>
-        </li>
-        <li class="primary-menu-item">
-          <Tooltip
-            value="Search notes"
-            position="right"
-            :shortcut="`${settings.asideActive ? '' : '⌘K'}`"
+    <ul class="primary-menu-items">
+      <li class="primary-menu-item">
+        <Tooltip value="Your data" position="right">
+          <!-- the problem is the the ref isn't taking. See lines 40-47 -->
+          <Button
+            type="secondary"
+            :class="{
+              'btn-menu': true,
+              'btn-account': true,
+              'btn-active': accountMenuActive,
+            }"
+            @click="accountMenuActive = !accountMenuActive"
+            icon="user"
           >
-            <Button
-              type="secondary"
-              icon="search"
-              @click="displayCommandPalette"
-            />
-          </Tooltip>
-        </li>
-        <li class="primary-menu-item">
-          <Tooltip
-            :value="`${settings.asideActive ? 'Hide' : 'Show'} notes list`"
-            position="right"
-            shortcut="⌘/"
+            Account
+          </Button>
+        </Tooltip>
+      </li>
+      <li class="primary-menu-item">
+        <Tooltip
+          value="Search notes"
+          position="right"
+          :shortcut="`${settings.asideActive ? '' : '⌘K'}`"
+        >
+          <Button type="secondary" icon="search" @click="displayCommandPalette"
+            >Search</Button
           >
-            <Button
-              type="secondary"
-              @click="handleAsideButtonClick"
-              icon="aside"
-            />
-          </Tooltip>
-        </li>
-      </ul>
-      <Tooltip value="Settings" position="right">
-        <Button
-          type="secondary"
-          icon="settings"
-          @click="
-            genericState.settingsViewActive = !genericState.settingsViewActive
-          "
-          title="Download a backup of your data"
-        />
-      </Tooltip>
-    </div>
+        </Tooltip>
+      </li>
+      <li class="primary-menu-item">
+        <Tooltip
+          :value="`${settings.asideActive ? 'Hide' : 'Show'} notes list`"
+          position="right"
+          shortcut="⌘/"
+        >
+          <Button type="secondary" @click="handleAsideButtonClick" icon="aside"
+            >Toggle list</Button
+          >
+        </Tooltip>
+      </li>
+      <li class="primary-menu-item">
+        <Tooltip value="Settings" position="right">
+          <Button
+            type="secondary"
+            icon="settings"
+            @click="
+              genericState.settingsViewActive = !genericState.settingsViewActive
+            "
+            title="Download a backup of your data"
+            >Settings</Button
+          >
+        </Tooltip>
+      </li>
+    </ul>
     <Transition name="popover-animation">
       <div
         class="menu-popover-container logged-out-menu-popover-container"
@@ -211,22 +207,23 @@ onMounted(() => {
         </div>
       </div>
     </Transition>
-  </section>
+  </nav>
 </template>
 
 <style scoped>
 .primary-nav-container {
   display: flex;
-  flex-direction: column;
-  grid-area: aside;
-  width: 48px;
-  height: 100%;
+  flex-direction: row;
+  grid-area: primary-nav;
+  width: 100%;
+  height: 48px;
   flex-shrink: 0;
   padding: 8px;
   align-items: center;
+  justify-content: space-between;
   grid-template-rows: min-content 1fr;
   background-color: var(--color-bg-surface-2);
-  border-right: 1px solid var(--color-border-primary);
+  border-bottom: 1px solid var(--color-border-primary);
 }
 .logo {
   display: flex;
@@ -247,20 +244,10 @@ onMounted(() => {
   border: none;
 }
 
-.menu-items {
-  display: flex;
-  width: 100%;
-  align-items: center;
-  flex-direction: column;
-  justify-content: space-between;
-  flex-grow: 1;
-}
-
 .primary-menu-items {
   display: flex;
-  width: 100%;
   align-items: center;
-  flex-direction: column;
+  flex-direction: row;
   gap: 4px;
   list-style-type: none;
   margin: 4px;
@@ -270,7 +257,6 @@ onMounted(() => {
 .primary-menu-item {
   display: grid;
   place-items: center;
-  width: 100%;
 }
 
 .menu-popover-container {
