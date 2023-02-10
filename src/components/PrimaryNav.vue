@@ -83,8 +83,7 @@ onMounted(() => {
               }"
               @click="accountMenuActive = !accountMenuActive"
               icon="user"
-            >
-            </Button>
+            />
           </Tooltip>
         </li>
         <li class="primary-menu-item">
@@ -141,14 +140,14 @@ onMounted(() => {
           >
             <path
               d="M9.29453e-08 10.2065L10 0.411465L10 20.0015L9.29453e-08 10.2065Z"
-              fill="#181B20"
+              fill="var(--color-bg-surface-2)"
               class="popover-caret-fill"
             />
             <path
               fill-rule="evenodd"
               clip-rule="evenodd"
               d="M8.88867 1.49847L0 10.2049L8.88867 18.9114V17.2489L1.69725 10.2049L8.88867 3.16093V1.49847Z"
-              fill="#2A303A"
+              fill="var(--color-border-primary)"
               class="popover-caret-stroke"
             />
           </svg>
@@ -182,14 +181,14 @@ onMounted(() => {
           >
             <path
               d="M9.29453e-08 10.2065L10 0.411465L10 20.0015L9.29453e-08 10.2065Z"
-              fill="#181B20"
+              fill="var(--color-bg-surface-2)"
               class="popover-caret-fill"
             />
             <path
               fill-rule="evenodd"
               clip-rule="evenodd"
               d="M8.88867 1.49847L0 10.2049L8.88867 18.9114V17.2489L1.69725 10.2049L8.88867 3.16093V1.49847Z"
-              fill="#2A303A"
+              fill="var(--color-border-primary)"
               class="popover-caret-stroke"
             />
           </svg>
@@ -384,7 +383,7 @@ onMounted(() => {
 }
 
 .btn-logout:hover {
-  background-color: var(--color-bg-surface-1);
+  background-color: var(--color-bg-indicator-high-contrast-inactive-hover);
 }
 
 .popover-animation-enter-active {
@@ -403,6 +402,29 @@ onMounted(() => {
 }
 .popover-animation-leave-to {
   opacity: 0;
+}
+
+main[data-theme="light"].aside-active .menu-popover {
+  background-color: var(--color-bg-surface-1);
+  border: none;
+  box-shadow: 0px 8px 45px rgba(0, 0, 0, 0.08), 0px 4px 8px rgba(0, 0, 0, 0.05),
+    0px 2px 3px rgba(0, 0, 0, 0.075);
+}
+main[data-theme="light"]:not(.aside-active) .menu-popover {
+  background-color: var(--color-bg-surface-2);
+  box-shadow: none;
+}
+main[data-theme="light"] .popover-caret-stroke {
+  fill: transparent;
+}
+main[data-theme="light"] .popover-caret-fill {
+  fill: var(--color-bg-surface-1);
+}
+main[data-theme="light"]:not(.aside-active) .popover-caret-stroke {
+  fill: var(--color-border-primary);
+}
+main[data-theme="light"]:not(.aside-active) .popover-caret-fill {
+  fill: var(--color-bg-surface-2);
 }
 
 @media (prefers-color-scheme: light) {

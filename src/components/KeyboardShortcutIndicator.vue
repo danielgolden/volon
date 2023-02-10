@@ -11,9 +11,10 @@ const props = defineProps(["value"]);
   display: inline-grid;
   font-size: 0.875em;
   padding: 0px 4px;
-  box-shadow: 0 0 0 1px rgb(175 200 255 / 20%);
+  box-shadow: 0 0 0 1px var(--color-border-tertiary);
   border-radius: 3px;
   position: relative;
   top: 1px;
+  color: var(--color-text-tertiary);
 }
 </style>

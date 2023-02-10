@@ -81,7 +81,8 @@ onMounted(() => {
 
 .select-ui-container:hover {
   background-color: var(--color-bg-button-hover-primary);
-  box-shadow: inset 0 0 0 1px var(--color-border-button-hover-primary);
+  box-shadow: inset 0 0 0 1px var(--color-border-button-hover-primary),
+    0 1px 3px rgb(0 0 0 / 3%), 0 3px 5px rgb(0 0 0 / 1.5%);
 }
 
 .select * {

@@ -156,14 +156,12 @@ onMounted(() => {
 .keyboard-shortcut {
   font-size: 14px;
   letter-spacing: 1.5px;
-  color: var(--color-text-tertiary);
+  color: rgb(255 255 255 / 0.43);
   font-family: var(--font-family-primary);
   /* border-left: 1px solid var(--color-border-primary); */
 }
 
-@media (prefers-color-scheme: light) {
-  .tooltip {
-    color: var(--color-text-interactive-inverted);
-  }
+main[data-theme="light"] .tooltip {
+  color: var(--color-text-interactive-inverted);
 }
 </style>

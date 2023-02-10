@@ -1,7 +1,8 @@
 <script lang="ts" setup>
 import Icon from "./Icon.vue";
-import { PropType } from "vue";
+import { PropType, useSlots } from "vue";
 
+const slots = useSlots();
 const props = defineProps({
   type: {
     required: false,
@@ -22,6 +23,8 @@ const props = defineProps({
       'btn-secondary': props.type === 'secondary',
       'btn-tertiary': props.type === 'tertiary',
       'btn-danger': props.type === 'danger',
+      'has-icon': props.icon,
+      'icon-only': props.icon && !slots.default,
     }"
     v-bind="$attrs"
   >
@@ -56,9 +59,14 @@ const props = defineProps({
   color: var(--color-text-button-primary);
 }
 
+.btn-primary.has-icon:not(.icon-only) {
+  padding: 7px 14px 10px 11px;
+}
+
 .btn-primary:hover {
   background-color: var(--color-bg-button-hover-primary);
-  box-shadow: inset 0 0 0 1px var(--color-border-button-hover-primary);
+  box-shadow: inset 0 0 0 1px var(--color-border-button-hover-primary),
+    0 1px 3px rgb(0 0 0 / 3%), 0 3px 5px rgb(0 0 0 / 1.5%);
 }
 
 .btn-primary:active {
@@ -105,7 +113,6 @@ const props = defineProps({
   color: var(--color-text-button-danger);
 }
 .btn-danger:hover {
-  padding: 7px 14px 10px;
   background-color: var(--color-bg-button-hover-danger);
   box-shadow: inset 0 0 0 1px var(--color-border-button-hover-danger);
   color: var(--color-text-button-danger);

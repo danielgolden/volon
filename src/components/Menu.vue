@@ -147,4 +147,10 @@ onMounted(() => {
   translate: 2px -4px;
   scale: 0.975;
 }
+
+main[data-theme="light"] .menu-list {
+  border: none;
+  box-shadow: 0px 8px 25px rgba(0, 0, 0, 0.1), 0px 4px 8px rgba(0, 0, 0, 0.03),
+    0px 2px 3px rgba(0, 0, 0, 0.05);
+}
 </style>
