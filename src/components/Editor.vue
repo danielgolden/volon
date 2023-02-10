@@ -316,7 +316,7 @@ const handleLinkPaste = () => {
 
 /*-- Custom syntax highlighting --*/
 .md-header {
-  font-weight: 700;
+  font-weight: 650;
 }
 
 .md-emphasis {

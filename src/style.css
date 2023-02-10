@@ -33,7 +33,7 @@
 
 main[data-theme="light"] {
   --font-smoothing: normal;
-  --color-accent: #58a6ff;
+  --color-accent: #277cde;
 
   --color-bg-surface-1: #fff;
   --color-bg-surface-2: #f2f2f2;
@@ -115,7 +115,7 @@ main[data-theme="light"] {
 
 main[data-theme="dark"] {
   --font-smoothing: antialiased;
-  --color-accent: #6399e1;
+  --color-accent: #58a6ff;
 
   --color-bg-surface-1: #1e242d;
   --color-bg-surface-2: #171b20;
