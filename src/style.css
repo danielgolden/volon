@@ -33,17 +33,18 @@
 
 main[data-theme="light"] {
   --font-smoothing: normal;
-  --color-accent: #5282d5;
+  --color-accent: #58a6ff;
 
   --color-bg-surface-1: #fff;
   --color-bg-surface-2: #f2f2f2;
   --color-bg-surface-3: rgb(0 0 0 / 0.025); /*-- menus, popovers, etc. --*/
   --color-bg-overlay: rgb(10 13 17 / 70%);
+  --color-bg-code: #e7e7e7;
 
   --color-text-primary: #2f3237;
   --color-text-secondary: #7e8186;
   --color-text-tertiary: #80868e;
-  --color-text-selection: #2b3a51;
+  --color-text-selection: #3087eb;
   --color-text-interactive: var(--color-accent);
   --color-text-destructive: #9a1c1c;
   --color-text-interactive-inverted: #fff;
@@ -120,12 +121,13 @@ main[data-theme="dark"] {
   --color-bg-surface-2: #171b20;
   --color-bg-surface-3: #242c37;
   --color-bg-overlay: rgb(10 13 17 / 70%);
+  --color-bg-code: #333f4d;
 
   --color-text-primary: #d6deef;
   --color-text-secondary: #8591ac;
   --color-text-tertiary: #576279;
   --color-text-selection: #2b3a51;
-  --color-text-interactive: #86bdff;
+  --color-text-interactive: #6399e1;
   --color-text-destructive: #ff8686;
   --color-text-interactive-inverted: #fff;
   --color-text-attention-info: #264777;

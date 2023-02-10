@@ -147,7 +147,7 @@ marked.use({ renderer });
     --color-canvas-subtle: #161b22;
     --color-border-default: var(--color-border-primary);
     --color-border-muted: var(--color-border-primary);
-    --color-neutral-muted: #333f4d;
+    --color-neutral-muted: var(--color-bg-code);
     --color-accent-fg: #58a6ff;
     --color-accent-emphasis: #1f6feb;
     --color-attention-subtle: rgba(187, 128, 9, 0.15);
@@ -250,7 +250,7 @@ marked.use({ renderer });
 
 .markdown-preview a {
   background-color: transparent;
-  color: var(--color-accent-fg);
+  color: var(--color-text-interactive);
   text-decoration: none;
 }
 
