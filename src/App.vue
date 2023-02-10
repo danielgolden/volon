@@ -87,6 +87,7 @@ main {
   position: relative;
   grid-template-columns: 1fr;
   grid-template-areas: "editor";
+  background-color: var(--color-bg-surface-1);
 }
 
 .aside-active {

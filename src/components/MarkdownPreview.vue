@@ -76,6 +76,7 @@ marked.use({ renderer });
   background-color: var(--color-bg-surface-1);
   border-left: 1px solid var(--color-border-secondary);
   color: var(--color-text-primary);
+  container-type: inline-size;
 }
 
 .fullscreen-markdown-preview {
@@ -1151,9 +1152,21 @@ marked.use({ renderer });
   filter: invert(50%);
 }
 
-@media (max-width: 1400px) {
+@container (max-width: 800px) {
   .markdown-preview {
-    font-size: 16px;
+    font-size: 18px;
+  }
+}
+
+@container (max-width: 550px) {
+  .markdown-preview {
+    padding: 36px;
+  }
+}
+
+@container (max-width: 480px) {
+  .markdown-preview {
+    padding: 24px;
   }
 }
 </style>

@@ -295,6 +295,7 @@ const handleLinkPaste = () => {
 }
 
 .cm-editor {
+  container-type: inline-size;
   grid-area: editor;
   align-items: center;
   height: 100%;
@@ -349,7 +350,7 @@ const handleLinkPaste = () => {
   color: var(--color-text-secondary);
 }
 
-@media (max-width: 1400px) {
+@container (max-width: 800px) {
   .cm-editor .cm-content {
     font-size: 18px;
   }
@@ -359,7 +360,13 @@ const handleLinkPaste = () => {
   }
 }
 
-@media (max-width: 800px) {
+@container (max-width: 550px) {
+  .cm-editor .cm-content {
+    padding: 36px;
+  }
+}
+
+@container (max-width: 480px) {
   .cm-editor .cm-content {
     padding: 24px;
   }
