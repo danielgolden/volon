@@ -209,7 +209,7 @@ marked.use({ renderer });
   color: var(--color-fg-default);
   font-family: var(--font-family-primary);
   font-size: 20px;
-  line-height: 1.5;
+  line-height: 1.4875;
   word-wrap: break-word;
 }
 
@@ -455,7 +455,7 @@ marked.use({ renderer });
 .markdown-preview h5,
 .markdown-preview h6 {
   margin-top: 24px;
-  margin-bottom: 16px;
+  margin-bottom: 12px;
   font-weight: 600;
   line-height: 1.25;
   font-family: var(--font-family-secondary);
