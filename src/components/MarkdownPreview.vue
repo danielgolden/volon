@@ -462,6 +462,15 @@ marked.use({ renderer });
   font-family: var(--font-family-secondary);
 }
 
+.markdown-preview h1 code,
+.markdown-preview h2 code,
+.markdown-preview h3 code,
+.markdown-preview h4 code,
+.markdown-preview h5 code,
+.markdown-preview h6 code {
+  font-size: 0.8em;
+}
+
 .markdown-preview h2 {
   font-weight: 600;
   padding-bottom: 0.3em;
@@ -1159,15 +1168,6 @@ marked.use({ renderer });
 
   .markdown-preview code {
     font-size: 15px;
-  }
-
-  .markdown-preview h1 code,
-  .markdown-preview h2 code,
-  .markdown-preview h3 code,
-  .markdown-preview h4 code,
-  .markdown-preview h5 code,
-  .markdown-preview h6 code {
-    font-size: 0.8em;
   }
 }
 
