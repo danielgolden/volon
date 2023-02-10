@@ -462,15 +462,6 @@ marked.use({ renderer });
   font-family: var(--font-family-secondary);
 }
 
-.markdown-preview h1 code,
-.markdown-preview h2 code,
-.markdown-preview h3 code,
-.markdown-preview h4 code,
-.markdown-preview h5 code,
-.markdown-preview h6 code {
-  font-size: 0.8em;
-}
-
 .markdown-preview h2 {
   font-weight: 600;
   padding-bottom: 0.3em;
@@ -818,7 +809,7 @@ marked.use({ renderer });
 .markdown-preview h6 tt,
 .markdown-preview h6 code {
   padding: 0 0.2em;
-  font-size: inherit;
+  font-size: 0.85em;
 }
 
 .markdown-preview ul.no-list,
