@@ -64,7 +64,6 @@ onMounted(() => {
   border-radius: 4px;
   box-shadow: inset 0 0 0 1px var(--color-border-button-primary);
   background-color: var(--color-bg-button-primary);
-  overflow: hidden;
 }
 
 .select {
@@ -77,6 +76,11 @@ onMounted(() => {
   appearance: none;
   border: none;
   cursor: pointer;
+}
+
+.select:focus {
+  border-radius: 4px;
+  outline: 3px solid var(--color-border-primary);
 }
 
 .select-ui-container:hover {

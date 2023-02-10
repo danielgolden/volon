@@ -1156,6 +1156,19 @@ marked.use({ renderer });
   .markdown-preview {
     font-size: 18px;
   }
+
+  .markdown-preview code {
+    font-size: 15px;
+  }
+
+  .markdown-preview h1 code,
+  .markdown-preview h2 code,
+  .markdown-preview h3 code,
+  .markdown-preview h4 code,
+  .markdown-preview h5 code,
+  .markdown-preview h6 code {
+    font-size: 0.8em;
+  }
 }
 
 @container (max-width: 550px) {
