@@ -34,5 +34,12 @@ export const useGenericStateStore = defineStore("genericState", {
   },
   getters: {
     userIsLoggedIn: (state) => state.session !== null,
+    formattedSessionProvider: (state) => {
+      if (state.session.user.app_metadata.provider === "github") {
+        return "GitHub";
+      } else if (state.session.user.app_metadata.provider === "google") {
+        return "Google";
+      }
+    },
   },
 });

@@ -194,9 +194,7 @@ onMounted(() => {
 
           <span class="logged-in-meta"
             >Logged in with
-            <strong>{{
-              genericState.session.user.app_metadata.provider
-            }}</strong></span
+            <strong>{{ genericState.formattedSessionProvider }}</strong></span
           >
 
           <hr />
