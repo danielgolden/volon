@@ -154,13 +154,12 @@ onMounted(() => {
 
           <h3>
             <Icon name="lock" class="btn-menu-icon" color="currentColor" />
-            Your notes are stored on this device
+            Your notes are stored on your device
           </h3>
+
           <p>
-            Your notes only stored locally and on this device. If you
-            <a href="#" @click="handleLoginLinkClick">log in</a>,
-            <em>your notes will be store in the cloud</em> and you will be able
-            to use Volón across different browsers and devices.
+            If you'd prefer to sync your notes across devices and browsers, you
+            can <a href="#" @click="handleLoginLinkClick">log in</a>.
           </p>
         </div>
       </div>
