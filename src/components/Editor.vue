@@ -315,6 +315,10 @@ const handleLinkPaste = () => {
   font-size: 20px;
 }
 
+.cm-editor .cm-selectionBackground {
+  background-color: var(--color-text-selection-muted);
+}
+
 /*-- Custom syntax highlighting --*/
 .md-header {
   font-weight: 650;
