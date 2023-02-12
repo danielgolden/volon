@@ -17,6 +17,7 @@ const props = defineProps({
 });
 const tooltipVisible = ref(false);
 let displayTimer = ref(setTimeout(() => {}, 0));
+let displayDelay = ref(0);
 const tooltipContainer = ref<HTMLElement | null>(null);
 const tooltip = ref<HTMLElement | null>(null);
 
@@ -74,14 +75,13 @@ const positionTooltip = () => {
 
 onMounted(() => {
   const sourceElement = tooltipContainer.value!.children[1];
-  const waitTime = 400;
 
   tooltipContainer.value?.addEventListener("mouseenter", () => {
     clearTimeout(displayTimer.value);
     displayTimer.value = setTimeout(() => {
       positionTooltip();
       tooltipVisible.value = true;
-    }, waitTime);
+    }, displayDelay.value);
   });
 
   tooltipContainer.value?.addEventListener("mouseleave", () => {
