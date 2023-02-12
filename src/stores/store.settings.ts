@@ -8,6 +8,7 @@ export const useSettingsStore = defineStore("settings", {
       theme: "system",
       noteOrderPreference: "dateModified",
       notePreviewContents: "dateModified",
+      userColorSchemePreference: "light",
     };
   },
   actions: {
@@ -17,18 +18,20 @@ export const useSettingsStore = defineStore("settings", {
     toggleMarkdownPreviewActive() {
       this.markdownPreviewActive = !this.markdownPreviewActive;
     },
+    setUserColorSchemePreference() {
+      this.userColorSchemePreference = window.matchMedia(
+        "(prefers-color-scheme: dark)"
+      ).matches
+        ? "dark"
+        : "light";
+    },
   },
   getters: {
     themeResult: (state) => {
-      const systemPreferenceIsDark = window.matchMedia(
-        "(prefers-color-scheme: dark)"
-      ).matches;
-      const systemThemePreference = systemPreferenceIsDark ? "dark" : "light";
-
       if (state.theme === "dark" || state.theme === "light") {
         return state.theme;
       } else {
-        return systemThemePreference;
+        return state.userColorSchemePreference;
       }
     },
   },

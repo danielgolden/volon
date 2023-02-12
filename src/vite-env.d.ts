@@ -19,6 +19,7 @@ interface settingsStore {
   theme: "system" | "dark" | "light";
   noteOrderPreference: "dateModified" | "dateCreated";
   notePreviewContents: "dateModified" | "noteBody";
+  userColorSchemePreference: "dark" | "light";
 }
 
 interface MenuItem {

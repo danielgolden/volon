@@ -46,10 +46,16 @@ onMounted(async () => {
   }
 
   processUrlParams();
-
   globalKeyboardShortcuts();
+  settings.setUserColorSchemePreference();
 
   window.addEventListener("resize", () => setWindowDimensions());
+
+  window
+    .matchMedia("(prefers-color-scheme: dark)")
+    .addEventListener("change", () => {
+      settings.setUserColorSchemePreference();
+    });
 });
 </script>
 
