@@ -38,6 +38,12 @@ const handleDeleteAllNotes = () => {
     loadExistingLocalStorageData();
   }
 };
+
+const handleNotesSortingChange = (e: Event) => {
+  setTimeout(() => {
+    saveAppSettingsToLocalStorage();
+  }, 50);
+};
 </script>
 
 <template>
@@ -170,7 +176,7 @@ const handleDeleteAllNotes = () => {
               <Select
                 id="notes-sorting"
                 v-model="settings.noteOrderPreference"
-                @change="saveAppSettingsToLocalStorage"
+                @change="handleNotesSortingChange"
               >
                 <option value="dateModified">Modification date</option>
                 <option value="dateCreated">Date created</option>
@@ -189,7 +195,7 @@ const handleDeleteAllNotes = () => {
               <Select
                 id="notes-sorting"
                 v-model="settings.notePreviewContents"
-                @change="saveAppSettingsToLocalStorage"
+                @change="(e: Event) => saveAppSettingsToLocalStorage(e)"
               >
                 <option value="dateModified">Modification date</option>
                 <option value="noteBody">Note contents</option>
