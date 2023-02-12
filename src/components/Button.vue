@@ -104,6 +104,21 @@ const props = defineProps({
   fill: var(--color-text-primary);
 }
 
+/*-- Tertiary button --*/
+
+.btn-tertiary {
+  background-color: transparent;
+  color: var(--color-text-interactive);
+  font-weight: 400;
+  border: none;
+}
+
+.btn-tertiary:hover {
+  background-color: transparent;
+  color: #84bdff;
+  border: none;
+}
+
 /*-- Danger button --*/
 
 .btn-danger {

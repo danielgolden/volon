@@ -6,6 +6,7 @@ import PrimaryNav from "./components/PrimaryNav.vue";
 import Editor from "./components/Editor.vue";
 import MarkdownPreview from "./components/MarkdownPreview.vue";
 import CommandPalette from "./components/CommandPalette.vue";
+import Toast from "./components/Toast.vue";
 import { useSettingsStore } from "./stores/store.settings";
 import { useGenericStateStore } from "./stores/store.genericState";
 import {
@@ -82,6 +83,11 @@ onMounted(async () => {
     />
     <SettingsView v-if="genericState.settingsViewActive" />
     <CommandPalette />
+    <Toast
+      title="Note deleted"
+      description="A note name goes right here"
+      :action="() => alert('hi yo')"
+    />
   </main>
 </template>
 
