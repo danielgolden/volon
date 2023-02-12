@@ -195,7 +195,7 @@ const handleNotesSortingChange = (e: Event) => {
               <Select
                 id="notes-sorting"
                 v-model="settings.notePreviewContents"
-                @change="(e: Event) => saveAppSettingsToLocalStorage(e)"
+                @change="(e: Event) => saveAppSettingsToLocalStorage"
               >
                 <option value="dateModified">Modification date</option>
                 <option value="noteBody">Note contents</option>
