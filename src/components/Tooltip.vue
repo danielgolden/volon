@@ -101,7 +101,7 @@ onMounted(() => {
     <span
       :class="`tooltip ${props.position ?? ''} ${
         tooltipVisible ? 'visible' : ''
-      } ${props.shortcut && 'has-shortcut'}`"
+      } ${props.shortcut ? 'has-shortcut' : ''}`"
       ref="tooltip"
     >
       {{ props.value }}

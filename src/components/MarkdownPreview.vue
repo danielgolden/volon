@@ -33,31 +33,31 @@ marked.use({ renderer });
 </script>
 
 <template>
+  <Tooltip
+    :value="`${
+      genericState.fullScreenPreviewActive ? 'Shrink' : 'Expand'
+    } markdown preview`"
+    position="left"
+  >
+    <Button
+      :icon="
+        genericState.fullScreenPreviewActive
+          ? 'exit-fullscreen'
+          : 'enter-fullscreen'
+      "
+      @click="
+        genericState.fullScreenPreviewActive =
+          !genericState.fullScreenPreviewActive
+      "
+      class="btn-fullscreen"
+    />
+  </Tooltip>
   <section
     :class="{
       'markdown-preview-container': true,
       'fullscreen-markdown-preview': genericState.fullScreenPreviewActive,
     }"
   >
-    <Tooltip
-      :value="`${
-        genericState.fullScreenPreviewActive ? 'Shrink' : 'Expand'
-      } markdown preview`"
-      position="left"
-    >
-      <Button
-        :icon="
-          genericState.fullScreenPreviewActive
-            ? 'exit-fullscreen'
-            : 'enter-fullscreen'
-        "
-        @click="
-          genericState.fullScreenPreviewActive =
-            !genericState.fullScreenPreviewActive
-        "
-        class="btn-fullscreen"
-      />
-    </Tooltip>
     <div
       class="markdown-preview"
       v-html="DOMPurify.sanitize(marked.parse(genericState.activeNoteContents))"
@@ -96,6 +96,7 @@ marked.use({ renderer });
   position: absolute;
   bottom: 16px;
   right: 16px;
+  z-index: 1;
 }
 
 @media (max-width: 800px) {
