@@ -114,6 +114,18 @@ onMounted(() => {
             />
           </Tooltip>
         </li>
+        <li class="primary-menu-item">
+          <Button
+            type="secondary"
+            @click="
+              uiState.addToast({
+                title: 'Note deleted',
+                description: 'This one is the one we deleted',
+              })
+            "
+            icon="check"
+          />
+        </li>
       </ul>
       <Tooltip value="Settings" position="right">
         <Button

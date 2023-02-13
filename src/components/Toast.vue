@@ -3,25 +3,6 @@ import Button from "./Button.vue";
 import { useUiStateStore } from "../stores/store.ui";
 
 const uiState = useUiStateStore();
-
-const props = defineProps({
-  title: {
-    required: true,
-    type: String,
-  },
-  description: {
-    required: false,
-    type: String,
-  },
-  action: {
-    required: false,
-    type: Function,
-  },
-  actionLabel: {
-    required: false,
-    type: String,
-  },
-});
 </script>
 
 <template>
@@ -37,7 +18,10 @@ const props = defineProps({
       <p class="toast-description" v-if="toast.description">
         {{ toast.description }}
       </p>
-      <Button class="toast-action" type="tertiary" @click="toast.action"
+      <Button
+        class="toast-action"
+        type="tertiary"
+        @click="toast.action ? toast.action : uiState.removeToast(toast.id)"
         >Close</Button
       >
     </li>

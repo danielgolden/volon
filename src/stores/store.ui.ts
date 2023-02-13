@@ -28,13 +28,13 @@ export const useUiStateStore = defineStore("ui", {
 
       // Remove toast after delay
       displayTimer.value = setTimeout(() => {
-        const thisToast = this.toasts.find(
-          (toast, index) => toast.id === newToastId
-        );
-        const thisToastIndex = this.toasts.indexOf(thisToast!);
+        const thisToast = this.toasts.find((toast) => toast.id === newToastId);
 
-        this.toasts.splice(thisToastIndex, 1);
+        this.removeToast(thisToast!.id);
       }, displayDelay.value);
+    },
+    removeToast(id: string) {
+      this.toasts.splice(this.getToastIndexById(id), 1);
     },
     toastIsActive(id: string) {
       return !!this.getToastById(id);
