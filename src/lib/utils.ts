@@ -15,6 +15,7 @@ import { useElementRefsStore } from "../stores/store.elementRefs";
 import { useGenericStateStore } from "../stores/store.genericState";
 import { useSettingsStore } from "../stores/store.settings";
 import { useNotebookStore } from "../stores/store.notebook";
+import { useUiStateStore } from "../stores/store.ui";
 
 export class Note {
   id: string | null;
@@ -188,7 +189,8 @@ export const loadNotesData = async () => {
 export const displayCommandPalette = () => {
   const genericState = useGenericStateStore();
   const elementRefs = useElementRefsStore();
-  genericState.toggleCommandPaletteActive();
+  const uiState = useUiStateStore();
+  uiState.toggleCommandPaletteActive();
 
   nextTick(() => {
     elementRefs.commandPaletteSearchInput?.focus();

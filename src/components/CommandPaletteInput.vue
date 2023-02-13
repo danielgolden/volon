@@ -4,6 +4,7 @@ import { createNewNote, getIndexOfNoteById } from "../lib/utils";
 import { useElementRefsStore } from "../stores/store.elementRefs";
 import { useGenericStateStore } from "../stores/store.genericState";
 import { useNotebookStore } from "../stores/store.notebook";
+import { useUiStateStore } from "../stores/store.ui";
 
 const props = defineProps(["noteList"]);
 const noteWasSelectedDuringSearch = ref(false);
@@ -11,6 +12,7 @@ const searchInput = ref<HTMLInputElement | null>(null);
 const elementRefs = useElementRefsStore();
 const genericState = useGenericStateStore();
 const notebook = useNotebookStore();
+const uiState = useUiStateStore();
 
 const handleInputChange = (currentContent: string) => {
   noteWasSelectedDuringSearch.value = false;
@@ -29,7 +31,7 @@ const clearQuery = () => {
 };
 
 const handleSearchKeydownEnter = (e: Event) => {
-  genericState.commandPaletteActive = false;
+  uiState.commandPaletteActive = false;
   if (noteWasSelectedDuringSearch.value) {
     clearQuery();
     e.preventDefault();

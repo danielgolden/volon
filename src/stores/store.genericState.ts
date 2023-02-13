@@ -5,9 +5,6 @@ export const useGenericStateStore = defineStore("genericState", {
     return {
       activeNoteContents: "",
       activeNoteId: <string | null>"",
-      commandPaletteActive: false,
-      settingsViewActive: false,
-      fullScreenPreviewActive: false,
       noteListMatchingNotes: <Note[] | null>null,
       commandPaletteMatchingNotes: <Note[] | null>null,
       searchJustCreatedNote: false,
@@ -19,9 +16,6 @@ export const useGenericStateStore = defineStore("genericState", {
     };
   },
   actions: {
-    toggleCommandPaletteActive() {
-      this.commandPaletteActive = !this.commandPaletteActive;
-    },
     clearActiveNoteState() {
       this.activeNoteId = null;
       this.activeNoteContents = "";

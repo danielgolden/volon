@@ -9,6 +9,7 @@ import CommandPalette from "./components/CommandPalette.vue";
 import Toast from "./components/Toast.vue";
 import { useSettingsStore } from "./stores/store.settings";
 import { useGenericStateStore } from "./stores/store.genericState";
+import { useUiStateStore } from "./stores/store.ui";
 import {
   setWindowDimensions,
   processUrlParams,
@@ -24,11 +25,12 @@ import { globalKeyboardShortcuts } from "./lib/globalKeyboardShortcuts";
 const notesDataLoaded = ref(false);
 const settings = useSettingsStore();
 const genericState = useGenericStateStore();
+const uiState = useUiStateStore();
 
 watch(
   () => genericState.activeNoteId,
   (newValue) => {
-    genericState.settingsViewActive = false;
+    uiState.settingsViewActive = false;
   }
 );
 
@@ -51,12 +53,16 @@ onMounted(async () => {
   settings.setUserColorSchemePreference();
 
   window.addEventListener("resize", () => setWindowDimensions());
+  const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
+  const mediaQueryHandler = () => {
+    settings.setUserColorSchemePreference();
+  };
 
-  window
-    .matchMedia("(prefers-color-scheme: dark)")
-    .addEventListener("change", () => {
-      settings.setUserColorSchemePreference();
-    });
+  if (mediaQuery?.addEventListener) {
+    mediaQuery.addEventListener("change", mediaQueryHandler);
+  } else {
+    mediaQuery.addListener(mediaQueryHandler);
+  }
 });
 </script>
 
@@ -73,15 +79,12 @@ onMounted(async () => {
     <AsideNoteList />
     <Editor
       v-model="genericState.activeNoteContents"
-      v-if="
-        !genericState.settingsViewActive &&
-        !genericState.fullScreenPreviewActive
-      "
+      v-if="!uiState.settingsViewActive && !uiState.fullScreenPreviewActive"
     />
     <MarkdownPreview
-      v-if="settings.markdownPreviewActive && !genericState.settingsViewActive"
+      v-if="settings.markdownPreviewActive && !uiState.settingsViewActive"
     />
-    <SettingsView v-if="genericState.settingsViewActive" />
+    <SettingsView v-if="uiState.settingsViewActive" />
     <CommandPalette />
     <Toast
       title="Note deleted"

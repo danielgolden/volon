@@ -8,6 +8,7 @@ import {
 } from "../lib/localStorage";
 import { onMounted, ref } from "vue";
 import { useGenericStateStore } from "../stores/store.genericState";
+import { useUiStateStore } from "../stores/store.ui";
 import Icon from "./Icon.vue";
 import Button from "./Button.vue";
 import Tooltip from "./Tooltip.vue";
@@ -16,6 +17,7 @@ const accountMenuActive = ref(false);
 const primaryNavElement = ref<HTMLElement | null>(null);
 const settings = useSettingsStore();
 const genericState = useGenericStateStore();
+const uiState = useUiStateStore();
 
 const handleLogOutClick = () => {
   signout();
@@ -29,7 +31,7 @@ const handleAsideButtonClick = () => {
 };
 
 const handleLoginLinkClick = () => {
-  genericState.settingsViewActive = true;
+  uiState.settingsViewActive = true;
   accountMenuActive.value = false;
 };
 
@@ -117,9 +119,7 @@ onMounted(() => {
         <Button
           type="secondary"
           icon="settings"
-          @click="
-            genericState.settingsViewActive = !genericState.settingsViewActive
-          "
+          @click="uiState.settingsViewActive = !uiState.settingsViewActive"
           title="Download a backup of your data"
         />
       </Tooltip>

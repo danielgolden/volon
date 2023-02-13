@@ -51,7 +51,7 @@ const props = defineProps({
   grid-template-areas:
     "title action"
     "description action";
-  row-gap: 1px;
+  row-gap: 2px;
   padding: 12px 16px;
   position: absolute;
   right: 15px;
@@ -60,7 +60,6 @@ const props = defineProps({
   border-radius: 8px;
   background-color: var(--color-bg-floating);
   backdrop-filter: blur(5px);
-  font-size: 14px;
 }
 
 .toast-title {
@@ -73,6 +72,7 @@ const props = defineProps({
 .toast-description {
   margin: 0;
   grid-area: description;
+  font-size: 14px;
   color: var(--color-text-inverted-secondary);
 }
 

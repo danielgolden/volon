@@ -4,7 +4,7 @@ import Button from "./Button.vue";
 import Tooltip from "./Tooltip.vue";
 import { marked } from "marked";
 import { useGenericStateStore } from "../stores/store.genericState";
-import { useSettingsStore } from "../stores/store.settings";
+import { useUiStateStore } from "../stores/store.ui";
 
 // Override the output of <li> checkboxes to add the classes I want
 // TODO: Write tests for this
@@ -28,26 +28,23 @@ const renderer = {
 };
 
 const genericState = useGenericStateStore();
-const settings = useSettingsStore();
+const uiState = useUiStateStore();
 marked.use({ renderer });
 </script>
 
 <template>
   <Tooltip
     :value="`${
-      genericState.fullScreenPreviewActive ? 'Shrink' : 'Expand'
+      uiState.fullScreenPreviewActive ? 'Shrink' : 'Expand'
     } markdown preview`"
     position="left"
   >
     <Button
       :icon="
-        genericState.fullScreenPreviewActive
-          ? 'exit-fullscreen'
-          : 'enter-fullscreen'
+        uiState.fullScreenPreviewActive ? 'exit-fullscreen' : 'enter-fullscreen'
       "
       @click="
-        genericState.fullScreenPreviewActive =
-          !genericState.fullScreenPreviewActive
+        uiState.fullScreenPreviewActive = !uiState.fullScreenPreviewActive
       "
       class="btn-fullscreen"
     />
@@ -55,7 +52,7 @@ marked.use({ renderer });
   <section
     :class="{
       'markdown-preview-container': true,
-      'fullscreen-markdown-preview': genericState.fullScreenPreviewActive,
+      'fullscreen-markdown-preview': uiState.fullScreenPreviewActive,
     }"
   >
     <div
