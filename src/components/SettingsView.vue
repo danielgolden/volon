@@ -220,6 +220,18 @@ const handleNotesSortingChange = (e: Event) => {
             </div>
             <div class="settings-row">
               <div class="settings-row-copy">
+                <h4 class="settings-row-heading">Import data from a backup</h4>
+                <p class="settings-row-description">
+                  Import a JSON file of your data (local storage only). Warning:
+                  This will replace your existing data.
+                </p>
+              </div>
+              <Button icon="upload" @click="importDataFromBackup"
+                >Import from backup</Button
+              >
+            </div>
+            <div class="settings-row">
+              <div class="settings-row-copy">
                 <h4 class="settings-row-heading">Delete your data</h4>
                 <p class="settings-row-description">
                   Your notes will be permanently deleted. This action cannot be
