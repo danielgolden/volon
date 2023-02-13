@@ -31,6 +31,7 @@ interface MenuItem {
 
 interface Toast {
   title: string;
-  title?: LanguageDescription;
+  description?: LanguageDescription;
   action?: () => void;
+  id: uuid;
 }
