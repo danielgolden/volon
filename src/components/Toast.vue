@@ -1,5 +1,8 @@
 <script lang="ts" setup>
 import Button from "./Button.vue";
+import { useUiStateStore } from "../stores/store.ui";
+
+const uiState = useUiStateStore();
 
 const props = defineProps({
   title: {
@@ -22,22 +25,33 @@ const props = defineProps({
 </script>
 
 <template>
-  <ol class="toast-container">
-    <li class="toast" role="status">
-      <span class="toast-title">{{ props.title }}</span>
-      <p class="toast-description">{{ props.description }}</p>
-      <Button class="toast-action" type="tertiary" @click="props.action"
+  <TransitionGroup class="toast-container" tag="ol">
+    <li
+      v-for="toast in uiState.toasts"
+      v-show="uiState.toastIsActive(toast.id)"
+      class="toast"
+      role="status"
+      :key="toast.id"
+    >
+      <span class="toast-title">{{ toast.title }}</span>
+      <p class="toast-description" v-if="toast.description">
+        {{ toast.description }}
+      </p>
+      <Button class="toast-action" type="tertiary" @click="toast.action"
         >Close</Button
       >
     </li>
-  </ol>
+  </TransitionGroup>
 </template>
 
 <style scoped>
 .toast-container {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
   position: absolute;
-  right: 0;
-  height: 100%;
+  right: 15px;
+  bottom: 15px;
   min-width: 250px;
   margin: 0;
   list-style-type: none;
@@ -53,9 +67,6 @@ const props = defineProps({
     "description action";
   row-gap: 2px;
   padding: 12px 16px;
-  position: absolute;
-  right: 15px;
-  bottom: 15px;
   z-index: 10;
   border-radius: 8px;
   background-color: var(--color-bg-floating);
@@ -83,5 +94,19 @@ const props = defineProps({
 
 .toast-action:hover {
   color: var(--color-text-interactive-floating-hover);
+}
+
+.v-enter-active {
+  transition: all 0.5s var(--ease-out-cubic);
+}
+.v-leave-active {
+  transition: all 0.2s var(--ease-in-out-cubic);
+}
+.v-enter-from {
+  translate: 10px 0;
+  opacity: 0;
+}
+.v-leave-to {
+  opacity: 0;
 }
 </style>
