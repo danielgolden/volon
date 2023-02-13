@@ -109,6 +109,7 @@ onMounted(() => {
               type="secondary"
               @click="handleAsideButtonClick"
               icon="aside"
+              class="aside-button"
             />
           </Tooltip>
         </li>
@@ -451,6 +452,12 @@ main[data-theme="light"]:not(.aside-active) .popover-caret-fill {
 
   .btn-logout:hover {
     background-color: var(--color-bg-surface-2);
+  }
+}
+
+@media (max-width: 800px) {
+  .aside-button {
+    display: none;
   }
 }
 </style>
