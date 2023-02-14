@@ -6,12 +6,14 @@ import {
 import { useSettingsStore } from "../stores/store.settings";
 import { useGenericStateStore } from "../stores/store.genericState";
 import { useElementRefsStore } from "../stores/store.elementRefs";
+import { useUiStateStore } from "../stores/store.ui";
 import { saveAppSettingsToLocalStorage } from "./localStorage";
 
 export const globalKeyboardShortcuts = () => {
   const genericState = useGenericStateStore();
   const elementRefs = useElementRefsStore();
   const settings = useSettingsStore();
+  const uiState = useUiStateStore();
 
   window.addEventListener("keydown", (event) => {
     if (event.altKey && event.metaKey && event.code === "KeyN") {
@@ -42,8 +44,8 @@ export const globalKeyboardShortcuts = () => {
       settings.asideActive = !settings.asideActive;
     }
     if (event.code === "Escape") {
-      if (!genericState.commandPaletteActive) return;
-      genericState.commandPaletteActive = false;
+      if (!uiState.commandPaletteActive) return;
+      uiState.commandPaletteActive = false;
       setTimeout(() => {
         genericState.commandPaletteMatchingNotes = null;
         genericState.commandPaletteCurrentQuery = "";

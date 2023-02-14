@@ -15,6 +15,7 @@ import { useElementRefsStore } from "../stores/store.elementRefs";
 import { useGenericStateStore } from "../stores/store.genericState";
 import { useSettingsStore } from "../stores/store.settings";
 import { useNotebookStore } from "../stores/store.notebook";
+import { useUiStateStore } from "../stores/store.ui";
 
 export class Note {
   id: string | null;
@@ -97,6 +98,7 @@ export const getIndexOfNoteById = (id: string | null, noteList?: Note[]) => {
 export const deleteActiveNote = () => {
   const genericState = useGenericStateStore();
   const notebook = useNotebookStore();
+  const uiState = useUiStateStore();
   const indexOfActiveNote = getIndexOfNoteById(genericState.activeNoteId);
 
   if (indexOfActiveNote === null) {
@@ -110,6 +112,10 @@ export const deleteActiveNote = () => {
     notebook.deleteActiveNote();
     saveAllNoteDataToLocalStorage();
   }
+
+  uiState.addToast({
+    title: "Note deleted",
+  });
 };
 
 export const setWindowDimensions = () => {
@@ -154,6 +160,7 @@ export const navigateToNextNote = (noteList: Note[]) => {
 export const downloadBackupOfData = () => {
   const settings = useSettingsStore();
   const notebook = useNotebookStore();
+  const uiState = useUiStateStore();
   const dataToSave = {
     asideActive: settings.asideActive,
     markdownPreviewActive: settings.markdownPreviewActive,
@@ -169,6 +176,10 @@ export const downloadBackupOfData = () => {
     "MM/dd/yyyy"
   )}).json`;
   hiddenDownloadLink.click();
+
+  uiState.addToast({
+    title: "Backup downloaded",
+  });
 };
 
 export const randomIntFromInterval = (min: number, max: number) => {
@@ -186,9 +197,9 @@ export const loadNotesData = async () => {
 };
 
 export const displayCommandPalette = () => {
-  const genericState = useGenericStateStore();
   const elementRefs = useElementRefsStore();
-  genericState.toggleCommandPaletteActive();
+  const uiState = useUiStateStore();
+  uiState.toggleCommandPaletteActive();
 
   nextTick(() => {
     elementRefs.commandPaletteSearchInput?.focus();

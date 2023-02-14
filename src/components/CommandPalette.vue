@@ -12,6 +12,7 @@ import { formatRelative } from "date-fns";
 import { useSettingsStore } from "../stores/store.settings";
 import { useGenericStateStore } from "../stores/store.genericState";
 import { useNotebookStore } from "../stores/store.notebook";
+import { useUiStateStore } from "../stores/store.ui";
 
 const noteListItemRefs = ref<HTMLElement[] | []>([]);
 const noteList = ref<HTMLUListElement | null>(null);
@@ -19,6 +20,7 @@ const activeNoteSelectionMade = ref(false);
 const settings = useSettingsStore();
 const genericState = useGenericStateStore();
 const notebook = useNotebookStore();
+const uiState = useUiStateStore();
 
 const searchIsActive = computed(() => {
   return genericState.commandPaletteMatchingNotes !== null;
@@ -41,7 +43,7 @@ const handleNoteItemClick = (noteId: string | null) => {
     genericState.activeNoteContents = notebook.getNoteById(
       genericState.activeNoteId
     ).content;
-    genericState.toggleCommandPaletteActive();
+    uiState.toggleCommandPaletteActive();
   }
 };
 const formatRelativeDate = (relativeDate: string) => {
@@ -129,12 +131,12 @@ watch(
     <Transition name="fade">
       <div
         class="overlay"
-        @click="genericState.commandPaletteActive = false"
-        v-show="genericState.commandPaletteActive"
+        @click="uiState.commandPaletteActive = false"
+        v-show="uiState.commandPaletteActive"
       ></div>
     </Transition>
     <Transition name="lift">
-      <section class="container" v-show="genericState.commandPaletteActive">
+      <section class="container" v-show="uiState.commandPaletteActive">
         <CommandPaletteInput :noteList="notesToBeDisplayed" />
         <ul
           v-if="notesToBeDisplayed.length > 0"
@@ -154,7 +156,7 @@ watch(
             }"
             :data-note-id="note.id"
             @click="handleNoteItemClick(note.id)"
-            @keydown.enter="genericState.toggleCommandPaletteActive"
+            @keydown.enter="uiState.toggleCommandPaletteActive"
             ref="noteListItemRefs"
           >
             <span class="note-list-item-preview">

@@ -36,6 +36,13 @@ export const useNotebookStore = defineStore("notebook", {
       const genericState = useGenericStateStore();
       this.notes.splice(getIndexOfNoteById(genericState.activeNoteId)!, 1);
     },
+    getNoteTitle(noteContents: string) {
+      const title = noteContents
+        .split(`\n`)[0]
+        .replaceAll("#", "")
+        .substring(0, 50);
+      return title[0] === " " ? title.substring(1) : title;
+    },
   },
   getters: {
     totalNotesCount: (state) => state.notes.length,

@@ -10,6 +10,7 @@ import {
 } from "../lib/supabase";
 import { useGenericStateStore } from "../stores/store.genericState";
 import { useSettingsStore } from "../stores/store.settings";
+import { useUiStateStore } from "../stores/store.ui";
 import { downloadBackupOfData } from "../lib/utils";
 import {
   intializeLocalStorageData,
@@ -19,6 +20,7 @@ import {
 } from "../lib/localStorage";
 const genericState = useGenericStateStore();
 const settings = useSettingsStore();
+const uiState = useUiStateStore();
 
 const handleLogOutClick = () => {
   signout();
@@ -48,14 +50,14 @@ const handleNotesSortingChange = (e: Event) => {
 
 <template>
   <div class="settings-container">
-    <article class="settings-content" v-if="genericState.settingsViewActive">
+    <article class="settings-content" v-if="uiState.settingsViewActive">
       <header class="settings-header">
         <h2 class="settings-heading">Settings</h2>
         <Button
           icon="cross-1"
           type="secondary"
           class="close-button"
-          @click="genericState.settingsViewActive = false"
+          @click="uiState.settingsViewActive = false"
         />
       </header>
       <div class="settings-primary-content">

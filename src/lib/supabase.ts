@@ -1,6 +1,7 @@
 import { createClient } from "@supabase/supabase-js";
 import { useGenericStateStore } from "../stores/store.genericState";
 import { useNotebookStore } from "../stores/store.notebook";
+import { useUiStateStore } from "../stores/store.ui";
 
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
 const supabaseKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
@@ -22,8 +23,14 @@ export const signInWithGoogle = async () => {
 
 export const signout = async () => {
   const genericState = useGenericStateStore();
+  const uiState = useUiStateStore();
   const { error } = await supabase.auth.signOut();
   genericState.session = null;
+
+  uiState.addToast({
+    title: "Logged out",
+  });
+
   return error;
 };
 

@@ -5,6 +5,7 @@ import AsideSearch from "./AsideSearch.vue";
 import { onMounted, ref, computed, watch, nextTick } from "vue";
 import { useGenericStateStore } from "../stores/store.genericState";
 import { useNotebookStore } from "../stores/store.notebook";
+import { useUiStateStore } from "../stores/store.ui";
 import KeyboardShortcutIndicator from "./KeyboardShortcutIndicator.vue";
 import {
   sortNotesByModificationDate,
@@ -17,6 +18,7 @@ import {
 const notebook = useNotebookStore();
 const genericState = useGenericStateStore();
 const settings = useSettingsStore();
+const uiState = useUiStateStore();
 const activeNoteSelectionMade = ref(false);
 const noteListIsScrolled = ref(false);
 const noteListUl = ref<HTMLUListElement | null>(null);
@@ -31,7 +33,7 @@ const notesToBeDisplayed = computed(() => {
       ? sortNotesByModificationDate
       : sortNotesByCreationDate;
 
-  if (!searchIsActive.value || genericState.commandPaletteActive) {
+  if (!searchIsActive.value || uiState.commandPaletteActive) {
     return sortingFunction(notebook.notes);
   } else {
     return sortingFunction(genericState.noteListMatchingNotes!);
@@ -45,8 +47,8 @@ const handleNoteItemClick = (e: Event, noteId: string | null) => {
       genericState.activeNoteId
     ).content;
 
-    if (genericState.commandPaletteActive) {
-      genericState.toggleCommandPaletteActive();
+    if (uiState.commandPaletteActive) {
+      uiState.toggleCommandPaletteActive();
     }
   }
 };
@@ -98,7 +100,7 @@ onMounted(() => {
 });
 
 watch(
-  () => genericState.commandPaletteActive,
+  () => uiState.commandPaletteActive,
   (oldValue, newValue) => {
     if (!newValue) {
       genericState.selectedCommandPaletteNote = null;

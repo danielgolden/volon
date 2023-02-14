@@ -4,6 +4,7 @@ import { randomIntFromInterval, Note } from "../../lib/utils";
 import { createSampleDataInLocalStorage } from "../../lib/localStorage";
 import { useGenericStateStore } from "../../stores/store.genericState";
 import { useNotebookStore } from "../../stores/store.notebook";
+import { useUiStateStore } from "../../stores/store.ui";
 import {
   describe,
   it,
@@ -58,13 +59,12 @@ describe("handleNoteItemClick()", async () => {
 
   it("Toggles the the value of commandPaletteActive", () => {
     const genericState = useGenericStateStore();
-    const originalCommandPaletteActive = genericState.commandPaletteActive;
+    const uiState = useUiStateStore();
+    const originalCommandPaletteActive = uiState.commandPaletteActive;
     //@ts-ignore
     wrapper?.vm.handleNoteItemClick(randomNote.id);
 
-    expect(genericState.commandPaletteActive).toBe(
-      !originalCommandPaletteActive
-    );
+    expect(uiState.commandPaletteActive).toBe(!originalCommandPaletteActive);
   });
 });
 

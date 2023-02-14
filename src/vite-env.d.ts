@@ -28,3 +28,12 @@ interface MenuItem {
   onClick?: () => void;
   type?: "normal" | "destructive" | "separator";
 }
+
+interface Toast {
+  title: string;
+  description?: LanguageDescription;
+  action?: () => void;
+  icon?: string;
+  iconColor?: string;
+  id?: uuid;
+}
