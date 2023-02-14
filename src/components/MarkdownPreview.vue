@@ -97,7 +97,8 @@ marked.use({ renderer });
 }
 
 @media (max-width: 800px) {
-  .markdown-preview-container {
+  .markdown-preview-container,
+  .btn.btn-fullscreen {
     display: none;
   }
 }
