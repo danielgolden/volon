@@ -28,15 +28,24 @@ const formatRelativeDate = (relativeDate: string) => {
 };
 
 const renderNoteSecondaryContent = (note: Note) => {
-  if (settings.notePreviewContents === "dateModified") {
-    return formatRelativeDate(formatRelative(note.lastModified, new Date()));
-  } else if (settings.notePreviewContents === "noteBody") {
+  const noteBodyPreview = () => {
     const noteBodyArray = note.content.split(`\n`).slice(1, 5);
     const firstCharOfNoteBodyIsSpace = !noteBodyArray[0];
 
     if (firstCharOfNoteBodyIsSpace) noteBodyArray.shift();
 
     return noteBodyArray.join(" ");
+  };
+
+  const noteHasBodyToPreview = noteBodyPreview().length > 1;
+
+  if (
+    settings.notePreviewContents === "dateModified" ||
+    !noteHasBodyToPreview
+  ) {
+    return formatRelativeDate(formatRelative(note.lastModified, new Date()));
+  } else if (settings.notePreviewContents === "noteBody") {
+    return noteBodyPreview();
   }
 };
 
