@@ -7,7 +7,7 @@ const uiState = useUiStateStore();
 
 const handleToastAction = (
   hasAction: boolean,
-  action: () => void | undefined,
+  action: () => void,
   toastId: string
 ) => {
   if (hasAction) {
@@ -47,7 +47,7 @@ const handleToastAction = (
       <Button
         class="toast-action"
         type="tertiary"
-        @click="handleToastAction(!!toast.action, toast.action, toast.id)"
+        @click="handleToastAction(!!toast.action, toast.action!, toast.id)"
       >
         {{ toast.actionLabel ? toast.actionLabel : "Close" }}
       </Button>
