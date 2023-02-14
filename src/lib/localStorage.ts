@@ -107,6 +107,8 @@ export const intializeLocalStorageData = () => {
   } else {
     loadExistingLocalStorageData();
   }
+
+  localStorage.removeItem("volonDeletedNotes");
 };
 
 export const createSampleDataInLocalStorage = () => {

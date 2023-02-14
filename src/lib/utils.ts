@@ -95,15 +95,73 @@ export const getIndexOfNoteById = (id: string | null, noteList?: Note[]) => {
   return result;
 };
 
+export const saveDeletedNoteForUndo = () => {
+  const genericState = useGenericStateStore();
+  const notebook = useNotebookStore();
+  const activeNote = notebook.getNoteById(genericState.activeNoteId);
+  const alreadyDeletedNotes = localStorage.getItem("volonDeletedNotes");
+  const currentActiveNoteId = genericState.activeNoteId;
+  let saveDuration = 8000;
+  let deletedNotes = alreadyDeletedNotes
+    ? JSON.parse(alreadyDeletedNotes)
+    : <Note[]>[];
+
+  deletedNotes.push(activeNote);
+  localStorage.setItem("volonDeletedNotes", JSON.stringify(deletedNotes));
+
+  // Remove saved note after delay
+  setTimeout(() => {
+    const arrayWithoutDeletedNote = <Note[]>(
+      JSON.parse(localStorage.getItem("volonDeletedNotes")!).filter(
+        (note: Note) => note.id !== currentActiveNoteId
+      )
+    );
+
+    localStorage.setItem(
+      "volonDeletedNotes",
+      JSON.stringify(arrayWithoutDeletedNote)
+    );
+  }, saveDuration);
+};
+
+export const undoDeleteNote = (noteId: string) => {
+  const genericState = useGenericStateStore();
+  const notebook = useNotebookStore();
+  const alreadyDeletedNotes = localStorage.getItem("volonDeletedNotes");
+
+  if (alreadyDeletedNotes) {
+    const rawNoteToRestore = JSON.parse(alreadyDeletedNotes).find(
+      (note: Note) => note.id === noteId
+    );
+    const noteToRestore = {
+      id: rawNoteToRestore.id,
+      dateCreated: new Date(rawNoteToRestore.dateCreated),
+      lastModified: new Date(rawNoteToRestore.lastModified),
+      content: rawNoteToRestore.content,
+    };
+
+    notebook.notes.push(noteToRestore);
+
+    if (genericState.userIsLoggedIn) {
+      createNoteInDB(noteToRestore);
+    } else {
+      saveAllNoteDataToLocalStorage();
+    }
+  }
+};
+
 export const deleteActiveNote = () => {
   const genericState = useGenericStateStore();
   const notebook = useNotebookStore();
   const uiState = useUiStateStore();
+  const currentActiveNoteId = genericState.activeNoteId;
   const indexOfActiveNote = getIndexOfNoteById(genericState.activeNoteId);
 
   if (indexOfActiveNote === null) {
     throw new Error(`No note with the ID ${genericState.activeNoteId} found.`);
   }
+
+  saveDeletedNoteForUndo();
 
   if (genericState.userIsLoggedIn) {
     deleteNoteInDB(notebook.getNoteById(genericState.activeNoteId));
@@ -115,6 +173,8 @@ export const deleteActiveNote = () => {
 
   uiState.addToast({
     title: "Note deleted",
+    action: () => undoDeleteNote(currentActiveNoteId!),
+    actionLabel: "Undo",
   });
 };
 

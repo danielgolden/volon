@@ -4,6 +4,19 @@ import Icon from "./Icon.vue";
 import { useUiStateStore } from "../stores/store.ui";
 
 const uiState = useUiStateStore();
+
+const handleToastAction = (
+  hasAction: boolean,
+  action: () => void,
+  toastId: string
+) => {
+  if (hasAction) {
+    action();
+    uiState.removeToast(toastId);
+  } else {
+    uiState.removeToast(toastId);
+  }
+};
 </script>
 
 <template>
@@ -34,9 +47,10 @@ const uiState = useUiStateStore();
       <Button
         class="toast-action"
         type="tertiary"
-        @click="toast.action ? toast.action : uiState.removeToast(toast.id)"
-        >Close</Button
+        @click="handleToastAction(!!toast.action, toast.action!, toast.id)"
       >
+        {{ toast.actionLabel ? toast.actionLabel : "Close" }}
+      </Button>
     </li>
   </TransitionGroup>
 </template>
