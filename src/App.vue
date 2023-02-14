@@ -86,11 +86,7 @@ onMounted(async () => {
     />
     <SettingsView v-if="uiState.settingsViewActive" />
     <CommandPalette />
-    <Toast
-      title="Note deleted"
-      description="A note name goes right here"
-      :action="() => alert('hi yo')"
-    />
+    <Toast />
   </main>
 </template>
 

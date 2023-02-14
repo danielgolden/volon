@@ -2,12 +2,16 @@
 import { PropType } from "vue";
 import { useGenericStateStore } from "../stores/store.genericState";
 import { useSettingsStore } from "../stores/store.settings";
+import { useUiStateStore } from "../stores/store.ui";
 import { formatRelative } from "date-fns";
 import Menu from "./Menu.vue";
 import { deleteActiveNote, createNewNote } from "../lib/utils";
+import { useNotebookStore } from "../stores/store.notebook";
 
 const settings = useSettingsStore();
 const genericState = useGenericStateStore();
+const notebook = useNotebookStore();
+const uiState = useUiStateStore();
 const props = defineProps({
   note: {
     required: true,
@@ -46,16 +50,31 @@ const copyNoteUrlToClipboard = async () => {
   }
 };
 
+const handleCopyLinkClick = () => {
+  copyNoteUrlToClipboard();
+  uiState.addToast({
+    title: "Link copied to clipboard",
+    icon: "check",
+    iconColor: "#88d8aa",
+  });
+};
+
 const menuItems: MenuItem[] = [
   {
     label: "Copy link",
-    onClick: copyNoteUrlToClipboard,
+    onClick: handleCopyLinkClick,
     icon: "link-2",
   },
   {
     label: "Duplicate",
     onClick: () => {
       createNewNote(genericState.activeNoteContents);
+      uiState.addToast({
+        title: "Note duplicated",
+        description: `"${notebook.getNoteTitle(
+          genericState.activeNoteContents
+        )}"`,
+      });
     },
     icon: "copy",
   },
@@ -82,7 +101,7 @@ const menuItems: MenuItem[] = [
     :data-note-id="note.id"
   >
     <span class="note-list-item-preview">
-      {{ note.content.split(`\n`)[0].replaceAll("#", "").substring(0, 50) }}
+      {{ notebook.getNoteTitle(note.content) }}
       <em v-if="note.content.length === 0" class="empty-list-item-preview"
         >Empty note</em
       >

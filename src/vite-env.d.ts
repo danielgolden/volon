@@ -33,5 +33,7 @@ interface Toast {
   title: string;
   description?: LanguageDescription;
   action?: () => void;
+  icon?: string;
+  iconColor?: string;
   id?: uuid;
 }

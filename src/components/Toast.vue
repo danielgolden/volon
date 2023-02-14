@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import Button from "./Button.vue";
+import Icon from "./Icon.vue";
 import { useUiStateStore } from "../stores/store.ui";
 
 const uiState = useUiStateStore();
@@ -10,11 +11,23 @@ const uiState = useUiStateStore();
     <li
       v-for="toast in uiState.toasts"
       v-show="uiState.toastIsActive(toast.id)"
-      class="toast"
+      :class="{ toast: true, 'has-no-description': !toast.description }"
       role="status"
       :key="toast.id"
     >
-      <span class="toast-title">{{ toast.title }}</span>
+      <span class="toast-title">
+        <Icon
+          v-if="toast.icon"
+          :name="toast.icon"
+          class="toast-icon"
+          :color="
+            toast.iconColor
+              ? toast.iconColor
+              : 'var(--color-text-inverted-secondary)'
+          "
+        />
+        {{ toast.title }}
+      </span>
       <p class="toast-description" v-if="toast.description">
         {{ toast.description }}
       </p>
@@ -57,11 +70,23 @@ const uiState = useUiStateStore();
   backdrop-filter: blur(5px);
 }
 
+.has-no-description {
+  grid-template-rows: 1fr;
+  grid-template-areas: "title action";
+}
+
 .toast-title {
   margin: 0;
   grid-area: title;
   color: var(--color-text-inverted-primary);
-  font-weight: 600;
+  font-weight: 400;
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.toast-icon {
+  translate: 0 1px;
 }
 
 .toast-description {

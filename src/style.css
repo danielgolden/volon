@@ -129,7 +129,7 @@ main[data-theme="dark"] {
   --color-bg-surface-2: #171b20;
   --color-bg-surface-3: #242c37;
   --color-bg-overlay: rgb(10 13 17 / 70%);
-  --color-bg-floating: rgb(4 7 10 / 50%);
+  --color-bg-floating: rgb(4 7 10 / 70%);
   --color-bg-code: #333f4d;
 
   --color-text-primary: #d6deef;
