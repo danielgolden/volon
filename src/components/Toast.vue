@@ -7,7 +7,7 @@ const uiState = useUiStateStore();
 
 const handleToastAction = (
   hasAction: boolean,
-  action: () => void,
+  action: () => void | undefined,
   toastId: string
 ) => {
   if (hasAction) {
