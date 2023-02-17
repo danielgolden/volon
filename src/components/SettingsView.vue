@@ -157,9 +157,7 @@ const handleLocalNotesImportClick = async () => {
                   account.
                 </p>
               </div>
-              <Button
-                v-model="settings.syncLocalNotesToAccount"
-                @click="handleLocalNotesImportClick"
+              <Button @click="handleLocalNotesImportClick"
                 >Import local notes</Button
               >
             </div>
@@ -209,7 +207,7 @@ const handleLocalNotesImportClick = async () => {
             <div class="settings-row">
               <div class="settings-row-copy">
                 <label class="settings-row-heading" for="notes-sorting"
-                  >Note list meta data</label
+                  >Note list item secondary data</label
                 >
                 <p class="settings-row-description">
                   Choose what data shows just below the note title in your note
@@ -219,7 +217,7 @@ const handleLocalNotesImportClick = async () => {
               <Select
                 id="notes-sorting"
                 v-model="settings.notePreviewContents"
-                @change="(e: Event) => saveAppSettingsToLocalStorage"
+                @change="saveAppSettingsToLocalStorage"
               >
                 <option value="dateModified">Modification date</option>
                 <option value="noteBody">Note contents</option>
