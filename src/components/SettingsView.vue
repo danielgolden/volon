@@ -50,7 +50,10 @@ const handleNotesSortingChange = (e: Event) => {
 
 const handleLocalNotesImportClick = async () => {
   await sendLocalNotesToDB();
-  await loadExistingDBData();
+
+  setTimeout(async () => {
+    await loadExistingDBData();
+  }, 50);
 };
 </script>
 
