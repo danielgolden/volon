@@ -11,6 +11,8 @@ export const saveAllNoteDataToLocalStorage = () => {
     JSON.stringify({
       asideActive: settings.asideActive,
       markdownPreviewActive: settings.markdownPreviewActive,
+      theme: settings.theme,
+      noteOrderPreference: settings.noteOrderPreference,
       notes: notebook.notes,
     })
   );

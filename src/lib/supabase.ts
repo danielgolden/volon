@@ -124,9 +124,27 @@ export const loadExistingDBData = async () => {
 };
 
 export const sendLocalNotesToDB = async () => {
+  const notebook = useNotebookStore();
+  const uiState = useUiStateStore();
   const localNotesData = JSON.parse(localStorage.getItem("volon")!).notes;
 
-  localNotesData.forEach((note: Note) => {
-    createNoteInDB(note);
-  });
+  // Gather local notes that aren't in the DB
+  const localNotesNotInDB = localNotesData.filter(
+    (localNote: Note) =>
+      !notebook.notes.some((notebookNote) => notebookNote.id === localNote.id)
+  );
+
+  // Push them to the db
+  localNotesNotInDB.forEach((note: Note) => createNoteInDB(note));
+
+  // Notify the user
+  if (localNotesNotInDB.length > 0) {
+    const localNoteCount = localNotesNotInDB.length;
+
+    uiState.addToast({
+      title: `Imported ${localNoteCount} local note${
+        localNoteCount > 1 ? "s" : ""
+      }`,
+    });
+  }
 };

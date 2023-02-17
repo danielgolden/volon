@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import Icon from "./Icon.vue";
+import { sendLocalNotesToDB, loadExistingDBData } from "../lib/supabase";
 import Button from "./Button.vue";
 import Select from "./Select.vue";
 import {
@@ -45,6 +46,11 @@ const handleNotesSortingChange = (e: Event) => {
   setTimeout(() => {
     saveAppSettingsToLocalStorage();
   }, 50);
+};
+
+const handleLocalNotesImportClick = async () => {
+  await sendLocalNotesToDB();
+  await loadExistingDBData();
 };
 </script>
 
@@ -140,6 +146,22 @@ const handleNotesSortingChange = (e: Event) => {
               <Button @click="handleLogOutClick" icon="exit" v-else>
                 Log out
               </Button>
+            </div>
+            <div class="settings-row" v-if="genericState.userIsLoggedIn">
+              <div class="settings-row-copy">
+                <h4 class="settings-row-heading">
+                  Import locally stored notes
+                </h4>
+                <p class="settings-row-description">
+                  Import any local notes that don't already exist in your
+                  account.
+                </p>
+              </div>
+              <Button
+                v-model="settings.syncLocalNotesToAccount"
+                @click="handleLocalNotesImportClick"
+                >Import local notes</Button
+              >
             </div>
           </div>
         </div>

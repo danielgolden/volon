@@ -10,11 +10,7 @@ import Toast from "./components/Toast.vue";
 import { useSettingsStore } from "./stores/store.settings";
 import { useGenericStateStore } from "./stores/store.genericState";
 import { useUiStateStore } from "./stores/store.ui";
-import {
-  setWindowDimensions,
-  processUrlParams,
-  setUrlParams,
-} from "./lib/utils";
+import { setWindowDimensions, processUrlParams } from "./lib/utils";
 import {
   intializeLocalStorageData,
   loadAppSettingsFromLocalStorage,
