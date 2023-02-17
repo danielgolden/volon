@@ -146,5 +146,10 @@ export const sendLocalNotesToDB = async () => {
         localNoteCount > 1 ? "s" : ""
       }`,
     });
+  } else {
+    uiState.addToast({
+      title: "No new local notes found",
+      description: "0 notes were imported",
+    });
   }
 };
