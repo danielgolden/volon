@@ -45,7 +45,7 @@ main[data-theme="light"] {
   --color-text-primary: #2f3237;
   --color-text-secondary: #7e8186;
   --color-text-tertiary: #80868e;
-  --color-text-inverted-primary: #d6deef;
+  --color-text-inverted-primary: #ffffff;
   --color-text-inverted-secondary: #7c88a1;
   --color-text-inverted-tertiary: #5e6677;
   --color-text-selection: #c4d7ee;
@@ -66,7 +66,7 @@ main[data-theme="light"] {
   --color-bg-control-destructive-hover: #fff1f1;
   --color-border-control: #323b4a;
 
-  --color-bg-attention-success: #ecffeb;
+  --color-bg-attention-success: #2dd17b;
   --color-bg-attention-failure: #fff4f4;
 
   --color-bg-indicator-active: var(--color-accent);
@@ -82,6 +82,9 @@ main[data-theme="light"] {
   --color-text-input-enabled-indicator: rgb(0 0 0 / 40%);
   --color-border-input-enabled-indicator: blue;
   --color-bg-input-enabled-indicator: rgb(0 0 0 / 5%);
+  --color-bg-input-inactive: #c3c3c3;
+  --color-bg-input-success: #2dd17b;
+  --color-input-interactive: #fff;
 
   --color-icon-primary: #464b55;
   --color-icon-primary-inverted: #fff;
@@ -150,8 +153,6 @@ main[data-theme="dark"] {
   --color-text-attention-success: #88d8aa;
   --color-text-attention-failure: #ff8686;
 
-  --color-bg-indicator-inactive: #333333;
-  --color-bg-indicator-inactive-hover: #3d3d3d;
   --color-bg-indicator-active: #86bdff;
   --color-bg-indicator-high-contrast-inactive-hover: #252d39;
   --color-bg-indicator-high-contrast-active: #343f52;
@@ -161,10 +162,8 @@ main[data-theme="dark"] {
   --color-bg-control-destructive: #363636;
   --color-bg-control-destructive-hover: #3e3e3e;
 
-  --color-bg-attention-success: #1d3326;
+  --color-bg-attention-success: #08783d;
   --color-bg-attention-failure: #371f1f;
-
-  --color-bg-indicator-inactive: #333333;
 
   --color-bg-input-enabled: var(--color-bg-surface-3);
   --color-text-input-enabled: #7f8ea0;
@@ -174,6 +173,9 @@ main[data-theme="dark"] {
   --color-bg-input-border-enabled-focused: #516179;
   --color-bg-input-active-enabled: #14315d;
   --color-bg-input-enabled-indicator: rgb(53 67 89 / 60%);
+  --color-bg-input-inactive: var(--color-bg-surface-2);
+  --color-bg-input-success: #1a864d;
+  --color-input-interactive: var(--color-text-primary);
 
   --color-icon-primary: #cfcfcf;
   --color-icon-primary-inverted: #b3b3b3;
