@@ -53,7 +53,7 @@ const handleLocalNotesImportClick = async () => {
 
   setTimeout(async () => {
     await loadExistingDBData();
-  }, 50);
+  }, 100);
 };
 </script>
 
