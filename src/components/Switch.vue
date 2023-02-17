@@ -7,13 +7,13 @@ const props = defineProps(["modelValue", "label", "label-for"]);
   <label :for="props['label-for']" class="switch-container">
     <input
       v-bind="$attrs"
-      :modelValue="props.modelValue"
+      :checked="props.modelValue"
       type="checkbox"
       role="switch"
       class="switch"
       :id="props['label-for']"
       @change="
-        emit('update:model-value', ($event.target as HTMLSelectElement)!.value)
+        emit('update:model-value', ($event.target as HTMLInputElement)!.checked)
       "
       ref="switchElement"
     />
