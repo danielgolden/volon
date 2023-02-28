@@ -98,6 +98,25 @@ onMounted(() => {
         </li>
         <li class="primary-menu-item">
           <Tooltip
+            :value="
+              settings.markdownPreviewActive
+                ? `Hide markdown preview`
+                : 'Show markdown preview'
+            "
+            position="right"
+            shortcut="⌘ shift P"
+          >
+            <Button
+              type="secondary"
+              :icon="settings.markdownPreviewActive ? 'eye-open' : 'eye-closed'"
+              @click="settings.toggleMarkdownPreviewActive"
+            />
+          </Tooltip>
+        </li>
+      </ul>
+      <ul class="secondary-menu-items">
+        <li class="primary-menu-item">
+          <Tooltip
             :value="`${settings.asideActive ? 'Hide' : 'Show'} notes list`"
             position="right"
             shortcut="⌘/"
@@ -110,8 +129,6 @@ onMounted(() => {
             />
           </Tooltip>
         </li>
-      </ul>
-      <ul class="secondary-menu-items">
         <li class="primary-menu-item">
           <Tooltip value="Your data" position="right">
             <Button
@@ -126,6 +143,7 @@ onMounted(() => {
             />
           </Tooltip>
         </li>
+
         <li>
           <Tooltip value="Settings" position="right">
             <Button
@@ -282,6 +300,10 @@ onMounted(() => {
   display: grid;
   place-items: center;
   width: 100%;
+}
+
+.menu-item-separator {
+  height: 20px;
 }
 
 .menu-popover-container {

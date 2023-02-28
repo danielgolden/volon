@@ -39,6 +39,9 @@ export const globalKeyboardShortcuts = () => {
       } else {
         displayCommandPalette();
       }
+    } else if (event.metaKey && event.shiftKey && event.code === "KeyK") {
+      event.preventDefault();
+      displayCommandPalette();
     } else if (event.metaKey && event.shiftKey && event.code === "KeyS") {
       event.preventDefault();
       downloadBackupOfData();
