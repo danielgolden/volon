@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import { signout } from "../lib/supabase";
 import { useSettingsStore } from "../stores/store.settings";
+import { useElementRefsStore } from "../stores/store.elementRefs";
 import { displayCommandPalette } from "../lib/utils";
 import {
   intializeLocalStorageData,
@@ -17,6 +18,7 @@ const accountMenuActive = ref(false);
 const primaryNavElement = ref<HTMLElement | null>(null);
 const settings = useSettingsStore();
 const genericState = useGenericStateStore();
+const elementRefs = useElementRefsStore();
 const uiState = useUiStateStore();
 
 const handleLogOutClick = () => {
@@ -33,6 +35,13 @@ const handleAsideButtonClick = () => {
 const handleLoginLinkClick = () => {
   uiState.settingsViewActive = true;
   accountMenuActive.value = false;
+};
+
+const createNewNote = () => {
+  genericState.clearActiveNoteState();
+  setTimeout(() => {
+    elementRefs.codeMirror?.focus();
+  }, 25);
 };
 
 onMounted(() => {
@@ -74,11 +83,12 @@ onMounted(() => {
     <div class="menu-items">
       <ul class="primary-menu-items">
         <li class="primary-menu-item">
-          <Tooltip
-            value="Search notes"
-            position="right"
-            :shortcut="`${settings.asideActive ? '' : '⌘K'}`"
-          >
+          <Tooltip value="New note" position="right" shortcut="⌘⌥N">
+            <Button type="secondary" icon="plus" @click="createNewNote" />
+          </Tooltip>
+        </li>
+        <li class="primary-menu-item">
+          <Tooltip value="Search notes" position="right" shortcut="⌘ shift K">
             <Button
               type="secondary"
               icon="search"

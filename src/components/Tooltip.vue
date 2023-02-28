@@ -155,7 +155,7 @@ onMounted(() => {
 
 .keyboard-shortcut {
   font-size: 14px;
-  letter-spacing: 1.5px;
+  letter-spacing: 0;
   color: rgb(255 255 255 / 0.43);
   font-family: var(--font-family-primary);
   /* border-left: 1px solid var(--color-border-primary); */

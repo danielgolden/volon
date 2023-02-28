@@ -19,7 +19,9 @@ export const globalKeyboardShortcuts = () => {
     if (event.altKey && event.metaKey && event.code === "KeyN") {
       event.preventDefault();
       genericState.clearActiveNoteState();
-      elementRefs.codeMirror?.focus();
+      setTimeout(() => {
+        elementRefs.codeMirror?.focus();
+      }, 25);
     } else if (event.metaKey && event.code === "Backspace") {
       event.preventDefault();
       deleteActiveNote();
