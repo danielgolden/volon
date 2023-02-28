@@ -193,7 +193,10 @@ watch(
           @click="(e) => handleNoteItemClick(e, note.id)"
         />
       </ul>
-      <div class="empty-state" v-show="notesToBeDisplayed.length === 0">
+      <div class="empty-state" v-if="notebook.notes.length === 0">
+        <p class="empty-state-description">Create a note to get started</p>
+      </div>
+      <div class="empty-state" v-else-if="notesToBeDisplayed.length === 0">
         <p class="empty-state-description">
           <KeyboardShortcutIndicator value="↵" /> Create a new note
         </p>
