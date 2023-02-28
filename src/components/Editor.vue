@@ -215,7 +215,6 @@ const resetCodemirrorView = () => {
       drawSelection(),
       indentUnit.of("    "),
       keymap.of([
-        ...defaultKeymap,
         {
           key: "Mod-i",
           run: insertItalicMarker,
@@ -228,6 +227,7 @@ const resetCodemirrorView = () => {
           key: "Mod-b",
           run: insertBoldMarker,
         },
+        ...defaultKeymap,
         indentWithTab,
       ]),
     ],
