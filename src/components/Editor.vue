@@ -1,7 +1,12 @@
 <script lang="ts" setup>
 import { watch, onMounted, ref } from "vue";
 import { saveCurrentNoteChange, createNewNote } from "../lib/utils";
-import { defaultKeymap, indentWithTab } from "@codemirror/commands";
+import {
+  defaultKeymap,
+  indentWithTab,
+  history,
+  historyKeymap,
+} from "@codemirror/commands";
 import {
   EditorState,
   StateCommand,
@@ -9,6 +14,7 @@ import {
   EditorSelection,
   Transaction,
 } from "@codemirror/state";
+import { basicSetup } from "codemirror";
 import { markdown, markdownLanguage } from "@codemirror/lang-markdown";
 import {
   syntaxHighlighting,
@@ -207,6 +213,7 @@ const resetCodemirrorView = () => {
       }),
       handleLinkPaste(),
       editorTheme,
+      history(),
       placeholder("Jot something down..."),
       EditorView.lineWrapping,
       EditorState.allowMultipleSelections.of(true),
@@ -227,6 +234,7 @@ const resetCodemirrorView = () => {
           key: "Mod-b",
           run: insertBoldMarker,
         },
+        ...historyKeymap,
         ...defaultKeymap,
         indentWithTab,
       ]),
