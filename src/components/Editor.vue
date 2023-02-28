@@ -167,6 +167,15 @@ const insertItalicMarker: StateCommand = ({ state, dispatch }) => {
   return true;
 };
 
+const handleCommandV: StateCommand = () => {
+  setTimeout(function () {
+    const currentContent = myCodemirrorView.state.doc.toString();
+    saveCurrentNoteChange(currentContent);
+  }, 500);
+
+  return false;
+};
+
 const resetCodemirrorView = () => {
   myCodemirrorView.destroy();
 
@@ -206,15 +215,15 @@ const resetCodemirrorView = () => {
       drawSelection(),
       indentUnit.of("    "),
       keymap.of([
+        ...defaultKeymap,
         {
           key: "Mod-i",
           run: insertItalicMarker,
         },
-        ...defaultKeymap,
-        // {
-        //   key: "Mod-v",
-        //   run: handleCommandV,
-        // },
+        {
+          key: "Mod-v",
+          run: handleCommandV,
+        },
         {
           key: "Mod-b",
           run: insertBoldMarker,
