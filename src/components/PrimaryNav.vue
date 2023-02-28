@@ -96,7 +96,7 @@ onMounted(() => {
             />
           </Tooltip>
         </li>
-        <li class="primary-menu-item">
+        <li class="primary-menu-item markdown-preview-button">
           <Tooltip
             :value="
               settings.markdownPreviewActive
@@ -492,6 +492,9 @@ main[data-theme="light"]:not(.aside-active) .popover-caret-fill {
 }
 
 @media (max-width: 800px) {
+  .markdown-preview-button {
+    display: none;
+  }
   .aside-button {
     display: none;
   }
