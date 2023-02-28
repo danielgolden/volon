@@ -33,6 +33,7 @@ export const globalKeyboardShortcuts = () => {
 
       if (settings.asideActive) {
         elementRefs.asideSearchInput?.focus();
+        elementRefs.asideSearchInput?.select();
       } else {
         displayCommandPalette();
       }
