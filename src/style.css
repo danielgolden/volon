@@ -32,6 +32,7 @@
 }
 
 main[data-theme="light"] {
+  color-scheme: light;
   --font-smoothing: normal;
   --color-accent: #277cde;
 
@@ -125,6 +126,7 @@ main[data-theme="light"] {
 }
 
 main[data-theme="dark"] {
+  color-scheme: dark;
   --font-smoothing: antialiased;
   --color-accent: #58a6ff;
 

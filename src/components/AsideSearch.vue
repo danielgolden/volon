@@ -77,16 +77,12 @@ onMounted(() => {
 
 <template>
   <div class="search-container">
-    <span
-      :class="{
-        'keyboard-shortcut-indicator': true,
-        'hidden-keyboard-indicator': !keyboardShortcutIndicatorVisible,
-      }"
-      >⌘K</span
-    >
     <input
-      class="search-input"
-      type="text"
+      :class="{
+        'search-input': true,
+        'has-value': genericState.noteListCurrentQuery.length > 0,
+      }"
+      type="search"
       v-model="genericState.noteListCurrentQuery"
       @input="(currentValue) => handleInputChange((currentValue.target as HTMLInputElement)?.value)"
       @keydown.enter="(e) => handleSearchKeydownEnter(e)"
@@ -95,6 +91,13 @@ onMounted(() => {
       placeholder="Search or create..."
       ref="searchInput"
     />
+    <span
+      :class="{
+        'keyboard-shortcut-indicator': true,
+        'hidden-keyboard-indicator': !keyboardShortcutIndicatorVisible,
+      }"
+      >⌘K</span
+    >
   </div>
 </template>
 
@@ -107,6 +110,7 @@ onMounted(() => {
 }
 
 .keyboard-shortcut-indicator {
+  display: none;
   position: absolute;
   top: 9px;
   right: 8px;
@@ -129,6 +133,7 @@ onMounted(() => {
 }
 .hidden-keyboard-indicator {
   opacity: 0;
+  pointer-events: none;
 }
 
 .search-input {
@@ -153,6 +158,16 @@ onMounted(() => {
 
 .search-input::placeholder {
   color: var(--color-text-input-enabled-placeholder);
+}
+
+.search-input:placeholder-shown + .keyboard-shortcut-indicator,
+.has-value:not(:hover) + .keyboard-shortcut-indicator {
+  display: block;
+}
+
+.has-value:hover + .keyboard-shortcut-indicator,
+.has-value:focus + .keyboard-shortcut-indicator {
+  display: none;
 }
 /* 
 @media (max-width: 1400px) {
