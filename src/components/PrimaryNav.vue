@@ -74,21 +74,6 @@ onMounted(() => {
     <div class="menu-items">
       <ul class="primary-menu-items">
         <li class="primary-menu-item">
-          <Tooltip value="Your data" position="right">
-            <!-- the problem is the the ref isn't taking. See lines 40-47 -->
-            <Button
-              type="secondary"
-              :class="{
-                'btn-menu': true,
-                'btn-account': true,
-                'btn-active': accountMenuActive,
-              }"
-              @click="accountMenuActive = !accountMenuActive"
-              icon="user"
-            />
-          </Tooltip>
-        </li>
-        <li class="primary-menu-item">
           <Tooltip
             value="Search notes"
             position="right"
@@ -116,14 +101,32 @@ onMounted(() => {
           </Tooltip>
         </li>
       </ul>
-      <Tooltip value="Settings" position="right">
-        <Button
-          type="secondary"
-          icon="settings"
-          @click="uiState.settingsViewActive = !uiState.settingsViewActive"
-          title="Download a backup of your data"
-        />
-      </Tooltip>
+      <ul class="secondary-menu-items">
+        <li class="primary-menu-item">
+          <Tooltip value="Your data" position="right">
+            <Button
+              type="secondary"
+              :class="{
+                'btn-menu': true,
+                'btn-account': true,
+                'btn-active': accountMenuActive,
+              }"
+              @click="accountMenuActive = !accountMenuActive"
+              icon="user"
+            />
+          </Tooltip>
+        </li>
+        <li>
+          <Tooltip value="Settings" position="right">
+            <Button
+              type="secondary"
+              icon="settings"
+              @click="uiState.settingsViewActive = !uiState.settingsViewActive"
+              title="Download a backup of your data"
+            />
+          </Tooltip>
+        </li>
+      </ul>
     </div>
     <Transition name="popover-animation">
       <div
@@ -253,7 +256,8 @@ onMounted(() => {
   flex-grow: 1;
 }
 
-.primary-menu-items {
+.primary-menu-items,
+.secondary-menu-items {
   display: flex;
   width: 100%;
   align-items: center;
@@ -287,7 +291,7 @@ onMounted(() => {
 
 .logged-out-menu-popover-container,
 .logged-in-menu-popover-container {
-  top: 51px;
+  bottom: 43px;
   left: 64px;
 }
 
@@ -302,11 +306,11 @@ onMounted(() => {
 .popover-caret {
   position: absolute;
   left: -9px;
-  top: 13px;
+  bottom: 9px;
 }
 
 .logged-in-menu-popover .popover-caret {
-  top: 9px;
+  bottom: 9px;
 }
 
 .menu-popover h3 {
