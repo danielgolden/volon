@@ -46,21 +46,23 @@ const createNewNote = () => {
 
 onMounted(() => {
   document.addEventListener("click", (e) => {
-    const accountButton =
-      primaryNavElement.value!.querySelector(".btn-account");
-    const didntClickAccountButton = e.target !== accountButton;
-    const didntClickPopover = e.target !== primaryNavElement.value;
-    const isntChildOfPopover = !(e.target as HTMLElement).closest(
-      ".menu-popover"
-    );
+    if (accountMenuActive) {
+      const accountButton =
+        primaryNavElement.value!.querySelector(".btn-account");
+      const didntClickAccountButton = e.target !== accountButton;
+      const didntClickPopover = e.target !== primaryNavElement.value;
+      const isntChildOfPopover = !(e.target as HTMLElement).closest(
+        ".menu-popover"
+      );
 
-    if (
-      didntClickAccountButton &&
-      didntClickPopover &&
-      isntChildOfPopover &&
-      accountMenuActive.value
-    ) {
-      accountMenuActive.value = false;
+      if (
+        didntClickAccountButton &&
+        didntClickPopover &&
+        isntChildOfPopover &&
+        accountMenuActive.value
+      ) {
+        accountMenuActive.value = false;
+      }
     }
   });
 
