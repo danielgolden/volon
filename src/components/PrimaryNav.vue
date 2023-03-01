@@ -90,7 +90,7 @@ onMounted(() => {
           </Tooltip>
         </li>
         <li class="primary-menu-item">
-          <Tooltip value="Search notes" position="right" shortcut="⌘ shift K">
+          <Tooltip value="Search notes" position="right" shortcut="⌘ shift F">
             <Button
               type="secondary"
               icon="search"

@@ -39,7 +39,7 @@ export const globalKeyboardShortcuts = () => {
       } else {
         displayCommandPalette();
       }
-    } else if (event.metaKey && event.shiftKey && event.code === "KeyK") {
+    } else if (event.metaKey && event.shiftKey && event.code === "KeyF") {
       event.preventDefault();
       displayCommandPalette();
     } else if (event.metaKey && event.shiftKey && event.code === "KeyS") {
