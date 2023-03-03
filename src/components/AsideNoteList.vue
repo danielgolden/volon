@@ -201,6 +201,7 @@ watch(
           <KeyboardShortcutIndicator value="↵" /> Create a new note
         </p>
       </div>
+      <div class="resizer"></div>
     </div>
   </Transition>
 </template>
@@ -212,7 +213,7 @@ watch(
   width: 350px;
   flex-shrink: 0;
   flex-direction: column;
-  overflow: hidden;
+  position: relative;
   border-right: 1px solid var(--color-border-primary);
   background-color: var(--color-bg-surface-2);
   will-change: width;
@@ -316,6 +317,26 @@ watch(
 .expand-aside-leave-to .search-container {
   translate: -14px;
   opacity: 0;
+}
+
+.resizer {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  right: -1px;
+  z-index: 1000;
+  height: 100%;
+  width: 1px;
+  cursor: col-resize;
+  background-color: var(--color-border-primary);
+}
+
+.resizer:hover {
+  width: 3px;
+  right: -7px;
+  box-sizing: content-box;
+  border-left: 5px solid var(--color-bg-surface-2);
+  border-right: 5px solid var(--color-bg-surface-1);
 }
 
 /*
