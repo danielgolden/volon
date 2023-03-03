@@ -6,6 +6,7 @@ import { onMounted, ref, computed, watch, nextTick } from "vue";
 import { useGenericStateStore } from "../stores/store.genericState";
 import { useNotebookStore } from "../stores/store.notebook";
 import { useUiStateStore } from "../stores/store.ui";
+import { useElementRefsStore } from "../stores/store.elementRefs";
 import KeyboardShortcutIndicator from "./KeyboardShortcutIndicator.vue";
 import {
   sortNotesByModificationDate,
@@ -19,8 +20,10 @@ const notebook = useNotebookStore();
 const genericState = useGenericStateStore();
 const settings = useSettingsStore();
 const uiState = useUiStateStore();
+const elementRefs = useElementRefsStore();
 const activeNoteSelectionMade = ref(false);
 const noteListIsScrolled = ref(false);
+const asideNoteListContainer = ref<HTMLDivElement | null>(null);
 const noteListUl = ref<HTMLUListElement | null>(null);
 
 const searchIsActive = computed(() => {
@@ -82,14 +85,9 @@ const updateNoteListIsScrolled = () => {
   }
 };
 
-watch(
-  () => genericState.noteListMatchingNotes as Note[],
-  (newValue) => {
-    activeNoteSelectionMade.value = getActiveSelectionStatus(newValue);
-  }
-);
-
 onMounted(() => {
+  elementRefs.asideNoteListContainer = asideNoteListContainer.value;
+
   if (settings.asideActive) {
     updateNoteListIsScrolled();
 
@@ -98,6 +96,13 @@ onMounted(() => {
     });
   }
 });
+
+watch(
+  () => genericState.noteListMatchingNotes as Note[],
+  (newValue) => {
+    activeNoteSelectionMade.value = getActiveSelectionStatus(newValue);
+  }
+);
 
 watch(
   () => uiState.commandPaletteActive,
@@ -177,7 +182,11 @@ watch(
 
 <template>
   <Transition name="expand-aside">
-    <div class="aside-note-list-container" v-if="settings.asideActive">
+    <div
+      class="aside-note-list-container"
+      v-if="settings.asideActive"
+      ref="asideNoteListContainer"
+    >
       <AsideSearch :noteList="notesToBeDisplayed" />
       <ul
         :class="{ 'note-list': true, scrolled: noteListIsScrolled }"
@@ -201,7 +210,6 @@ watch(
           <KeyboardShortcutIndicator value="↵" /> Create a new note
         </p>
       </div>
-      <div class="resizer"></div>
     </div>
   </Transition>
 </template>
@@ -210,6 +218,8 @@ watch(
 .aside-note-list-container {
   --padding-block: 14px;
   display: flex;
+  min-width: 350px;
+  max-width: 50%;
   width: 350px;
   flex-shrink: 0;
   flex-direction: column;
@@ -317,26 +327,6 @@ watch(
 .expand-aside-leave-to .search-container {
   translate: -14px;
   opacity: 0;
-}
-
-.resizer {
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  right: -1px;
-  z-index: 1000;
-  height: 100%;
-  width: 1px;
-  cursor: col-resize;
-  background-color: var(--color-border-primary);
-}
-
-.resizer:hover {
-  width: 3px;
-  right: -7px;
-  box-sizing: content-box;
-  border-left: 5px solid var(--color-bg-surface-2);
-  border-right: 5px solid var(--color-bg-surface-1);
 }
 
 /*
