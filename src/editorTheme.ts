@@ -20,7 +20,6 @@ export const editorTheme = EditorView.theme(
     },
     ".cm-editor": {
       height: "100%",
-      width: "100%",
       padding: "48px",
     },
     ".cm-placeholder": {

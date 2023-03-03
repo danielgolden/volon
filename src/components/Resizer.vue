@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import { onMounted, PropType, ref } from "vue";
+import { useGenericStateStore } from "../stores/store.genericState";
 
 const props = defineProps({
   leftElement: {
@@ -8,12 +9,13 @@ const props = defineProps({
   },
 });
 
+const genericState = useGenericStateStore();
 const isBeingDragged = ref(false);
-const leftElementMinWidth = props.leftElement?.style.minWidth;
 const xPosition = ref(0);
 const leftElementWidth = ref(0);
 
 const handleResizerMouseDown = (e: MouseEvent) => {
+  genericState.columnIsBeingResized = true;
   isBeingDragged.value = true;
   xPosition.value = e.clientX;
   leftElementWidth.value = parseInt(
@@ -26,6 +28,7 @@ const handleResizerMouseMove = (e: MouseEvent) => {
   const newLeftElementWidth = leftElementWidth.value + xPositionChange;
 
   props.leftElement!.style.width = `${newLeftElementWidth}px`;
+  props.leftElement!.style.flexShrink = "0";
 };
 
 onMounted(() => {
@@ -36,13 +39,17 @@ onMounted(() => {
 
     document.addEventListener("mouseup", () => {
       isBeingDragged.value = false;
+      genericState.columnIsBeingResized = true;
     });
   });
 });
 </script>
 
 <template>
-  <div class="resizer-container" @mousedown="handleResizerMouseDown">
+  <div
+    :class="{ 'resizer-container': true, 'is-being-dragged': isBeingDragged }"
+    @mousedown="handleResizerMouseDown"
+  >
     <div class="resizer"></div>
   </div>
 </template>
@@ -52,7 +59,8 @@ onMounted(() => {
   display: flex;
   z-index: 1000;
   height: 100%;
-  margin-left: -4px;
+  position: relative;
+  left: -4px;
   cursor: col-resize;
 }
 
@@ -71,7 +79,8 @@ onMounted(() => {
   background-color: var(--color-border-primary);
 }
 
-.resizer-container:hover .resizer {
+.resizer-container:hover .resizer,
+.isBeingDragged .resizer {
   width: 3px;
   margin-left: -1px;
   box-sizing: content-box;

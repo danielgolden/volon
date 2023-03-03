@@ -219,7 +219,7 @@ watch(
   --padding-block: 14px;
   display: flex;
   min-width: 350px;
-  max-width: 50%;
+  max-width: 33%;
   width: 350px;
   flex-shrink: 0;
   flex-direction: column;

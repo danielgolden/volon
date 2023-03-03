@@ -13,6 +13,7 @@ export const useGenericStateStore = defineStore("genericState", {
       noteListCurrentQuery: "",
       commandPaletteCurrentQuery: "",
       urlHasSearch: false,
+      columnIsBeingResized: false,
     };
   },
   actions: {

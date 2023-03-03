@@ -79,6 +79,7 @@ onMounted(async () => {
     :class="{
       'aside-active': settings.asideActive,
       'markdown-preview-active': settings.markdownPreviewActive,
+      'column-is-being-resized': genericState.columnIsBeingResized,
     }"
     :data-theme="settings.themeResult"
   >
@@ -90,6 +91,7 @@ onMounted(async () => {
       v-model="genericState.activeNoteContents"
       v-if="!uiState.settingsViewActive && !uiState.fullScreenPreviewActive"
     />
+    <Resizer :left-element="elementRefs.codemirrorContainer" />
     <MarkdownPreview
       v-if="settings.markdownPreviewActive && !uiState.settingsViewActive"
     />
@@ -124,6 +126,10 @@ main {
 .aside-active.markdown-preview-active {
   grid-template-columns: 1fr 1fr 1fr;
   grid-template-areas: "aside editor markdown-preview";
+}
+
+.column-is-being-resized {
+  user-select: none;
 }
 
 @media (max-width: 1400px) {
