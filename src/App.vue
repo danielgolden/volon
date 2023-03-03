@@ -84,10 +84,7 @@ onMounted(async () => {
   >
     <PrimaryNav />
     <AsideNoteList />
-    <Resizer
-      :left-element="elementRefs.asideNoteListContainer"
-      :right-element="elementRefs.editorAndPreview"
-    />
+    <Resizer :left-element="elementRefs.asideNoteListContainer" />
     <!-- <section class="primary-content" ref="editorAndPreview"> -->
     <Editor
       v-model="genericState.activeNoteContents"

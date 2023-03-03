@@ -6,17 +6,12 @@ const props = defineProps({
     required: true,
     type: Element as PropType<HTMLElement | null>,
   },
-  rightElement: {
-    required: true,
-    type: Element as PropType<HTMLElement | null>,
-  },
 });
 
 const isBeingDragged = ref(false);
 const leftElementMinWidth = props.leftElement?.style.minWidth;
 const xPosition = ref(0);
 const leftElementWidth = ref(0);
-// const rightElementWidth = ref(0);
 
 const handleResizerMouseDown = (e: MouseEvent) => {
   isBeingDragged.value = true;
@@ -24,9 +19,6 @@ const handleResizerMouseDown = (e: MouseEvent) => {
   leftElementWidth.value = parseInt(
     window.getComputedStyle(props.leftElement!).width
   );
-  // rightElementWidth.value = parseInt(
-  //   window.getComputedStyle(props.rightElement!).width
-  // );
 };
 
 const handleResizerMouseMove = (e: MouseEvent) => {
