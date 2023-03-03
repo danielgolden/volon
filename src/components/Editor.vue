@@ -28,6 +28,10 @@ import {
   keymap,
   ViewUpdate,
   placeholder,
+  MatchDecorator,
+  Decoration,
+  DecorationSet,
+  ViewPlugin,
 } from "@codemirror/view";
 import { useElementRefsStore } from "../stores/store.elementRefs";
 import { useGenericStateStore } from "../stores/store.genericState";
@@ -186,6 +190,7 @@ const handleCommandV: StateCommand = () => {
   return false;
 };
 
+<<<<<<< HEAD
 const syncScrollWithPreview = EditorView.domEventHandlers({
   scroll() {
     const isAvailableForScrollSync =
@@ -218,6 +223,44 @@ const syncScrollWithPreview = EditorView.domEventHandlers({
     }
   },
 });
+=======
+const placeholderMatcher = new MatchDecorator({
+  regexp:
+    /^https?:\/\/(?:www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b(?:[-a-zA-Z0-9()@:%_\+.~#?&\/=]*)$/g,
+  decoration: (match) =>
+    Decoration.mark({
+      class: "cm-asdfasdfasdf",
+      tagName: "a",
+      attributes: {
+        href: match.toString(),
+        contenteditable: "false",
+        target: "_blank",
+      },
+    }),
+});
+
+const placeholders = ViewPlugin.fromClass(
+  class {
+    placeholders: DecorationSet;
+    constructor(view: EditorView) {
+      this.placeholders = placeholderMatcher.createDeco(view);
+    }
+    update(update: ViewUpdate) {
+      this.placeholders = placeholderMatcher.updateDeco(
+        update,
+        this.placeholders
+      );
+    }
+  },
+  {
+    decorations: (instance) => instance.placeholders,
+    provide: (plugin) =>
+      EditorView.atomicRanges.of((view) => {
+        return view.plugin(plugin)?.placeholders || Decoration.none;
+      }),
+  }
+);
+>>>>>>> a2582f9 (Progress)
 
 const resetCodemirrorView = () => {
   myCodemirrorView.destroy();
@@ -255,10 +298,10 @@ const resetCodemirrorView = () => {
       syncScrollWithPreview,
       EditorView.lineWrapping,
       EditorState.allowMultipleSelections.of(true),
-      EditorView.updateListener.of((update) => handleOnChange(update)),
       syntaxHighlighting(highlightStyle),
       drawSelection(),
       indentUnit.of("    "),
+      placeholders,
       keymap.of([
         {
           key: "Mod-i",
@@ -267,6 +310,15 @@ const resetCodemirrorView = () => {
         {
           key: "Mod-v",
           run: handleCommandV,
+        },
+        {
+          key: "Mod-b",
+          run: insertBoldMarker,
+        },
+        {
+          key: "Alt",
+          preventDefault: true,
+          run: insertBoldMarker,
         },
         {
           key: "Mod-b",
