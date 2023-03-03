@@ -85,13 +85,16 @@ onMounted(async () => {
   >
     <PrimaryNav />
     <AsideNoteList />
-    <Resizer :left-element="elementRefs.asideNoteListContainer" />
+
     <!-- <section class="primary-content" ref="editorAndPreview"> -->
     <Editor
       v-model="genericState.activeNoteContents"
       v-if="!uiState.settingsViewActive && !uiState.fullScreenPreviewActive"
     />
-    <Resizer :left-element="elementRefs.codemirrorContainer" />
+    <Resizer
+      :left-element="elementRefs.codemirrorContainer"
+      v-if="settings.markdownPreviewActive && !uiState.settingsViewActive"
+    />
     <MarkdownPreview
       v-if="settings.markdownPreviewActive && !uiState.settingsViewActive"
     />

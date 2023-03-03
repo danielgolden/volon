@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import { useSettingsStore } from "../stores/store.settings";
+import Resizer from "./Resizer.vue";
 import NoteListItem from "./NoteListItem.vue";
 import AsideSearch from "./AsideSearch.vue";
 import { onMounted, ref, computed, watch, nextTick } from "vue";
@@ -212,6 +213,7 @@ watch(
       </div>
     </div>
   </Transition>
+  <Resizer :left-element="asideNoteListContainer" v-if="settings.asideActive" />
 </template>
 
 <style scoped>
@@ -224,6 +226,7 @@ watch(
   flex-shrink: 0;
   flex-direction: column;
   position: relative;
+  overflow: hidden;
   border-right: 1px solid var(--color-border-primary);
   background-color: var(--color-bg-surface-2);
   will-change: width;
@@ -295,10 +298,12 @@ watch(
 }
 
 .expand-aside-enter-active {
+  min-width: auto !important;
   transition: all 300ms var(--ease-out-quint);
 }
 
 .expand-aside-leave-active {
+  min-width: auto !important;
   transition: all 200ms var(--ease-in-out-quad);
 }
 

@@ -32,16 +32,18 @@ const handleResizerMouseMove = (e: MouseEvent) => {
 };
 
 onMounted(() => {
-  document.addEventListener("mousemove", (e) => {
-    if (isBeingDragged.value) {
-      handleResizerMouseMove(e);
-    }
+  setTimeout(() => {
+    document.addEventListener("mousemove", (e) => {
+      if (isBeingDragged.value) {
+        handleResizerMouseMove(e);
+      }
 
-    document.addEventListener("mouseup", () => {
-      isBeingDragged.value = false;
-      genericState.columnIsBeingResized = true;
+      document.addEventListener("mouseup", () => {
+        isBeingDragged.value = false;
+        genericState.columnIsBeingResized = true;
+      });
     });
-  });
+  }, 1000);
 });
 </script>
 
