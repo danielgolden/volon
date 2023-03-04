@@ -1,7 +1,6 @@
 <script lang="ts" setup>
 import { onMounted, PropType, ref } from "vue";
 import { useGenericStateStore } from "../stores/store.genericState";
-import { useUiStateStore } from "../stores/store.ui";
 
 const props = defineProps({
   leftElement: {
@@ -14,7 +13,6 @@ const props = defineProps({
   },
 });
 
-const uiState = useUiStateStore();
 const genericState = useGenericStateStore();
 const isBeingDragged = ref(false);
 const xPosition = ref(0);
