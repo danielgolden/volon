@@ -71,7 +71,6 @@ marked.use({ renderer });
   height: 100%;
   overflow-y: scroll;
   background-color: var(--color-bg-surface-1);
-  border-left: 1px solid var(--color-border-secondary);
   color: var(--color-text-primary);
   container-type: inline-size;
 }

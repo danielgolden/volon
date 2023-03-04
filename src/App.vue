@@ -7,9 +7,11 @@ import Editor from "./components/Editor.vue";
 import MarkdownPreview from "./components/MarkdownPreview.vue";
 import CommandPalette from "./components/CommandPalette.vue";
 import Toast from "./components/Toast.vue";
+import Resizer from "./components/Resizer.vue";
 import { useSettingsStore } from "./stores/store.settings";
 import { useGenericStateStore } from "./stores/store.genericState";
 import { useUiStateStore } from "./stores/store.ui";
+import { useElementRefsStore } from "./stores/store.elementRefs";
 import { setWindowDimensions, processUrlParams } from "./lib/utils";
 import {
   intializeLocalStorageData,
@@ -22,11 +24,20 @@ const notesDataLoaded = ref(false);
 const settings = useSettingsStore();
 const genericState = useGenericStateStore();
 const uiState = useUiStateStore();
+const elementRefs = useElementRefsStore();
+const editorAndPreview = ref<HTMLElement | null>(null);
 
 watch(
   () => genericState.activeNoteId,
   (newValue) => {
     uiState.settingsViewActive = false;
+  }
+);
+
+watch(
+  () => editorAndPreview.value,
+  (newValue) => {
+    elementRefs.editorAndPreview = editorAndPreview.value;
   }
 );
 
@@ -68,19 +79,28 @@ onMounted(async () => {
     :class="{
       'aside-active': settings.asideActive,
       'markdown-preview-active': settings.markdownPreviewActive,
+      'column-is-being-resized': genericState.columnIsBeingResized,
     }"
     :data-theme="settings.themeResult"
   >
     <PrimaryNav />
     <AsideNoteList />
+
+    <!-- <section class="primary-content" ref="editorAndPreview"> -->
     <Editor
       v-model="genericState.activeNoteContents"
       v-if="!uiState.settingsViewActive && !uiState.fullScreenPreviewActive"
+    />
+    <Resizer
+      :left-element="elementRefs.codemirrorContainer"
+      v-if="settings.markdownPreviewActive && !uiState.settingsViewActive"
+      :reset-on-hide="true"
     />
     <MarkdownPreview
       v-if="settings.markdownPreviewActive && !uiState.settingsViewActive"
     />
     <SettingsView v-if="uiState.settingsViewActive" />
+    <!-- </section> -->
     <CommandPalette />
     <Toast />
   </main>
@@ -110,6 +130,11 @@ main {
 .aside-active.markdown-preview-active {
   grid-template-columns: 1fr 1fr 1fr;
   grid-template-areas: "aside editor markdown-preview";
+}
+
+.column-is-being-resized {
+  user-select: none;
+  cursor: col-resize;
 }
 
 @media (max-width: 1400px) {

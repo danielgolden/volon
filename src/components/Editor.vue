@@ -35,7 +35,7 @@ import { useGenericStateStore } from "../stores/store.genericState";
 
 const emit = defineEmits(["update:modelValue"]);
 const props = defineProps(["modelValue"]);
-const codemirrorContainer = ref<Element | null>(null);
+const codemirrorContainer = ref<HTMLDivElement | null>(null);
 let myCodemirrorView = new EditorView();
 const codeMirrorTriggeredNoteCreation = ref(false);
 let onChangeTimer = ref(setTimeout(() => {}, 0));
@@ -250,6 +250,7 @@ const resetCodemirrorView = () => {
 
 onMounted(() => {
   resetCodemirrorView();
+  elementRefs.codemirrorContainer = codemirrorContainer.value;
 });
 
 // When the activeNoteId changes, reset the view for the incoming note
@@ -308,7 +309,8 @@ const handleLinkPaste = () => {
 
 <style>
 .codemirror-container {
-  display: contents;
+  width: 100%;
+  min-width: 15%;
 }
 
 .cm-editor {

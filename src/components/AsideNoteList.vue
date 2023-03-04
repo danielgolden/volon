@@ -1,11 +1,13 @@
 <script lang="ts" setup>
 import { useSettingsStore } from "../stores/store.settings";
+import Resizer from "./Resizer.vue";
 import NoteListItem from "./NoteListItem.vue";
 import AsideSearch from "./AsideSearch.vue";
 import { onMounted, ref, computed, watch, nextTick } from "vue";
 import { useGenericStateStore } from "../stores/store.genericState";
 import { useNotebookStore } from "../stores/store.notebook";
 import { useUiStateStore } from "../stores/store.ui";
+import { useElementRefsStore } from "../stores/store.elementRefs";
 import KeyboardShortcutIndicator from "./KeyboardShortcutIndicator.vue";
 import {
   sortNotesByModificationDate,
@@ -19,8 +21,10 @@ const notebook = useNotebookStore();
 const genericState = useGenericStateStore();
 const settings = useSettingsStore();
 const uiState = useUiStateStore();
+const elementRefs = useElementRefsStore();
 const activeNoteSelectionMade = ref(false);
 const noteListIsScrolled = ref(false);
+const asideNoteListContainer = ref<HTMLDivElement | null>(null);
 const noteListUl = ref<HTMLUListElement | null>(null);
 
 const searchIsActive = computed(() => {
@@ -82,14 +86,9 @@ const updateNoteListIsScrolled = () => {
   }
 };
 
-watch(
-  () => genericState.noteListMatchingNotes as Note[],
-  (newValue) => {
-    activeNoteSelectionMade.value = getActiveSelectionStatus(newValue);
-  }
-);
-
 onMounted(() => {
+  elementRefs.asideNoteListContainer = asideNoteListContainer.value;
+
   if (settings.asideActive) {
     updateNoteListIsScrolled();
 
@@ -98,6 +97,13 @@ onMounted(() => {
     });
   }
 });
+
+watch(
+  () => genericState.noteListMatchingNotes as Note[],
+  (newValue) => {
+    activeNoteSelectionMade.value = getActiveSelectionStatus(newValue);
+  }
+);
 
 watch(
   () => uiState.commandPaletteActive,
@@ -177,7 +183,11 @@ watch(
 
 <template>
   <Transition name="expand-aside">
-    <div class="aside-note-list-container" v-if="settings.asideActive">
+    <div
+      class="aside-note-list-container"
+      v-show="settings.asideActive"
+      ref="asideNoteListContainer"
+    >
       <AsideSearch :noteList="notesToBeDisplayed" />
       <ul
         :class="{ 'note-list': true, scrolled: noteListIsScrolled }"
@@ -203,17 +213,26 @@ watch(
       </div>
     </div>
   </Transition>
+  <Resizer
+    :left-element="asideNoteListContainer"
+    v-if="settings.asideActive"
+    cssWidthVar="container-width"
+    class="aside-note-list-resizer"
+  />
 </template>
 
 <style scoped>
 .aside-note-list-container {
   --padding-block: 14px;
+  --container-width: 350px;
   display: flex;
-  width: 350px;
+  min-width: 250px;
+  max-width: 600px;
+  width: var(--container-width);
   flex-shrink: 0;
   flex-direction: column;
+  position: relative;
   overflow: hidden;
-  border-right: 1px solid var(--color-border-primary);
   background-color: var(--color-bg-surface-2);
   will-change: width;
 }
@@ -221,7 +240,7 @@ watch(
   display: flex;
   flex-direction: column;
   height: 100%;
-  min-width: 349px;
+  min-width: var(--container-width);
   margin: 0;
   padding: calc(var(--padding-block) / 2) 12px var(--padding-block);
   overflow-y: auto;
@@ -284,10 +303,12 @@ watch(
 }
 
 .expand-aside-enter-active {
+  min-width: auto !important;
   transition: all 300ms var(--ease-out-quint);
 }
 
 .expand-aside-leave-active {
+  min-width: auto !important;
   transition: all 200ms var(--ease-in-out-quad);
 }
 
