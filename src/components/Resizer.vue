@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { onMounted, PropType, ref } from "vue";
+import { onMounted, PropType, ref, watch } from "vue";
 import { useGenericStateStore } from "../stores/store.genericState";
 
 const props = defineProps({
@@ -17,6 +17,7 @@ const genericState = useGenericStateStore();
 const isBeingDragged = ref(false);
 const xPosition = ref(0);
 const leftElementWidth = ref(0);
+const leftElementOriginalWidth = ref(0);
 
 const handleResizerMouseDown = (e: MouseEvent) => {
   genericState.columnIsBeingResized = true;
@@ -28,6 +29,7 @@ const handleResizerMouseDown = (e: MouseEvent) => {
 };
 
 const handleResizerMouseMove = (e: MouseEvent) => {
+  // Variables
   const xPositionChange = e.clientX - xPosition.value;
   const newLeftElementWidth = leftElementWidth.value + xPositionChange;
   const elementHasMaxWidth =
@@ -44,7 +46,11 @@ const handleResizerMouseMove = (e: MouseEvent) => {
     : null;
   const newWidthIsLessThanMinWidth =
     elementHasMinWidth && newLeftElementWidth < leftElementMinWidth!;
+  const newWidthIsNearDefault =
+    newLeftElementWidth <= leftElementOriginalWidth.value + 8 &&
+    newLeftElementWidth >= leftElementOriginalWidth.value - 8;
 
+  // Functions
   const handleCssVarUpdate = (newValue: number) => {
     if (props.cssWidthVar) {
       props.leftElement!.style.setProperty(
@@ -59,6 +65,7 @@ const handleResizerMouseMove = (e: MouseEvent) => {
     }
   };
 
+  // Resize logic
   props.leftElement!.style.flexShrink = "0";
 
   if (newWidthIsGreaterThanMaxWidth) {
@@ -69,11 +76,22 @@ const handleResizerMouseMove = (e: MouseEvent) => {
     handleCssVarUpdate(leftElementMinWidth!);
     handleWidthPropertyUpdate(leftElementMinWidth!);
     return;
+  } else if (newWidthIsNearDefault) {
+    handleCssVarUpdate(leftElementOriginalWidth.value);
+    handleWidthPropertyUpdate(leftElementOriginalWidth.value);
+    return;
   }
 
   handleCssVarUpdate(newLeftElementWidth!);
   handleWidthPropertyUpdate(newLeftElementWidth!);
 };
+
+watch(
+  () => props.leftElement,
+  (newValue) => {
+    leftElementOriginalWidth.value = props.leftElement?.offsetWidth!;
+  }
+);
 
 onMounted(() => {
   setTimeout(() => {

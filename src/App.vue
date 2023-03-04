@@ -133,6 +133,7 @@ main {
 
 .column-is-being-resized {
   user-select: none;
+  cursor: col-resize;
 }
 
 @media (max-width: 1400px) {
