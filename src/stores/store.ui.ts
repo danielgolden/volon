@@ -8,6 +8,7 @@ export const useUiStateStore = defineStore("ui", {
       settingsViewActive: false,
       fullScreenPreviewActive: false,
       commandPaletteActive: false,
+      asideNoteListWidth: <null | number>null,
       toasts: <Toast[]>[],
     };
   },

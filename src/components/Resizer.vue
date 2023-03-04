@@ -1,14 +1,20 @@
 <script lang="ts" setup>
 import { onMounted, PropType, ref } from "vue";
 import { useGenericStateStore } from "../stores/store.genericState";
+import { useUiStateStore } from "../stores/store.ui";
 
 const props = defineProps({
   leftElement: {
     required: true,
     type: Element as PropType<HTMLElement | null>,
   },
+  cssWidthVar: {
+    required: false,
+    type: String,
+  },
 });
 
+const uiState = useUiStateStore();
 const genericState = useGenericStateStore();
 const isBeingDragged = ref(false);
 const xPosition = ref(0);
@@ -26,9 +32,37 @@ const handleResizerMouseDown = (e: MouseEvent) => {
 const handleResizerMouseMove = (e: MouseEvent) => {
   const xPositionChange = e.clientX - xPosition.value;
   const newLeftElementWidth = leftElementWidth.value + xPositionChange;
+  const elementHasMaxWidth =
+    getComputedStyle(props.leftElement!).maxWidth !== "";
+  const leftElementMaxWidth = elementHasMaxWidth
+    ? parseInt(getComputedStyle(props.leftElement!)?.maxWidth)
+    : null;
+  const newWidthIsGreaterThanMaxWidth =
+    elementHasMaxWidth && newLeftElementWidth > leftElementMaxWidth!;
+  const handleCssVarUpdate = (newValue: number) => {
+    if (props.cssWidthVar) {
+      props.leftElement!.style.setProperty(
+        `--${props.cssWidthVar}`,
+        `${newValue}px`
+      );
+    }
+  };
+  const handleWidthPropertyUpdate = (newValue: number) => {
+    if (!props.cssWidthVar) {
+      props.leftElement!.style.width = `${newValue}px`;
+    }
+  };
 
-  props.leftElement!.style.width = `${newLeftElementWidth}px`;
   props.leftElement!.style.flexShrink = "0";
+
+  if (newWidthIsGreaterThanMaxWidth) {
+    handleCssVarUpdate(leftElementMaxWidth!);
+    handleWidthPropertyUpdate(leftElementMaxWidth!);
+    return;
+  }
+
+  handleCssVarUpdate(newLeftElementWidth!);
+  handleWidthPropertyUpdate(newLeftElementWidth!);
 };
 
 onMounted(() => {
@@ -40,7 +74,7 @@ onMounted(() => {
 
       document.addEventListener("mouseup", () => {
         isBeingDragged.value = false;
-        genericState.columnIsBeingResized = true;
+        genericState.columnIsBeingResized = false;
       });
     });
   }, 1000);
@@ -82,7 +116,7 @@ onMounted(() => {
 }
 
 .resizer-container:hover .resizer,
-.isBeingDragged .resizer {
+.is-being-dragged .resizer {
   width: 3px;
   margin-left: -1px;
   box-sizing: content-box;

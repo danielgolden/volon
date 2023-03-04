@@ -185,7 +185,7 @@ watch(
   <Transition name="expand-aside">
     <div
       class="aside-note-list-container"
-      v-if="settings.asideActive"
+      v-show="settings.asideActive"
       ref="asideNoteListContainer"
     >
       <AsideSearch :noteList="notesToBeDisplayed" />
@@ -213,16 +213,21 @@ watch(
       </div>
     </div>
   </Transition>
-  <Resizer :left-element="asideNoteListContainer" v-if="settings.asideActive" />
+  <Resizer
+    :left-element="asideNoteListContainer"
+    v-if="settings.asideActive"
+    cssWidthVar="container-width"
+  />
 </template>
 
 <style scoped>
 .aside-note-list-container {
   --padding-block: 14px;
+  --container-width: 350px;
   display: flex;
   min-width: 350px;
-  max-width: 33%;
-  width: 350px;
+  max-width: 600px;
+  width: var(--container-width);
   flex-shrink: 0;
   flex-direction: column;
   position: relative;
@@ -235,7 +240,7 @@ watch(
   display: flex;
   flex-direction: column;
   height: 100%;
-  min-width: 349px;
+  min-width: var(--container-width);
   margin: 0;
   padding: calc(var(--padding-block) / 2) 12px var(--padding-block);
   overflow-y: auto;
