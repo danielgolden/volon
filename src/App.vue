@@ -94,6 +94,7 @@ onMounted(async () => {
     <Resizer
       :left-element="elementRefs.codemirrorContainer"
       v-if="settings.markdownPreviewActive && !uiState.settingsViewActive"
+      :reset-on-hide="true"
     />
     <MarkdownPreview
       v-if="settings.markdownPreviewActive && !uiState.settingsViewActive"

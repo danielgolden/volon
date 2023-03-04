@@ -48,6 +48,7 @@ export const globalKeyboardShortcuts = () => {
     } else if (event.metaKey && event.code == "Slash") {
       event.preventDefault();
       settings.asideActive = !settings.asideActive;
+      saveAppSettingsToLocalStorage();
     }
     if (event.code === "Escape") {
       if (!uiState.commandPaletteActive) return;

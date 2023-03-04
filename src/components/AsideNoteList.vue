@@ -217,6 +217,7 @@ watch(
     :left-element="asideNoteListContainer"
     v-if="settings.asideActive"
     cssWidthVar="container-width"
+    class="aside-note-list-resizer"
   />
 </template>
 
@@ -225,14 +226,13 @@ watch(
   --padding-block: 14px;
   --container-width: 350px;
   display: flex;
-  min-width: 300px;
+  min-width: 250px;
   max-width: 600px;
   width: var(--container-width);
   flex-shrink: 0;
   flex-direction: column;
   position: relative;
   overflow: hidden;
-  border-right: 1px solid var(--color-border-primary);
   background-color: var(--color-bg-surface-2);
   will-change: width;
 }

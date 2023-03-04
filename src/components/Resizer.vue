@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { onMounted, PropType, ref, watch } from "vue";
+import { onMounted, PropType, ref, watch, onBeforeUnmount } from "vue";
 import { useGenericStateStore } from "../stores/store.genericState";
 
 const props = defineProps({
@@ -11,6 +11,10 @@ const props = defineProps({
     required: false,
     type: String,
   },
+  resetOnHide: {
+    required: false,
+    type: Boolean,
+  },
 });
 
 const genericState = useGenericStateStore();
@@ -18,6 +22,21 @@ const isBeingDragged = ref(false);
 const xPosition = ref(0);
 const leftElementWidth = ref(0);
 const leftElementOriginalWidth = ref(0);
+
+const handleCssVarUpdate = (newValue: number) => {
+  if (props.cssWidthVar) {
+    props.leftElement!.style.setProperty(
+      `--${props.cssWidthVar}`,
+      `${newValue}px`
+    );
+  }
+};
+
+const handleWidthPropertyUpdate = (newValue: number) => {
+  if (!props.cssWidthVar) {
+    props.leftElement!.style.width = `${newValue}px`;
+  }
+};
 
 const handleResizerMouseDown = (e: MouseEvent) => {
   genericState.columnIsBeingResized = true;
@@ -50,21 +69,6 @@ const handleResizerMouseMove = (e: MouseEvent) => {
     newLeftElementWidth <= leftElementOriginalWidth.value + 8 &&
     newLeftElementWidth >= leftElementOriginalWidth.value - 8;
 
-  // Functions
-  const handleCssVarUpdate = (newValue: number) => {
-    if (props.cssWidthVar) {
-      props.leftElement!.style.setProperty(
-        `--${props.cssWidthVar}`,
-        `${newValue}px`
-      );
-    }
-  };
-  const handleWidthPropertyUpdate = (newValue: number) => {
-    if (!props.cssWidthVar) {
-      props.leftElement!.style.width = `${newValue}px`;
-    }
-  };
-
   // Resize logic
   props.leftElement!.style.flexShrink = "0";
 
@@ -89,7 +93,9 @@ const handleResizerMouseMove = (e: MouseEvent) => {
 watch(
   () => props.leftElement,
   (newValue) => {
-    leftElementOriginalWidth.value = props.leftElement?.offsetWidth!;
+    leftElementOriginalWidth.value = parseInt(
+      getComputedStyle(props.leftElement!).width!
+    );
   }
 );
 
@@ -106,6 +112,14 @@ onMounted(() => {
       });
     });
   }, 1000);
+});
+
+onBeforeUnmount(() => {
+  if (props.resetOnHide) {
+    props.leftElement!.style.removeProperty(`--${props.cssWidthVar}`);
+    props.leftElement!.style.removeProperty(`width`);
+    props.leftElement!.style.removeProperty(`flex-shrink`);
+  }
 });
 </script>
 
@@ -157,5 +171,11 @@ onMounted(() => {
 .resizer-container:hover:before,
 .resizer-container:hover:after {
   width: 3px;
+}
+
+@media (max-width: 800px) {
+  .resizer-container {
+    display: none;
+  }
 }
 </style>
