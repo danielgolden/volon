@@ -10,6 +10,7 @@ export const useSettingsStore = defineStore("settings", {
       notePreviewContents: "dateModified",
       userColorSchemePreference: "light",
       fullWidthNotes: "never",
+      syncScroll: false,
     };
   },
   actions: {

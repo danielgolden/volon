@@ -14,6 +14,7 @@ export const useGenericStateStore = defineStore("genericState", {
       commandPaletteCurrentQuery: "",
       urlHasSearch: false,
       columnIsBeingResized: false,
+      scrollSyncActiveSection: "both",
     };
   },
   actions: {

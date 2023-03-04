@@ -32,6 +32,7 @@ import {
 import { useElementRefsStore } from "../stores/store.elementRefs";
 import { useGenericStateStore } from "../stores/store.genericState";
 import { useSettingsStore } from "../stores/store.settings";
+import { useUiStateStore } from "../stores/store.ui";
 
 const emit = defineEmits(["update:modelValue"]);
 const props = defineProps(["modelValue"]);
@@ -39,9 +40,11 @@ const codemirrorContainer = ref<HTMLDivElement | null>(null);
 let myCodemirrorView = new EditorView();
 const codeMirrorTriggeredNoteCreation = ref(false);
 let onChangeTimer = ref(setTimeout(() => {}, 0));
+let scrollEndTimer = setTimeout(() => {}, 0);
 const elementRefs = useElementRefsStore();
 const genericState = useGenericStateStore();
 const settings = useSettingsStore();
+const uiState = useUiStateStore();
 
 const handleOnChange = (update: ViewUpdate) => {
   const waitTime = 500; // in milliseconds
@@ -183,6 +186,39 @@ const handleCommandV: StateCommand = () => {
   return false;
 };
 
+const syncScrollWithPreview = EditorView.domEventHandlers({
+  scroll() {
+    const isAvailableForScrollSync =
+      genericState.scrollSyncActiveSection === "both" ||
+      genericState.scrollSyncActiveSection === "editor";
+
+    if (
+      settings.syncScroll &&
+      settings.markdownPreviewActive &&
+      isAvailableForScrollSync
+    ) {
+      clearTimeout(scrollEndTimer);
+      genericState.scrollSyncActiveSection = "editor";
+      const scrollPercentage =
+        myCodemirrorView.scrollDOM.scrollTop /
+        (myCodemirrorView.scrollDOM.scrollHeight - window.innerHeight);
+      const newPreviewScrollPosition =
+        scrollPercentage *
+        (elementRefs.markdownPreviewContainer!.scrollHeight -
+          window.innerHeight);
+
+      elementRefs.markdownPreviewContainer?.scrollTo(
+        0,
+        newPreviewScrollPosition
+      );
+
+      scrollEndTimer = setTimeout(() => {
+        genericState.scrollSyncActiveSection = "both";
+      }, 200);
+    }
+  },
+});
+
 const resetCodemirrorView = () => {
   myCodemirrorView.destroy();
 
@@ -216,6 +252,7 @@ const resetCodemirrorView = () => {
       editorTheme,
       history(),
       placeholder("Jot something down..."),
+      syncScrollWithPreview,
       EditorView.lineWrapping,
       EditorState.allowMultipleSelections.of(true),
       EditorView.updateListener.of((update) => handleOnChange(update)),
