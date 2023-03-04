@@ -118,7 +118,13 @@ onMounted(() => {
 .resizer-container:hover .resizer,
 .is-being-dragged .resizer {
   width: 3px;
-  margin-left: -1px;
+  margin-left: -2px;
+  translate: 1px 0;
   box-sizing: content-box;
+}
+
+.resizer-container:hover:before,
+.resizer-container:hover:after {
+  width: 3px;
 }
 </style>
