@@ -9,6 +9,7 @@ export const useSettingsStore = defineStore("settings", {
       noteOrderPreference: "dateModified",
       notePreviewContents: "dateModified",
       userColorSchemePreference: "light",
+      fullWidthNotes: "never",
     };
   },
   actions: {
@@ -33,6 +34,17 @@ export const useSettingsStore = defineStore("settings", {
       } else {
         return state.userColorSchemePreference;
       }
+    },
+    fullWidthNotesResult: (state) => {
+      if (state.fullWidthNotes === "always") {
+        return true;
+      } else if (
+        state.fullWidthNotes === "whenPreviewActive" &&
+        state.markdownPreviewActive
+      ) {
+        return true;
+      }
+      return false;
     },
   },
 });

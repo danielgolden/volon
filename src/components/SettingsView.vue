@@ -210,6 +210,28 @@ const handleLocalNotesImportClick = async () => {
             <div class="settings-row">
               <div class="settings-row-copy">
                 <label class="settings-row-heading" for="notes-sorting"
+                  >Full width notes</label
+                >
+                <p class="settings-row-description">
+                  Choose when your note text should take up the full width of
+                  the window.
+                </p>
+              </div>
+              <Select
+                id="notes-sorting"
+                v-model="settings.fullWidthNotes"
+                @change="saveAppSettingsToLocalStorage"
+              >
+                <option value="never">Never</option>
+                <option value="always">Always</option>
+                <option value="whenPreviewActive">
+                  When preview is active
+                </option>
+              </Select>
+            </div>
+            <div class="settings-row">
+              <div class="settings-row-copy">
+                <label class="settings-row-heading" for="notes-sorting"
                   >Note list item secondary data</label
                 >
                 <p class="settings-row-description">
