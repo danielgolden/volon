@@ -7,6 +7,7 @@ export const useElementRefsStore = defineStore("elementRefs", {
       codeMirror: <null | EditorView>null,
       codemirrorContainer: <null | HTMLDivElement>null,
       asideSearchInput: <null | HTMLInputElement>null,
+      markdownPreviewContainer: <null | HTMLDivElement>null,
       commandPaletteSearchInput: <null | HTMLInputElement>null,
       asideNoteListContainer: <null | HTMLDivElement>null,
       editorAndPreview: <null | HTMLElement>null,

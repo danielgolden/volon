@@ -21,6 +21,7 @@ interface settingsStore {
   notePreviewContents: "dateModified" | "noteBody";
   userColorSchemePreference: "dark" | "light";
   fullWidthNotes: "never" | "always" | "whenPreviewActive";
+  syncScroll: boolean;
 }
 
 interface MenuItem {

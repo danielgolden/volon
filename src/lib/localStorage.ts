@@ -31,6 +31,7 @@ export const saveAppSettingsToLocalStorage = () => {
     localDataParsed.noteOrderPreference = settings.noteOrderPreference;
     localDataParsed.notePreviewContents = settings.notePreviewContents;
     localDataParsed.fullWidthNotes = settings.fullWidthNotes;
+    localDataParsed.syncScroll = settings.syncScroll;
 
     localStorage.setItem("volon", JSON.stringify(localDataParsed));
   } else {
@@ -66,6 +67,7 @@ export const loadAppSettingsFromLocalStorage = () => {
     settings.notePreviewContents =
       localDataParsed.notePreviewContents ?? "noteBody";
     settings.fullWidthNotes = localDataParsed.fullWidthNotes ?? "never";
+    settings.syncScroll = localDataParsed.syncScroll ?? false;
   } else {
     createNewAppSettingsInLocalStorage();
   }

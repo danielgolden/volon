@@ -3,6 +3,7 @@ import Icon from "./Icon.vue";
 import { sendLocalNotesToDB, loadExistingDBData } from "../lib/supabase";
 import Button from "./Button.vue";
 import Select from "./Select.vue";
+import Switch from "./Switch.vue";
 import {
   signInWithGitHub,
   signInWithGoogle,
@@ -207,6 +208,26 @@ const handleLocalNotesImportClick = async () => {
                 <option value="dateCreated">Date created</option>
               </Select>
             </div>
+
+            <div class="settings-row">
+              <div class="settings-row-copy">
+                <label class="settings-row-heading" for="notes-sorting"
+                  >Note list secondary text</label
+                >
+                <p class="settings-row-description">
+                  Choose what data shows just below the note title in your note
+                  list.
+                </p>
+              </div>
+              <Select
+                id="notes-sorting"
+                v-model="settings.notePreviewContents"
+                @change="saveAppSettingsToLocalStorage"
+              >
+                <option value="dateModified">Modification date</option>
+                <option value="noteBody">Note contents</option>
+              </Select>
+            </div>
             <div class="settings-row">
               <div class="settings-row-copy">
                 <label class="settings-row-heading" for="notes-sorting"
@@ -231,22 +252,22 @@ const handleLocalNotesImportClick = async () => {
             </div>
             <div class="settings-row">
               <div class="settings-row-copy">
-                <label class="settings-row-heading" for="notes-sorting"
-                  >Note list item secondary data</label
+                <label class="settings-row-heading" for="syncScroll"
+                  >Sync scroll</label
                 >
                 <p class="settings-row-description">
                   Choose what data shows just below the note title in your note
                   list.
                 </p>
               </div>
-              <Select
-                id="notes-sorting"
-                v-model="settings.notePreviewContents"
+              <Switch
+                label-for="syncScroll"
+                v-model="settings.syncScroll"
                 @change="saveAppSettingsToLocalStorage"
               >
                 <option value="dateModified">Modification date</option>
                 <option value="noteBody">Note contents</option>
-              </Select>
+              </Switch>
             </div>
           </div>
         </div>

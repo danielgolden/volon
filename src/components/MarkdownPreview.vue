@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+import { ref, onMounted } from "vue";
 import DOMPurify from "dompurify";
 import Button from "./Button.vue";
 import Tooltip from "./Tooltip.vue";
@@ -6,6 +7,7 @@ import { marked } from "marked";
 import { useGenericStateStore } from "../stores/store.genericState";
 import { useUiStateStore } from "../stores/store.ui";
 import { useSettingsStore } from "../stores/store.settings";
+import { useElementRefsStore } from "../stores/store.elementRefs";
 
 // Override the output of <li> checkboxes to add the classes I want
 // TODO: Write tests for this
@@ -31,7 +33,41 @@ const renderer = {
 const genericState = useGenericStateStore();
 const uiState = useUiStateStore();
 const settings = useSettingsStore();
+const elementRefs = useElementRefsStore();
+const markdownPreviewContainer = ref<HTMLDivElement | null>(null);
+let scrollEndTimer = setTimeout(() => {}, 0);
 marked.use({ renderer });
+
+const syncScrollWithEditor = () => {
+  const isAvailableForScrollSync =
+    genericState.scrollSyncActiveSection === "both" ||
+    genericState.scrollSyncActiveSection === "preview";
+
+  if (
+    settings.syncScroll &&
+    settings.markdownPreviewActive &&
+    isAvailableForScrollSync
+  ) {
+    clearTimeout(scrollEndTimer);
+    genericState.scrollSyncActiveSection = "preview";
+    const scrollPercentage =
+      markdownPreviewContainer.value!.scrollTop /
+      (markdownPreviewContainer.value!.scrollHeight - window.innerHeight);
+    const newEditorScrollPosition =
+      scrollPercentage *
+      (elementRefs.codeMirror!.scrollDOM!.scrollHeight - window.innerHeight);
+
+    elementRefs.codeMirror!.scrollDOM?.scrollTo(0, newEditorScrollPosition);
+
+    scrollEndTimer = setTimeout(() => {
+      genericState.scrollSyncActiveSection = "both";
+    }, 200);
+  }
+};
+
+onMounted(() => {
+  elementRefs.markdownPreviewContainer = markdownPreviewContainer.value;
+});
 </script>
 
 <template>
@@ -57,6 +93,8 @@ marked.use({ renderer });
       'fullscreen-markdown-preview': uiState.fullScreenPreviewActive,
       'full-width-text': settings.fullWidthNotesResult,
     }"
+    ref="markdownPreviewContainer"
+    @scroll="syncScrollWithEditor"
   >
     <div
       class="markdown-preview"
