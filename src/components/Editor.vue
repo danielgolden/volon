@@ -311,7 +311,6 @@ const handleLinkPaste = () => {
 .codemirror-container {
   width: 100%;
   min-width: 15%;
-  max-width: 50%;
 }
 
 .cm-editor {

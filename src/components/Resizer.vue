@@ -39,6 +39,14 @@ const handleResizerMouseMove = (e: MouseEvent) => {
     : null;
   const newWidthIsGreaterThanMaxWidth =
     elementHasMaxWidth && newLeftElementWidth > leftElementMaxWidth!;
+  const elementHasMinWidth =
+    getComputedStyle(props.leftElement!).minWidth !== "";
+  const leftElementMinWidth = elementHasMinWidth
+    ? parseInt(getComputedStyle(props.leftElement!)?.minWidth)
+    : null;
+  const newWidthIsLessThanMinWidth =
+    elementHasMinWidth && newLeftElementWidth < leftElementMinWidth!;
+
   const handleCssVarUpdate = (newValue: number) => {
     if (props.cssWidthVar) {
       props.leftElement!.style.setProperty(
@@ -58,6 +66,10 @@ const handleResizerMouseMove = (e: MouseEvent) => {
   if (newWidthIsGreaterThanMaxWidth) {
     handleCssVarUpdate(leftElementMaxWidth!);
     handleWidthPropertyUpdate(leftElementMaxWidth!);
+    return;
+  } else if (newWidthIsLessThanMinWidth) {
+    handleCssVarUpdate(leftElementMinWidth!);
+    handleWidthPropertyUpdate(leftElementMinWidth!);
     return;
   }
 
@@ -93,7 +105,6 @@ onMounted(() => {
 <style scoped>
 .resizer-container {
   display: flex;
-  z-index: 1000;
   height: 100%;
   position: relative;
   left: -4px;
@@ -121,6 +132,10 @@ onMounted(() => {
   margin-left: -2px;
   translate: 1px 0;
   box-sizing: content-box;
+}
+
+.is-being-dragged .resizer {
+  background-color: var(--color-border-secondary);
 }
 
 .resizer-container:hover:before,

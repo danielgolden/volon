@@ -225,7 +225,7 @@ watch(
   --padding-block: 14px;
   --container-width: 350px;
   display: flex;
-  min-width: 350px;
+  min-width: 300px;
   max-width: 600px;
   width: var(--container-width);
   flex-shrink: 0;
