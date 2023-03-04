@@ -14,7 +14,6 @@ import {
   EditorSelection,
   Transaction,
 } from "@codemirror/state";
-import { basicSetup } from "codemirror";
 import { markdown, markdownLanguage } from "@codemirror/lang-markdown";
 import {
   syntaxHighlighting,
@@ -32,6 +31,7 @@ import {
 } from "@codemirror/view";
 import { useElementRefsStore } from "../stores/store.elementRefs";
 import { useGenericStateStore } from "../stores/store.genericState";
+import { useSettingsStore } from "../stores/store.settings";
 
 const emit = defineEmits(["update:modelValue"]);
 const props = defineProps(["modelValue"]);
@@ -41,6 +41,7 @@ const codeMirrorTriggeredNoteCreation = ref(false);
 let onChangeTimer = ref(setTimeout(() => {}, 0));
 const elementRefs = useElementRefsStore();
 const genericState = useGenericStateStore();
+const settings = useSettingsStore();
 
 const handleOnChange = (update: ViewUpdate) => {
   const waitTime = 500; // in milliseconds
@@ -304,7 +305,13 @@ const handleLinkPaste = () => {
 </script>
 
 <template>
-  <div class="codemirror-container" ref="codemirrorContainer"></div>
+  <div
+    :class="{
+      'codemirror-container': true,
+      'full-width-text': settings.fullWidthNotesResult,
+    }"
+    ref="codemirrorContainer"
+  ></div>
 </template>
 
 <style>
@@ -330,8 +337,13 @@ const handleLinkPaste = () => {
   outline: none;
 }
 .cm-editor .cm-content {
+  max-width: 70ch;
   padding: 48px;
   font-size: 20px;
+}
+
+.full-width-text .cm-editor .cm-content {
+  max-width: 100%;
 }
 
 .cm-editor .cm-selectionBackground {

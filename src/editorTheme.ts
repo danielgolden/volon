@@ -8,7 +8,6 @@ export const editorTheme = EditorView.theme(
       overflow: "hidden",
     },
     ".cm-content": {
-      maxWidth: "70ch",
       width: "100%",
       display: "flex",
       flexDirection: "column",

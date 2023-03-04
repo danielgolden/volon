@@ -20,6 +20,7 @@ interface settingsStore {
   noteOrderPreference: "dateModified" | "dateCreated";
   notePreviewContents: "dateModified" | "noteBody";
   userColorSchemePreference: "dark" | "light";
+  fullWidthNotes: "never" | "always" | "whenPreviewActive";
 }
 
 interface MenuItem {

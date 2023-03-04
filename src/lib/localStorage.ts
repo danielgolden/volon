@@ -30,6 +30,7 @@ export const saveAppSettingsToLocalStorage = () => {
     localDataParsed.theme = settings.theme;
     localDataParsed.noteOrderPreference = settings.noteOrderPreference;
     localDataParsed.notePreviewContents = settings.notePreviewContents;
+    localDataParsed.fullWidthNotes = settings.fullWidthNotes;
 
     localStorage.setItem("volon", JSON.stringify(localDataParsed));
   } else {
@@ -64,6 +65,7 @@ export const loadAppSettingsFromLocalStorage = () => {
     settings.noteOrderPreference = localDataParsed.noteOrderPreference;
     settings.notePreviewContents =
       localDataParsed.notePreviewContents ?? "noteBody";
+    settings.fullWidthNotes = localDataParsed.fullWidthNotes ?? "never";
   } else {
     createNewAppSettingsInLocalStorage();
   }
