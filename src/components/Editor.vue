@@ -190,7 +190,6 @@ const handleCommandV: StateCommand = () => {
   return false;
 };
 
-<<<<<<< HEAD
 const syncScrollWithPreview = EditorView.domEventHandlers({
   scroll() {
     const isAvailableForScrollSync =
@@ -223,7 +222,6 @@ const syncScrollWithPreview = EditorView.domEventHandlers({
     }
   },
 });
-=======
 const placeholderMatcher = new MatchDecorator({
   regexp:
     /^https?:\/\/(?:www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b(?:[-a-zA-Z0-9()@:%_\+.~#?&\/=]*)$/g,
@@ -260,7 +258,6 @@ const placeholders = ViewPlugin.fromClass(
       }),
   }
 );
->>>>>>> a2582f9 (Progress)
 
 const resetCodemirrorView = () => {
   myCodemirrorView.destroy();
