@@ -152,7 +152,6 @@ onMounted(() => {
               type="secondary"
               icon="settings"
               @click="uiState.settingsViewActive = !uiState.settingsViewActive"
-              title="Download a backup of your data"
             />
           </Tooltip>
         </li>

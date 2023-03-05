@@ -5,14 +5,18 @@ import {
   sortNotesByCreationDate,
   navigateToPreviousNote,
   navigateToNextNote,
+  deleteActiveNote,
 } from "../lib/utils";
 import CommandPaletteInput from "./CommandPaletteInput.vue";
 import KeyboardShortcutIndicator from "./KeyboardShortcutIndicator.vue";
+import Icon from "./Icon.vue";
 import { formatRelative } from "date-fns";
+import { downloadBackupOfData } from "../lib/utils";
 import { useSettingsStore } from "../stores/store.settings";
 import { useGenericStateStore } from "../stores/store.genericState";
 import { useNotebookStore } from "../stores/store.notebook";
 import { useUiStateStore } from "../stores/store.ui";
+import { saveAppSettingsToLocalStorage } from "../lib/localStorage";
 
 const noteListItemRefs = ref<HTMLElement[] | []>([]);
 const noteList = ref<HTMLUListElement | null>(null);
@@ -74,6 +78,35 @@ const getActiveSelectionStatus = (commandPaletteMatchingNotes?: Note[]) => {
     selectionFoundIncommandPaletteMatchingNotes || selectionFoundAmongAllNotes
   );
 };
+
+const rawCommands = [
+  {
+    label: "Open settings",
+    icon: "settings",
+    action: () => (uiState.settingsViewActive = true),
+  },
+  {
+    label: "Download a backup",
+    icon: "download",
+    action: () => downloadBackupOfData(),
+  },
+  {
+    label: "Delete current note",
+    icon: "trash",
+    action: () => {
+      deleteActiveNote();
+      genericState.clearActiveNoteState();
+    },
+  },
+  {
+    label: "Toggle theme",
+    icon: settings.themeResult === "dark" ? "sun" : "moon",
+    action: () => {
+      settings.theme = settings.themeResult === "dark" ? "light" : "dark";
+      saveAppSettingsToLocalStorage();
+    },
+  },
+];
 
 watch(
   () => genericState.commandPaletteMatchingNotes as Note[],
@@ -138,45 +171,80 @@ watch(
     <Transition name="lift">
       <section class="container" v-show="uiState.commandPaletteActive">
         <CommandPaletteInput :noteList="notesToBeDisplayed" />
-        <ul
-          v-if="notesToBeDisplayed.length > 0"
-          class="note-list"
-          tabindex="0"
-          @keydown.up="navigateToPreviousNote(notesToBeDisplayed)"
-          @keydown.down="navigateToNextNote(notesToBeDisplayed)"
-          ref="noteList"
-        >
-          <li
-            v-for="note in notesToBeDisplayed"
-            :v-key="note.id"
-            :class="{
-              'active-note-list-item':
-                genericState.selectedCommandPaletteNote?.id === note.id,
-              'note-list-item': true,
-            }"
-            :data-note-id="note.id"
-            @click="handleNoteItemClick(note.id)"
-            @keydown.enter="uiState.toggleCommandPaletteActive"
-            ref="noteListItemRefs"
+        <section class="command-palette-lists">
+          <h5 class="command-palette-list-heading">Commands</h5>
+          <ul
+            v-if="notesToBeDisplayed.length > 0"
+            class="command-list command-palette-list"
+            tabindex="0"
+            @keydown.up="navigateToPreviousNote(notesToBeDisplayed)"
+            @keydown.down="navigateToNextNote(notesToBeDisplayed)"
+            ref="noteList"
           >
-            <span class="note-list-item-preview">
-              {{
-                note.content
-                  .split(`\n`)[0]
-                  .replaceAll("#", "")
-                  .substring(0, 100)
-              }}
-              <em
-                v-if="note.content.length === 0"
-                class="empty-list-item-preview"
-                >Empty note</em
-              >
-            </span>
-            <span class="note-list-item-meta">{{
-              formatRelativeDate(formatRelative(note.lastModified, new Date()))
-            }}</span>
-          </li>
-        </ul>
+            <li
+              v-for="command in rawCommands"
+              :v-key="command.label"
+              :class="{ 'command-palette-item': true }"
+              @click="command.action()"
+              @keydown.enter="
+                {
+                  command.action();
+                  uiState.toggleCommandPaletteActive();
+                }
+              "
+            >
+              <span class="command-label-container">
+                <Icon :name="command.icon" />
+                <span class="command-palette-item-label">
+                  {{ command.label }}
+                </span>
+              </span>
+              <span class="command-palette-item-meta">Command</span>
+            </li>
+          </ul>
+          <h5 class="command-palette-list-heading">Notes</h5>
+          <ul
+            v-if="notesToBeDisplayed.length > 0"
+            class="note-list command-palette-list"
+            tabindex="0"
+            @keydown.up="navigateToPreviousNote(notesToBeDisplayed)"
+            @keydown.down="navigateToNextNote(notesToBeDisplayed)"
+            ref="noteList"
+          >
+            <li
+              v-for="note in notesToBeDisplayed"
+              :v-key="note.id"
+              :class="{
+                'active-command-palette-item':
+                  genericState.selectedCommandPaletteNote?.id === note.id,
+                'command-palette-item': true,
+              }"
+              :data-note-id="note.id"
+              @click="handleNoteItemClick(note.id)"
+              @keydown.enter="uiState.toggleCommandPaletteActive"
+              ref="noteListItemRefs"
+            >
+              <span class="command-palette-item-label">
+                {{
+                  note.content
+                    .split(`\n`)[0]
+                    .replaceAll("#", "")
+                    .substring(0, 100)
+                }}
+                <em
+                  v-if="note.content.length === 0"
+                  class="empty-list-item-preview"
+                  >Empty note</em
+                >
+              </span>
+              <span class="command-palette-item-meta">{{
+                formatRelativeDate(
+                  formatRelative(note.lastModified, new Date())
+                )
+              }}</span>
+            </li>
+          </ul>
+        </section>
         <div class="empty-state" v-if="notesToBeDisplayed.length === 0">
           <p class="empty-state-description">
             <KeyboardShortcutIndicator value="↵" /> Create a new note
@@ -255,17 +323,47 @@ watch(
 .search-input:focus {
   box-shadow: none;
 }
-.note-list {
+
+.command-palette-lists {
   height: 100%;
+  overflow: auto;
+}
+
+.command-palette-list-heading {
+  margin: 20px 0 6px;
+  padding-left: 20px;
+  font-weight: 600;
+  font-size: 13px;
+  color: var(--color-text-tertiary);
+}
+
+.command-palette-list-heading:first-child {
+  margin-top: 16px;
+}
+.command-palette-list {
   overflow-y: auto;
   margin: 0;
-  padding: 14px 12px;
+  padding: 0 12px;
   display: flex;
   flex-direction: column;
   gap: 0px;
 }
-.note-list-item {
-  padding: 4px 8px 7px;
+
+.command-palette-list:first-child {
+  padding-top: 14px;
+}
+
+.command-palette-list:last-child {
+  padding-bottom: 14px;
+}
+
+.command-label-container {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.command-palette-item {
+  padding: 5px 8px 6px;
   display: flex;
   flex-direction: row;
   gap: 8px;
@@ -275,11 +373,11 @@ watch(
   scroll-margin: 10px;
 }
 
-.note-list-item:hover {
+.command-palette-item:hover {
   background-color: var(--color-bg-indicator-high-contrast-inactive-hover);
   cursor: pointer;
 }
-.note-list-item-preview {
+.command-palette-item-label {
   font-size: 16px;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -287,21 +385,21 @@ watch(
   color: var(--color-text-primary);
 }
 
-.note-list-item-meta {
+.command-palette-item-meta {
   flex-shrink: 0;
   font-size: 13px;
   color: var(--color-text-tertiary);
 }
 
-.active-note-list-item {
+.active-command-palette-item {
   background-color: var(--color-bg-indicator-high-contrast-active);
 }
 
-.active-note-list-item:hover {
+.active-command-palette-item:hover {
   background-color: var(--color-bg-indicator-high-contrast-active);
 }
 
-.active-note-list-item .note-list-item-meta {
+.active-command-palette-item .command-palette-item-meta {
   color: var(--color-text-secondary);
 }
 
