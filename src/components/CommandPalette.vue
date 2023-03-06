@@ -161,15 +161,6 @@ const rawCommands = computed((): CommandPaletteItem[] => [
   {
     type: "command",
     id: uuidv4(),
-    label: "Open settings",
-    icon: "settings",
-    keywords: "preferences, commands",
-    action: () => (uiState.settingsViewActive = true),
-    selected: false,
-  },
-  {
-    type: "command",
-    id: uuidv4(),
     label: settings.markdownPreviewActive
       ? "Hide markdown preview"
       : "Show markdown preview",

@@ -256,8 +256,8 @@ const handleLocalNotesImportClick = async () => {
                   >Sync scroll</label
                 >
                 <p class="settings-row-description">
-                  Choose what data shows just below the note title in your note
-                  list.
+                  Synchronize the scrolling between the note editor and the
+                  markdown preview.
                 </p>
               </div>
               <Switch
