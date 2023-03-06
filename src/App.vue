@@ -78,6 +78,8 @@ onMounted(async () => {
   } else {
     mediaQuery.addListener(mediaQueryHandler);
   }
+
+  document.body.dataset.theme = settings.themeResult;
 });
 </script>
 
