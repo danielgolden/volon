@@ -41,6 +41,14 @@ watch(
   }
 );
 
+// Set theme on body
+watch(
+  () => settings.themeResult,
+  () => {
+    document.body.dataset.theme = settings.themeResult;
+  }
+);
+
 onMounted(async () => {
   setWindowDimensions();
   await getSession();
@@ -70,9 +78,6 @@ onMounted(async () => {
   } else {
     mediaQuery.addListener(mediaQueryHandler);
   }
-
-  // Set theme on body
-  document.body.dataset.theme = settings.themeResult;
 });
 </script>
 

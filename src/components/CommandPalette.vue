@@ -151,7 +151,7 @@ const rawCommands = computed((): CommandPaletteItem[] => [
     id: uuidv4(),
     label: "Toggle theme",
     icon: "sun",
-    keywords: "dark, light, mode, commands",
+    keywords: "dark mode, light mode, commands",
     action: () => {
       settings.theme = settings.themeResult === "dark" ? "light" : "dark";
       saveAppSettingsToLocalStorage();
