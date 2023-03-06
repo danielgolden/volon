@@ -471,6 +471,7 @@ onMounted(() => {
 
 .command-label-container {
   display: flex;
+  min-width: 0;
   align-items: center;
   gap: 12px;
 }

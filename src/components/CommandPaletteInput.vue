@@ -61,7 +61,7 @@ const handleSearchKeydownEnter = (e: Event) => {
     clearQuery();
     e.preventDefault();
     genericState.selectedCommandPaletteItem?.action();
-  } else if (noteWasSelectedDuringSearch.value) {
+  } else if (genericState.selectedCommandPaletteItem?.type === "note") {
     clearQuery();
     e.preventDefault();
     elementRefs.codeMirror?.focus();

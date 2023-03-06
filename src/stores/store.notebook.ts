@@ -41,7 +41,7 @@ export const useNotebookStore = defineStore("notebook", {
       const title = noteContents
         .split(`\n`)[0]
         .replaceAll("#", "")
-        .substring(0, 50);
+        .substring(0, 100);
       return title[0] === " " ? title.substring(1) : title;
     },
     getNoteModifiedDate(note: Note) {
