@@ -6,8 +6,10 @@ import {
   navigateToPreviousNote,
   navigateToNextNote,
   deleteActiveNote,
+  createNewNote,
+  copyNoteUrlToClipboard,
 } from "../lib/utils";
-import { signInWithGitHub, signInWithGoogle } from "../lib/supabase";
+import { signInWithGitHub, signInWithGoogle, signout } from "../lib/supabase";
 import { v4 as uuidv4 } from "uuid";
 import CommandPaletteInput from "./CommandPaletteInput.vue";
 import KeyboardShortcutIndicator from "./KeyboardShortcutIndicator.vue";
@@ -17,7 +19,10 @@ import { useSettingsStore } from "../stores/store.settings";
 import { useGenericStateStore } from "../stores/store.genericState";
 import { useNotebookStore } from "../stores/store.notebook";
 import { useUiStateStore } from "../stores/store.ui";
-import { saveAppSettingsToLocalStorage } from "../lib/localStorage";
+import {
+  intializeLocalStorageData,
+  saveAppSettingsToLocalStorage,
+} from "../lib/localStorage";
 
 const commandItemRefs = ref<HTMLElement[] | []>([]);
 const noteList = ref<HTMLUListElement | null>(null);
@@ -60,6 +65,44 @@ const createNoteItems = (notes: Note[]): CommandPaletteItem[] => {
   });
 };
 
+const sessionCommands = (): CommandPaletteItem[] => {
+  if (!genericState.userIsLoggedIn) {
+    return [
+      {
+        type: "command",
+        id: uuidv4(),
+        label: "Login with GitHub",
+        icon: "enter",
+        action: () => signInWithGitHub(),
+        selected: false,
+      },
+      {
+        type: "command",
+        id: uuidv4(),
+        label: "Login with Google",
+        icon: "enter",
+        action: () => signInWithGoogle(),
+        selected: false,
+      },
+    ];
+  } else {
+    return [
+      {
+        type: "command",
+        id: uuidv4(),
+        label: "Log out",
+        icon: "exit",
+        action: () => {
+          signout();
+          intializeLocalStorageData();
+          genericState.clearActiveNoteState();
+        },
+        selected: false,
+      },
+    ];
+  }
+};
+
 const rawCommands: CommandPaletteItem[] = [
   {
     type: "command",
@@ -82,28 +125,24 @@ const rawCommands: CommandPaletteItem[] = [
     action: () => (uiState.settingsViewActive = true),
     selected: false,
   },
-  {
-    type: "command",
-    id: uuidv4(),
-    label: "Login with GitHub",
-    icon: "enter",
-    action: () => signInWithGitHub(),
-    selected: false,
-  },
-  {
-    type: "command",
-    id: uuidv4(),
-    label: "Login with Google",
-    icon: "enter",
-    action: () => signInWithGoogle(),
-    selected: false,
-  },
+  ...sessionCommands(),
   {
     type: "command",
     id: uuidv4(),
     label: "Download a backup",
     icon: "download",
     action: () => downloadBackupOfData(),
+    selected: false,
+  },
+  {
+    type: "command",
+    id: uuidv4(),
+    label: "Sync scrolling",
+    icon: "height",
+    action: () => {
+      settings.syncScroll = true;
+      saveAppSettingsToLocalStorage();
+    },
     selected: false,
   },
   {
@@ -120,12 +159,17 @@ const rawCommands: CommandPaletteItem[] = [
   {
     type: "command",
     id: uuidv4(),
-    label: "Sync scrolling",
-    icon: "height",
-    action: () => {
-      settings.syncScroll = true;
-      saveAppSettingsToLocalStorage();
-    },
+    label: "Duplicate current note",
+    icon: "copy",
+    action: () => createNewNote(genericState.activeNoteContents),
+    selected: false,
+  },
+  {
+    type: "command",
+    id: uuidv4(),
+    label: "Copy current note link",
+    icon: "link-2",
+    action: () => copyNoteUrlToClipboard(),
     selected: false,
   },
 ];
@@ -388,7 +432,7 @@ onMounted(() => {
           <span
             class="footer-meta query-results-count"
             v-if="genericState.commandPaletteMatchingNotes"
-            >{{ notesToBeDisplayed.length }} matching notes</span
+            >{{ commandItemsToBeDisplayed.length }} results</span
           >
           <span
             class="footer-meta command-indicator"

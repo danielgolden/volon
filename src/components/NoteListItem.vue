@@ -5,7 +5,11 @@ import { useSettingsStore } from "../stores/store.settings";
 import { useUiStateStore } from "../stores/store.ui";
 import { formatRelative } from "date-fns";
 import Menu from "./Menu.vue";
-import { deleteActiveNote, createNewNote } from "../lib/utils";
+import {
+  deleteActiveNote,
+  createNewNote,
+  copyNoteUrlToClipboard,
+} from "../lib/utils";
 import { useNotebookStore } from "../stores/store.notebook";
 
 const settings = useSettingsStore();
@@ -49,29 +53,10 @@ const renderNoteSecondaryContent = (note: Note) => {
   }
 };
 
-const copyNoteUrlToClipboard = async () => {
-  try {
-    await navigator.clipboard.writeText(
-      `${location.origin}?noteId=${genericState.activeNoteId}`
-    );
-  } catch (err) {
-    console.error("Failed to copy note URL to clipboard", err);
-  }
-};
-
-const handleCopyLinkClick = () => {
-  copyNoteUrlToClipboard();
-  uiState.addToast({
-    title: "Link copied to clipboard",
-    icon: "check",
-    iconColor: "#88d8aa",
-  });
-};
-
 const menuItems: MenuItem[] = [
   {
     label: "Copy link",
-    onClick: handleCopyLinkClick,
+    onClick: copyNoteUrlToClipboard,
     icon: "link-2",
   },
   {

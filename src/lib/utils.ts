@@ -291,3 +291,21 @@ export const setUrlParams = (desiredUrlParams: { [key: string]: any }) => {
   // Clear any existing urlParams
   history.replaceState(null, "", `${location.origin}?${urlParams}`);
 };
+
+export const copyNoteUrlToClipboard = async () => {
+  const genericState = useGenericStateStore();
+  const uiState = useUiStateStore();
+
+  try {
+    await navigator.clipboard.writeText(
+      `${location.origin}?noteId=${genericState.activeNoteId}`
+    );
+    uiState.addToast({
+      title: "Link copied to clipboard",
+      icon: "check",
+      iconColor: "#88d8aa",
+    });
+  } catch (err) {
+    console.error("Failed to copy note URL to clipboard", err);
+  }
+};
