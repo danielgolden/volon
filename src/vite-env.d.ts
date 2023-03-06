@@ -47,6 +47,7 @@ interface CommandPaletteItem {
   label: string;
   icon?: string;
   meta?: string;
+  keywords?: string;
   action: () => void;
   selected: boolean;
 }

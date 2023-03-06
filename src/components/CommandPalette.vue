@@ -7,6 +7,7 @@ import {
   navigateToNextNote,
   deleteActiveNote,
 } from "../lib/utils";
+import { signInWithGitHub, signInWithGoogle, signout } from "../lib/supabase";
 import { v4 as uuidv4 } from "uuid";
 import CommandPaletteInput from "./CommandPaletteInput.vue";
 import KeyboardShortcutIndicator from "./KeyboardShortcutIndicator.vue";
@@ -102,9 +103,38 @@ const rawCommands: CommandPaletteItem[] = [
   {
     type: "command",
     id: uuidv4(),
+    label: "Toggle theme",
+    icon: "sun",
+    keywords: "dark, light, mode",
+    action: () => {
+      settings.theme = settings.themeResult === "dark" ? "light" : "dark";
+      saveAppSettingsToLocalStorage();
+    },
+    selected: false,
+  },
+  {
+    type: "command",
+    id: uuidv4(),
     label: "Open settings",
     icon: "settings",
+    keywords: "preferences",
     action: () => (uiState.settingsViewActive = true),
+    selected: false,
+  },
+  {
+    type: "command",
+    id: uuidv4(),
+    label: "Login with GitHub",
+    icon: "enter",
+    action: () => signInWithGitHub(),
+    selected: false,
+  },
+  {
+    type: "command",
+    id: uuidv4(),
+    label: "Login with Google",
+    icon: "enter",
+    action: () => signInWithGoogle(),
     selected: false,
   },
   {
@@ -129,10 +159,10 @@ const rawCommands: CommandPaletteItem[] = [
   {
     type: "command",
     id: uuidv4(),
-    label: "Toggle theme",
-    icon: settings.themeResult === "dark" ? "sun" : "moon",
+    label: "Sync scrolling",
+    icon: "height",
     action: () => {
-      settings.theme = settings.themeResult === "dark" ? "light" : "dark";
+      settings.syncScroll = true;
       saveAppSettingsToLocalStorage();
     },
     selected: false,
@@ -141,9 +171,14 @@ const rawCommands: CommandPaletteItem[] = [
 
 const commandsToBeDisplayed = () => {
   return rawCommands.filter((command) => {
-    return command.label
-      .toLocaleLowerCase()
-      .includes(genericState.commandPaletteCurrentQuery.toLowerCase());
+    return (
+      command.label
+        .toLocaleLowerCase()
+        .includes(genericState.commandPaletteCurrentQuery.toLowerCase()) ||
+      command.keywords
+        ?.toLowerCase()
+        .includes(genericState.commandPaletteCurrentQuery.toLowerCase())
+    );
   });
 };
 
@@ -159,7 +194,7 @@ const commandItemsToBeDisplayed = computed(() => [
   ...commandsToBeDisplayed(),
 ]);
 const defaultCommandItems = computed(() => [
-  ...createNoteItems(notesToBeDisplayed.value).slice(0, 3),
+  ...createNoteItems(notesToBeDisplayed.value).slice(0, 5),
   ...rawCommands,
 ]);
 
@@ -274,7 +309,7 @@ onMounted(() => {
             <li
               v-for="noteItem in genericState.commandPaletteCurrentQuery
                 ? createNoteItems(notesToBeDisplayed)
-                : createNoteItems(notesToBeDisplayed).slice(0, 3)"
+                : createNoteItems(notesToBeDisplayed).slice(0, 5)"
               :v-key="noteItem.id"
               :class="{
                 'active-command-palette-item':
@@ -375,12 +410,17 @@ onMounted(() => {
           >
           <span
             class="footer-meta command-indicator"
-            v-if="activeNoteSelectionMade"
+            v-if="genericState.selectedCommandPaletteItem?.type === 'note'"
             ><KeyboardShortcutIndicator value="↵" />Open note
           </span>
           <span
             class="footer-meta command-indicator"
-            v-if="notesToBeDisplayed.length === 0"
+            v-if="genericState.selectedCommandPaletteItem?.type === 'command'"
+            ><KeyboardShortcutIndicator value="↵" />Run command
+          </span>
+          <span
+            class="footer-meta command-indicator"
+            v-if="searchReturnedNoResults()"
             ><KeyboardShortcutIndicator value="↵" />Create note
           </span>
         </footer>
@@ -406,7 +446,7 @@ onMounted(() => {
   display: grid;
   max-width: 700px;
   width: 75%;
-  height: 400px;
+  height: 443px;
   position: absolute;
   z-index: 100;
   top: 40%;
@@ -481,7 +521,7 @@ onMounted(() => {
   flex-direction: row;
   gap: 8px;
   border-radius: 4px;
-  align-items: baseline;
+  align-items: center;
   justify-content: space-between;
   scroll-margin: 10px;
 }
