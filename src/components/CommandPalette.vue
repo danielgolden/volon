@@ -381,7 +381,7 @@ onMounted(() => {
                   {{ noteItem.label }}
                 </span>
                 <em
-                  v-if="notebook.getNoteById(noteItem.id).content.length === 0"
+                  v-if="notebook?.getNoteById(noteItem.id).content.length === 0"
                   class="empty-list-item-preview"
                   >Empty note</em
                 >
