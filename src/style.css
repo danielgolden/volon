@@ -100,7 +100,7 @@
   --color-bg-interactive-active-hover: var(--color-bg-interactive-active);
   --color-bg-interactive-focused: var(--color-border-primary);
 
-  --color-bg-button-primary: transparent;
+  --color-bg-button-primary: var(--color-bg-surface-1);
   --color-bg-button-hover-primary: var(--color-bg-button-primary);
   --color-border-button-primary: #d7d7d7;
   --color-border-button-hover-primary: #c2c2c2;
