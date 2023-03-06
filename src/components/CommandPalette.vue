@@ -1,22 +1,27 @@
 <script lang="ts" setup>
-import { computed, watch, ref, nextTick } from "vue";
+import { computed, watch, ref, nextTick, onMounted } from "vue";
 import {
   sortNotesByModificationDate,
   sortNotesByCreationDate,
   navigateToPreviousNote,
   navigateToNextNote,
+  deleteActiveNote,
 } from "../lib/utils";
+import { signInWithGitHub, signInWithGoogle } from "../lib/supabase";
+import { v4 as uuidv4 } from "uuid";
 import CommandPaletteInput from "./CommandPaletteInput.vue";
 import KeyboardShortcutIndicator from "./KeyboardShortcutIndicator.vue";
-import { formatRelative } from "date-fns";
+import Icon from "./Icon.vue";
+import { downloadBackupOfData } from "../lib/utils";
 import { useSettingsStore } from "../stores/store.settings";
 import { useGenericStateStore } from "../stores/store.genericState";
 import { useNotebookStore } from "../stores/store.notebook";
 import { useUiStateStore } from "../stores/store.ui";
+import { saveAppSettingsToLocalStorage } from "../lib/localStorage";
 
-const noteListItemRefs = ref<HTMLElement[] | []>([]);
+const commandItemRefs = ref<HTMLElement[] | []>([]);
 const noteList = ref<HTMLUListElement | null>(null);
-const activeNoteSelectionMade = ref(false);
+const commandPaletteLists = ref<HTMLUListElement | null>(null);
 const settings = useSettingsStore();
 const genericState = useGenericStateStore();
 const notebook = useNotebookStore();
@@ -37,77 +42,173 @@ const notesToBeDisplayed = computed(() => {
     return sortingFunction(genericState.commandPaletteMatchingNotes!);
   }
 });
-const handleNoteItemClick = (noteId: string | null) => {
-  if (noteId) {
-    genericState.activeNoteId = noteId;
-    genericState.activeNoteContents = notebook.getNoteById(
-      genericState.activeNoteId
-    ).content;
-    uiState.toggleCommandPaletteActive();
-  }
+
+const createNoteItems = (notes: Note[]): CommandPaletteItem[] => {
+  return notes.map((note): CommandPaletteItem => {
+    return {
+      type: "note",
+      id: note.id!,
+      icon: "file-text",
+      label: notebook.getNoteTitle(note.content),
+      meta: notebook.getNoteModifiedDate(note),
+      action: () => {
+        genericState.activeNoteId = note.id;
+        genericState.activeNoteContents = notebook.getNoteById(note.id).content;
+      },
+      selected: false,
+    };
+  });
 };
-const formatRelativeDate = (relativeDate: string) => {
-  const capitalizedFirstLetter = relativeDate[0].toUpperCase();
-  const dateWithCapitalizedFirstChar =
-    capitalizedFirstLetter + relativeDate.substring(1);
 
-  return dateWithCapitalizedFirstChar.replace("AM", "am").replace("PM", "pm");
+const rawCommands: CommandPaletteItem[] = [
+  {
+    type: "command",
+    id: uuidv4(),
+    label: "Toggle theme",
+    icon: "sun",
+    keywords: "dark, light, mode",
+    action: () => {
+      settings.theme = settings.themeResult === "dark" ? "light" : "dark";
+      saveAppSettingsToLocalStorage();
+    },
+    selected: false,
+  },
+  {
+    type: "command",
+    id: uuidv4(),
+    label: "Open settings",
+    icon: "settings",
+    keywords: "preferences",
+    action: () => (uiState.settingsViewActive = true),
+    selected: false,
+  },
+  {
+    type: "command",
+    id: uuidv4(),
+    label: "Login with GitHub",
+    icon: "enter",
+    action: () => signInWithGitHub(),
+    selected: false,
+  },
+  {
+    type: "command",
+    id: uuidv4(),
+    label: "Login with Google",
+    icon: "enter",
+    action: () => signInWithGoogle(),
+    selected: false,
+  },
+  {
+    type: "command",
+    id: uuidv4(),
+    label: "Download a backup",
+    icon: "download",
+    action: () => downloadBackupOfData(),
+    selected: false,
+  },
+  {
+    type: "command",
+    id: uuidv4(),
+    label: "Delete current note",
+    icon: "trash",
+    action: () => {
+      deleteActiveNote();
+      genericState.clearActiveNoteState();
+    },
+    selected: false,
+  },
+  {
+    type: "command",
+    id: uuidv4(),
+    label: "Sync scrolling",
+    icon: "height",
+    action: () => {
+      settings.syncScroll = true;
+      saveAppSettingsToLocalStorage();
+    },
+    selected: false,
+  },
+];
+
+const commandsToBeDisplayed = () => {
+  return rawCommands.filter((command) => {
+    return (
+      command.label
+        .toLocaleLowerCase()
+        .includes(genericState.commandPaletteCurrentQuery.toLowerCase()) ||
+      command.keywords
+        ?.toLowerCase()
+        .includes(genericState.commandPaletteCurrentQuery.toLowerCase())
+    );
+  });
 };
 
-const getActiveSelectionStatus = (commandPaletteMatchingNotes?: Note[]) => {
-  let selectionFoundIncommandPaletteMatchingNotes = false;
-
-  // selected item found in `commandPaletteMatchingNotes`?
-  if (commandPaletteMatchingNotes) {
-    selectionFoundIncommandPaletteMatchingNotes =
-      commandPaletteMatchingNotes.some(
-        (note: Note) => note.id === genericState.activeNoteId
-      );
-  }
-
-  // selcted item in all `notesToBeDisplayed`?
-  const selectionFoundAmongAllNotes = notesToBeDisplayed.value.some(
-    (note: Note) => note.id === genericState.activeNoteId
-  );
-
+const searchReturnedNoResults = () => {
   return (
-    selectionFoundIncommandPaletteMatchingNotes || selectionFoundAmongAllNotes
+    commandsToBeDisplayed().length === 0 &&
+    notesToBeDisplayed.value.length === 0
   );
 };
 
+const commandItemsToBeDisplayed = computed(() => [
+  ...createNoteItems(notesToBeDisplayed.value),
+  ...commandsToBeDisplayed(),
+]);
+
+const defaultCommandItems = computed(() => [
+  ...createNoteItems(notesToBeDisplayed.value).slice(0, 5),
+  ...rawCommands,
+]);
+
+const getIndexOfSelectedCommandItem = () => {
+  const commandItems = genericState.commandPaletteCurrentQuery
+    ? commandItemsToBeDisplayed
+    : defaultCommandItems;
+  let indexOfSelectedItem = 0;
+  commandItems.value.forEach((item, index) => {
+    if (item.id === genericState.selectedCommandPaletteItem!.id) {
+      indexOfSelectedItem = index;
+    }
+  });
+
+  return indexOfSelectedItem;
+};
+
+// When palette opens, select first item
 watch(
-  () => genericState.commandPaletteMatchingNotes as Note[],
-  (newValue) => {
-    activeNoteSelectionMade.value = getActiveSelectionStatus(newValue);
+  () => uiState.commandPaletteActive,
+  () => {
+    setTimeout(() => {
+      genericState.selectedCommandPaletteItem =
+        commandItemsToBeDisplayed.value[0];
+    }, 150);
   }
 );
 
+// Ensure the list scrolls to contain the selected item
 watch(
-  () => genericState.selectedCommandPaletteNote,
+  () => genericState.selectedCommandPaletteItem,
   () => {
-    const activeListItem = noteListItemRefs.value.find(
-      (noteListItem: HTMLElement) => {
+    const activeListItem = commandItemRefs.value.find(
+      (commandItem: HTMLElement) => {
         return (
-          noteListItem.dataset.noteId ===
-          genericState.selectedCommandPaletteNote?.id
+          commandItem.dataset.itemId ===
+          genericState.selectedCommandPaletteItem?.id
         );
       }
     );
 
-    activeNoteSelectionMade.value = getActiveSelectionStatus(
-      <Note[]>genericState.commandPaletteMatchingNotes
-    );
-
-    // Find out of the selected note list item is scrolled into view
+    // Find out of the selected item is scrolled into view
     // if not, scroll it into view
     if (activeListItem) {
-      const noteListPosition = noteList.value!.getBoundingClientRect();
+      const listContainerPosition =
+        commandPaletteLists.value!.getBoundingClientRect();
       const activeListItemPosition = activeListItem.getBoundingClientRect();
 
       const isAboveContainerViewport =
-        activeListItemPosition.top < noteListPosition.top;
+        activeListItemPosition.top < listContainerPosition.top;
       const isBelowContainerViewport =
-        activeListItemPosition.bottom > noteListPosition.bottom;
+        activeListItemPosition.bottom > listContainerPosition.bottom;
 
       const isOutsideContainerViewport =
         isAboveContainerViewport || isBelowContainerViewport;
@@ -122,8 +223,23 @@ watch(
         });
       }
     }
+
+    // If the selected item is the first item, scroll the container
+    // to the top to ensure it's section label is visible
+    if (getIndexOfSelectedCommandItem() === 0) {
+      nextTick(() => {
+        commandPaletteLists.value?.scrollTo(0, 0);
+      });
+    }
   }
 );
+
+onMounted(() => {
+  // When the component loads, set a selected item
+  genericState.selectedCommandPaletteItem = createNoteItems(
+    notesToBeDisplayed.value
+  )[0];
+});
 </script>
 
 <template>
@@ -137,47 +253,127 @@ watch(
     </Transition>
     <Transition name="lift">
       <section class="container" v-show="uiState.commandPaletteActive">
-        <CommandPaletteInput :noteList="notesToBeDisplayed" />
-        <ul
-          v-if="notesToBeDisplayed.length > 0"
-          class="note-list"
-          tabindex="0"
-          @keydown.up="navigateToPreviousNote(notesToBeDisplayed)"
-          @keydown.down="navigateToNextNote(notesToBeDisplayed)"
-          ref="noteList"
+        <CommandPaletteInput
+          :items="
+            genericState.commandPaletteCurrentQuery
+              ? commandItemsToBeDisplayed
+              : defaultCommandItems
+          "
+        />
+        <section
+          class="command-palette-lists"
+          v-if="!searchReturnedNoResults()"
+          ref="commandPaletteLists"
         >
-          <li
-            v-for="note in notesToBeDisplayed"
-            :v-key="note.id"
-            :class="{
-              'active-note-list-item':
-                genericState.selectedCommandPaletteNote?.id === note.id,
-              'note-list-item': true,
-            }"
-            :data-note-id="note.id"
-            @click="handleNoteItemClick(note.id)"
-            @keydown.enter="uiState.toggleCommandPaletteActive"
-            ref="noteListItemRefs"
+          <h5
+            class="command-palette-list-heading"
+            v-if="genericState.commandPaletteCurrentQuery"
           >
-            <span class="note-list-item-preview">
-              {{
-                note.content
-                  .split(`\n`)[0]
-                  .replaceAll("#", "")
-                  .substring(0, 100)
-              }}
-              <em
-                v-if="note.content.length === 0"
-                class="empty-list-item-preview"
-                >Empty note</em
-              >
-            </span>
-            <span class="note-list-item-meta">{{
-              formatRelativeDate(formatRelative(note.lastModified, new Date()))
-            }}</span>
-          </li>
-        </ul>
-        <div class="empty-state" v-if="notesToBeDisplayed.length === 0">
+            Results
+          </h5>
+          <h5
+            class="command-palette-list-heading"
+            v-if="!genericState.commandPaletteCurrentQuery"
+          >
+            {{
+              genericState.commandPaletteCurrentQuery ? "Notes" : "Recent notes"
+            }}
+          </h5>
+          <ul
+            v-if="notesToBeDisplayed.length > 0"
+            class="note-list command-palette-list"
+            tabindex="0"
+            @keydown.up="navigateToPreviousNote(notesToBeDisplayed)"
+            @keydown.down="navigateToNextNote(notesToBeDisplayed)"
+            ref="noteList"
+          >
+            <li
+              v-for="noteItem in genericState.commandPaletteCurrentQuery
+                ? createNoteItems(notesToBeDisplayed)
+                : createNoteItems(notesToBeDisplayed).slice(0, 5)"
+              :v-key="noteItem.id"
+              :class="{
+                'active-command-palette-item':
+                  genericState.selectedCommandPaletteItem?.id === noteItem.id,
+                'command-palette-item': true,
+              }"
+              @click="
+                () => {
+                  noteItem.action();
+                  uiState.toggleCommandPaletteActive();
+                }
+              "
+              @keydown.enter="
+                () => {
+                  noteItem.action();
+                  uiState.toggleCommandPaletteActive();
+                }
+              "
+              ref="commandItemRefs"
+              :data-item-id="noteItem.id"
+            >
+              <span class="command-label-container">
+                <Icon v-if="noteItem.icon" :name="noteItem.icon" />
+                <span class="command-palette-item-label">
+                  {{ noteItem.label }}
+                </span>
+                <em
+                  v-if="notebook.getNoteById(noteItem.id).content.length === 0"
+                  class="empty-list-item-preview"
+                  >Empty note</em
+                >
+              </span>
+              <span class="command-palette-item-meta">{{ noteItem.meta }}</span>
+            </li>
+          </ul>
+          <h5
+            class="command-palette-list-heading"
+            v-if="!genericState.commandPaletteCurrentQuery"
+          >
+            Commands
+          </h5>
+          <ul
+            v-if="commandsToBeDisplayed().length > 0"
+            class="command-list command-palette-list"
+            tabindex="0"
+            @keydown.up="navigateToPreviousNote(notesToBeDisplayed)"
+            @keydown.down="navigateToNextNote(notesToBeDisplayed)"
+            ref="noteList"
+          >
+            <li
+              v-for="command in commandsToBeDisplayed()"
+              :v-key="command.label"
+              :class="{
+                'command-palette-item': true,
+                'active-command-palette-item':
+                  genericState.selectedCommandPaletteItem?.id === command.id,
+              }"
+              @click="
+                {
+                  command.action();
+                  uiState.toggleCommandPaletteActive();
+                }
+              "
+              @keydown.enter="
+                {
+                  command.action();
+                  uiState.toggleCommandPaletteActive();
+                }
+              "
+              ref="commandItemRefs"
+              :data-item-id="command.id"
+            >
+              <span class="command-label-container">
+                <Icon v-if="command.icon" :name="command.icon" />
+                <span class="command-palette-item-label">
+                  {{ command.label }}
+                </span>
+              </span>
+              <span class="command-palette-item-meta">Command</span>
+            </li>
+          </ul>
+        </section>
+        <div class="empty-state" v-if="searchReturnedNoResults()">
           <p class="empty-state-description">
             <KeyboardShortcutIndicator value="↵" /> Create a new note
           </p>
@@ -195,12 +391,17 @@ watch(
           >
           <span
             class="footer-meta command-indicator"
-            v-if="activeNoteSelectionMade"
+            v-if="genericState.selectedCommandPaletteItem?.type === 'note'"
             ><KeyboardShortcutIndicator value="↵" />Open note
           </span>
           <span
             class="footer-meta command-indicator"
-            v-if="notesToBeDisplayed.length === 0"
+            v-if="genericState.selectedCommandPaletteItem?.type === 'command'"
+            ><KeyboardShortcutIndicator value="↵" />Run command
+          </span>
+          <span
+            class="footer-meta command-indicator"
+            v-if="searchReturnedNoResults()"
             ><KeyboardShortcutIndicator value="↵" />Create note
           </span>
         </footer>
@@ -226,7 +427,7 @@ watch(
   display: grid;
   max-width: 700px;
   width: 75%;
-  height: 400px;
+  height: 443px;
   position: absolute;
   z-index: 100;
   top: 40%;
@@ -255,31 +456,62 @@ watch(
 .search-input:focus {
   box-shadow: none;
 }
-.note-list {
+
+.command-palette-lists {
   height: 100%;
+  overflow: auto;
+}
+
+.command-palette-list-heading {
+  margin: 20px 0 6px;
+  padding-left: 20px;
+  font-weight: 600;
+  font-size: 13px;
+  color: var(--color-text-tertiary);
+}
+
+.command-palette-list-heading:first-child {
+  margin-top: 16px;
+}
+.command-palette-list {
   overflow-y: auto;
   margin: 0;
-  padding: 14px 12px;
+  padding: 0 12px;
   display: flex;
   flex-direction: column;
   gap: 0px;
 }
-.note-list-item {
-  padding: 4px 8px 7px;
+
+.command-palette-list:first-child {
+  padding-top: 14px;
+}
+
+.command-palette-list:last-child {
+  padding-bottom: 14px;
+}
+
+.command-label-container {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  gap: 12px;
+}
+.command-palette-item {
+  padding: 5px 8px 6px;
   display: flex;
   flex-direction: row;
   gap: 8px;
   border-radius: 4px;
-  align-items: baseline;
+  align-items: center;
   justify-content: space-between;
   scroll-margin: 10px;
 }
 
-.note-list-item:hover {
+.command-palette-item:hover {
   background-color: var(--color-bg-indicator-high-contrast-inactive-hover);
   cursor: pointer;
 }
-.note-list-item-preview {
+.command-palette-item-label {
   font-size: 16px;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -287,21 +519,21 @@ watch(
   color: var(--color-text-primary);
 }
 
-.note-list-item-meta {
+.command-palette-item-meta {
   flex-shrink: 0;
   font-size: 13px;
   color: var(--color-text-tertiary);
 }
 
-.active-note-list-item {
+.active-command-palette-item {
   background-color: var(--color-bg-indicator-high-contrast-active);
 }
 
-.active-note-list-item:hover {
+.active-command-palette-item:hover {
   background-color: var(--color-bg-indicator-high-contrast-active);
 }
 
-.active-note-list-item .note-list-item-meta {
+.active-command-palette-item .command-palette-item-meta {
   color: var(--color-text-secondary);
 }
 

@@ -40,3 +40,14 @@ interface Toast {
   iconColor?: string;
   id?: uuid;
 }
+
+interface CommandPaletteItem {
+  type: "command" | "note";
+  id: string;
+  label: string;
+  icon?: string;
+  meta?: string;
+  keywords?: string;
+  action: () => void;
+  selected: boolean;
+}

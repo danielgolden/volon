@@ -51,12 +51,15 @@ export const globalKeyboardShortcuts = () => {
       saveAppSettingsToLocalStorage();
     }
     if (event.code === "Escape") {
-      if (!uiState.commandPaletteActive) return;
-      uiState.commandPaletteActive = false;
-      setTimeout(() => {
-        genericState.commandPaletteMatchingNotes = null;
-        genericState.commandPaletteCurrentQuery = "";
-      }, 150);
+      if (uiState.commandPaletteActive) {
+        uiState.commandPaletteActive = false;
+        setTimeout(() => {
+          genericState.commandPaletteMatchingNotes = null;
+          genericState.commandPaletteCurrentQuery = "";
+        }, 150);
+      } else if (uiState.settingsViewActive) {
+        uiState.settingsViewActive = false;
+      }
     }
   });
 };

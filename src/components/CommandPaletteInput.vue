@@ -1,12 +1,17 @@
 <script lang="ts" setup>
-import { ref, onMounted } from "vue";
-import { createNewNote, getIndexOfNoteById } from "../lib/utils";
+import { ref, onMounted, PropType, watch } from "vue";
+import { createNewNote } from "../lib/utils";
 import { useElementRefsStore } from "../stores/store.elementRefs";
 import { useGenericStateStore } from "../stores/store.genericState";
 import { useNotebookStore } from "../stores/store.notebook";
 import { useUiStateStore } from "../stores/store.ui";
 
-const props = defineProps(["noteList"]);
+const props = defineProps({
+  items: {
+    required: true,
+    type: Array as PropType<CommandPaletteItem[]>,
+  },
+});
 const noteWasSelectedDuringSearch = ref(false);
 const searchInput = ref<HTMLInputElement | null>(null);
 const elementRefs = useElementRefsStore();
@@ -26,17 +31,35 @@ const handleInputChange = (currentContent: string) => {
 };
 
 const clearQuery = () => {
-  handleInputChange("");
-  genericState.commandPaletteCurrentQuery = "";
+  setTimeout(() => {
+    handleInputChange("");
+    genericState.commandPaletteCurrentQuery = "";
+  }, 100);
+};
+
+const getIndexOfSelectedCommandItem = () => {
+  let indexOfSelectedItem = 0;
+  props.items.forEach((item, index) => {
+    if (item.id === genericState.selectedCommandPaletteItem!.id) {
+      indexOfSelectedItem = index;
+    }
+  });
+
+  return indexOfSelectedItem;
 };
 
 const handleSearchKeydownEnter = (e: Event) => {
   uiState.commandPaletteActive = false;
-  if (noteWasSelectedDuringSearch.value) {
+
+  if (genericState.selectedCommandPaletteItem?.type === "command") {
+    clearQuery();
+    e.preventDefault();
+    genericState.selectedCommandPaletteItem?.action();
+  } else if (genericState.selectedCommandPaletteItem?.type === "note") {
     clearQuery();
     e.preventDefault();
     elementRefs.codeMirror?.focus();
-    genericState.activateSelectedNote();
+    genericState.selectedCommandPaletteItem?.action();
   } else {
     createNewNote(`# ${genericState.commandPaletteCurrentQuery} \n`);
     clearQuery();
@@ -48,36 +71,34 @@ const handleDownArrowPress = (e: Event) => {
   e.preventDefault();
   noteWasSelectedDuringSearch.value = true;
 
-  if (!genericState.selectedCommandPaletteNote) {
-    genericState.selectedCommandPaletteNote = props.noteList[0];
-  } else {
-    const indexOfSelectedNote = getIndexOfNoteById(
-      genericState.selectedCommandPaletteNote!.id,
-      props.noteList
-    )!;
+  const indexOfSelectedItem = getIndexOfSelectedCommandItem();
 
-    if (indexOfSelectedNote < props.noteList.length + 1)
-      genericState.selectedCommandPaletteNote =
-        props.noteList[indexOfSelectedNote + 1];
-  }
+  if (indexOfSelectedItem < props.items.length - 1)
+    genericState.selectedCommandPaletteItem =
+      props.items[indexOfSelectedItem + 1];
 };
 
 const handleUpArrowPress = (e: Event) => {
   e.preventDefault();
   noteWasSelectedDuringSearch.value = true;
-  const indexOfSelectedNote = getIndexOfNoteById(
-    genericState.selectedCommandPaletteNote!.id,
-    props.noteList
-  )!;
 
-  if (indexOfSelectedNote > 0)
-    genericState.selectedCommandPaletteNote =
-      props.noteList[indexOfSelectedNote - 1];
+  const indexOfSelectedItem = getIndexOfSelectedCommandItem();
+
+  if (indexOfSelectedItem > 0)
+    genericState.selectedCommandPaletteItem =
+      props.items[indexOfSelectedItem - 1];
 };
 
 onMounted(() => {
   elementRefs.commandPaletteSearchInput = searchInput.value;
 });
+
+watch(
+  () => props.items,
+  () => {
+    genericState.selectedCommandPaletteItem = props.items[0];
+  }
+);
 </script>
 
 <template>
