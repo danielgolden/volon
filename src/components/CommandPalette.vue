@@ -166,7 +166,7 @@ const getIndexOfSelectedCommandItem = () => {
     : defaultCommandItems;
   let indexOfSelectedItem = 0;
   commandItems.value.forEach((item, index) => {
-    if (item.id === genericState.selectedCommandPaletteItem!.id) {
+    if (item.id === genericState.selectedCommandPaletteItem?.id) {
       indexOfSelectedItem = index;
     }
   });
