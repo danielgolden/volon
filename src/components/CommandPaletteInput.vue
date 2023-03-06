@@ -37,13 +37,7 @@ const clearQuery = () => {
   }, 100);
 };
 
-const getCommandItemById = (id: string) => {
-  props.items.find(
-    (item) => item.id === genericState.selectedCommandPaletteItem!.id
-  );
-};
-
-const getIndexOfCommandItemById = (id: string) => {
+const getIndexOfSelecetedCommandItem = () => {
   let indexOfSelectedItem = 0;
   props.items.forEach((item, index) => {
     if (item.id === genericState.selectedCommandPaletteItem!.id) {
@@ -77,9 +71,7 @@ const handleDownArrowPress = (e: Event) => {
   e.preventDefault();
   noteWasSelectedDuringSearch.value = true;
 
-  const indexOfSelectedItem = getIndexOfCommandItemById(
-    genericState.selectedCommandPaletteItem!.id
-  );
+  const indexOfSelectedItem = getIndexOfSelecetedCommandItem();
 
   if (indexOfSelectedItem < props.items.length - 1)
     genericState.selectedCommandPaletteItem =
@@ -90,9 +82,7 @@ const handleUpArrowPress = (e: Event) => {
   e.preventDefault();
   noteWasSelectedDuringSearch.value = true;
 
-  const indexOfSelectedItem = getIndexOfCommandItemById(
-    genericState.selectedCommandPaletteItem!.id
-  );
+  const indexOfSelectedItem = getIndexOfSelecetedCommandItem();
 
   if (indexOfSelectedItem > 0)
     genericState.selectedCommandPaletteItem =
