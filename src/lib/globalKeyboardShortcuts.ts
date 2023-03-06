@@ -53,7 +53,7 @@ export const globalKeyboardShortcuts = () => {
     if (event.code === "Escape") {
       if (uiState.settingsViewActive) {
         uiState.settingsViewActive = false;
-      } else if (!uiState.commandPaletteActive) {
+      } else if (uiState.commandPaletteActive) {
         uiState.commandPaletteActive = false;
         setTimeout(() => {
           genericState.commandPaletteMatchingNotes = null;
