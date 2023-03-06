@@ -65,6 +65,42 @@ const createNoteItems = (notes: Note[]): CommandPaletteItem[] => {
   });
 };
 
+const currentNoteCommands = computed((): CommandPaletteItem[] => {
+  if (genericState.activeNoteId) {
+    return [
+      {
+        type: "command",
+        id: uuidv4(),
+        label: "Delete current note",
+        icon: "trash",
+        action: () => {
+          deleteActiveNote();
+          genericState.clearActiveNoteState();
+        },
+        selected: false,
+      },
+      {
+        type: "command",
+        id: uuidv4(),
+        label: "Duplicate current note",
+        icon: "copy",
+        action: () => createNewNote(genericState.activeNoteContents),
+        selected: false,
+      },
+      {
+        type: "command",
+        id: uuidv4(),
+        label: "Copy current note link",
+        icon: "link-2",
+        action: () => copyNoteUrlToClipboard(),
+        selected: false,
+      },
+    ];
+  } else {
+    return [];
+  }
+});
+
 const sessionCommands = (): CommandPaletteItem[] => {
   if (!genericState.userIsLoggedIn) {
     return [
@@ -103,7 +139,7 @@ const sessionCommands = (): CommandPaletteItem[] => {
   }
 };
 
-const rawCommands: CommandPaletteItem[] = [
+const rawCommands = computed((): CommandPaletteItem[] => [
   {
     type: "command",
     id: uuidv4(),
@@ -145,37 +181,11 @@ const rawCommands: CommandPaletteItem[] = [
     },
     selected: false,
   },
-  {
-    type: "command",
-    id: uuidv4(),
-    label: "Delete current note",
-    icon: "trash",
-    action: () => {
-      deleteActiveNote();
-      genericState.clearActiveNoteState();
-    },
-    selected: false,
-  },
-  {
-    type: "command",
-    id: uuidv4(),
-    label: "Duplicate current note",
-    icon: "copy",
-    action: () => createNewNote(genericState.activeNoteContents),
-    selected: false,
-  },
-  {
-    type: "command",
-    id: uuidv4(),
-    label: "Copy current note link",
-    icon: "link-2",
-    action: () => copyNoteUrlToClipboard(),
-    selected: false,
-  },
-];
+  ...currentNoteCommands.value,
+]);
 
 const commandsToBeDisplayed = () => {
-  return rawCommands.filter((command) => {
+  return rawCommands.value.filter((command) => {
     return (
       command.label
         .toLocaleLowerCase()
@@ -201,7 +211,7 @@ const commandItemsToBeDisplayed = computed(() => [
 
 const defaultCommandItems = computed(() => [
   ...createNoteItems(notesToBeDisplayed.value).slice(0, 5),
-  ...rawCommands,
+  ...rawCommands.value,
 ]);
 
 const getIndexOfSelectedCommandItem = () => {
@@ -226,7 +236,7 @@ watch(
     setTimeout(() => {
       genericState.selectedCommandPaletteItem =
         commandItemsToBeDisplayed.value[0];
-    }, 150);
+    }, 300);
   }
 );
 
