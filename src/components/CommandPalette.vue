@@ -168,6 +168,7 @@ const getIndexOfSelectedCommandItem = () => {
   commandItems.value.forEach((item, index) => {
     if (item.id === genericState.selectedCommandPaletteItem?.id) {
       indexOfSelectedItem = index;
+      ``;
     }
   });
 
@@ -420,8 +421,8 @@ onMounted(() => {
   position: absolute;
   z-index: 100;
   background-color: var(--color-bg-overlay);
-  backdrop-filter: blur(5px);
-  -webkit-backdrop-filter: blur(5px);
+  backdrop-filter: blur(3px);
+  -webkit-backdrop-filter: blur(3px);
 }
 .container {
   display: grid;
@@ -430,7 +431,7 @@ onMounted(() => {
   height: 443px;
   position: absolute;
   z-index: 100;
-  top: 40%;
+  top: 45%;
   left: 50%;
   transform: translate(-50%, -50%);
   overflow: hidden;
@@ -538,7 +539,7 @@ onMounted(() => {
 }
 
 .fade-enter-active {
-  transition: opacity 100ms var(--ease-out-quad);
+  transition: opacity 350ms var(--ease-out-quint);
 }
 .fade-leave-active {
   transition: opacity 100ms var(--ease-out-quad);
@@ -550,7 +551,8 @@ onMounted(() => {
 }
 
 .lift-enter-active {
-  transition: all 150ms var(--ease-out-quad);
+  transition: all 450ms var(--ease-out-quint);
+  /* transition-delay: 50ms; */
 }
 
 .lift-leave-active {
@@ -559,8 +561,8 @@ onMounted(() => {
 
 .lift-enter-from {
   opacity: 0;
-  translate: 0 8px;
-  scale: 0.9875;
+  translate: 0 7px;
+  scale: 0.98;
 }
 .lift-leave-to {
   opacity: 0;
