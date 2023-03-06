@@ -295,6 +295,7 @@ const resetCodemirrorView = () => {
       syncScrollWithPreview,
       EditorView.lineWrapping,
       EditorState.allowMultipleSelections.of(true),
+      EditorView.updateListener.of((update) => handleOnChange(update)),
       syntaxHighlighting(highlightStyle),
       drawSelection(),
       indentUnit.of("    "),
