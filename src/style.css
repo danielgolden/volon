@@ -31,7 +31,7 @@
   --ease-in-out-circ: cubic-bezier(0.785, 0.135, 0.15, 0.86);
 }
 
-main[data-theme="light"] {
+[data-theme="light"] {
   color-scheme: light;
   --font-smoothing: normal;
   --color-accent: #277cde;
@@ -125,7 +125,7 @@ main[data-theme="light"] {
   --color-box-shadow: rgba(0, 0, 0, 0.05);
 }
 
-main[data-theme="dark"] {
+[data-theme="dark"] {
   color-scheme: dark;
   --font-smoothing: antialiased;
   --color-accent: #58a6ff;
@@ -224,6 +224,7 @@ main[data-theme="dark"] {
 html,
 body {
   margin: 0;
+  background-color: var(--color-bg-surface-2);
 }
 
 h1,

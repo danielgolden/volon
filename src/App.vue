@@ -70,6 +70,9 @@ onMounted(async () => {
   } else {
     mediaQuery.addListener(mediaQueryHandler);
   }
+
+  // Set theme on body
+  document.body.dataset.theme = settings.themeResult;
 });
 </script>
 
@@ -81,7 +84,6 @@ onMounted(async () => {
       'markdown-preview-active': settings.markdownPreviewActive,
       'column-is-being-resized': genericState.columnIsBeingResized,
     }"
-    :data-theme="settings.themeResult"
   >
     <PrimaryNav />
     <AsideNoteList />
