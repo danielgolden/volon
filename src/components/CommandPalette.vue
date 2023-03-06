@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { computed, watch, ref, nextTick } from "vue";
+import { computed, watch, ref, nextTick, onMounted } from "vue";
 import {
   sortNotesByModificationDate,
   sortNotesByCreationDate,
@@ -7,10 +7,10 @@ import {
   navigateToNextNote,
   deleteActiveNote,
 } from "../lib/utils";
+import { v4 as uuidv4 } from "uuid";
 import CommandPaletteInput from "./CommandPaletteInput.vue";
 import KeyboardShortcutIndicator from "./KeyboardShortcutIndicator.vue";
 import Icon from "./Icon.vue";
-import { formatRelative } from "date-fns";
 import { downloadBackupOfData } from "../lib/utils";
 import { useSettingsStore } from "../stores/store.settings";
 import { useGenericStateStore } from "../stores/store.genericState";
@@ -18,8 +18,9 @@ import { useNotebookStore } from "../stores/store.notebook";
 import { useUiStateStore } from "../stores/store.ui";
 import { saveAppSettingsToLocalStorage } from "../lib/localStorage";
 
-const noteListItemRefs = ref<HTMLElement[] | []>([]);
+const commandItemRefs = ref<HTMLElement[] | []>([]);
 const noteList = ref<HTMLUListElement | null>(null);
+const commandPaletteLists = ref<HTMLUListElement | null>(null);
 const activeNoteSelectionMade = ref(false);
 const settings = useSettingsStore();
 const genericState = useGenericStateStore();
@@ -41,6 +42,7 @@ const notesToBeDisplayed = computed(() => {
     return sortingFunction(genericState.commandPaletteMatchingNotes!);
   }
 });
+
 const handleNoteItemClick = (noteId: string | null) => {
   if (noteId) {
     genericState.activeNoteId = noteId;
@@ -79,34 +81,87 @@ const getActiveSelectionStatus = (commandPaletteMatchingNotes?: Note[]) => {
   );
 };
 
-const rawCommands = [
+const createNoteItems = (notes: Note[]): CommandPaletteItem[] => {
+  return notes.map((note): CommandPaletteItem => {
+    return {
+      type: "note",
+      id: note.id!,
+      icon: "file-text",
+      label: notebook.getNoteTitle(note.content),
+      meta: notebook.getNoteModifiedDate(note),
+      action: () => {
+        genericState.activeNoteId = note.id;
+        genericState.activeNoteContents = notebook.getNoteById(note.id).content;
+      },
+      selected: false,
+    };
+  });
+};
+
+const rawCommands: CommandPaletteItem[] = [
   {
+    type: "command",
+    id: uuidv4(),
     label: "Open settings",
     icon: "settings",
     action: () => (uiState.settingsViewActive = true),
+    selected: false,
   },
   {
+    type: "command",
+    id: uuidv4(),
     label: "Download a backup",
     icon: "download",
     action: () => downloadBackupOfData(),
+    selected: false,
   },
   {
+    type: "command",
+    id: uuidv4(),
     label: "Delete current note",
     icon: "trash",
     action: () => {
       deleteActiveNote();
       genericState.clearActiveNoteState();
     },
+    selected: false,
   },
   {
+    type: "command",
+    id: uuidv4(),
     label: "Toggle theme",
     icon: settings.themeResult === "dark" ? "sun" : "moon",
     action: () => {
       settings.theme = settings.themeResult === "dark" ? "light" : "dark";
       saveAppSettingsToLocalStorage();
     },
+    selected: false,
   },
 ];
+
+const commandsToBeDisplayed = () => {
+  return rawCommands.filter((command) => {
+    return command.label
+      .toLocaleLowerCase()
+      .includes(genericState.commandPaletteCurrentQuery.toLowerCase());
+  });
+};
+
+const searchReturnedNoResults = () => {
+  return (
+    commandsToBeDisplayed().length === 0 &&
+    notesToBeDisplayed.value.length === 0
+  );
+};
+
+const commandItemsToBeDisplayed = computed(() => [
+  ...createNoteItems(notesToBeDisplayed.value),
+  ...commandsToBeDisplayed(),
+]);
+const defaultCommandItems = computed(() => [
+  ...createNoteItems(notesToBeDisplayed.value).slice(0, 3),
+  ...rawCommands,
+]);
 
 watch(
   () => genericState.commandPaletteMatchingNotes as Note[],
@@ -116,31 +171,28 @@ watch(
 );
 
 watch(
-  () => genericState.selectedCommandPaletteNote,
+  () => genericState.selectedCommandPaletteItem,
   () => {
-    const activeListItem = noteListItemRefs.value.find(
-      (noteListItem: HTMLElement) => {
+    const activeListItem = commandItemRefs.value.find(
+      (commandItem: HTMLElement) => {
         return (
-          noteListItem.dataset.noteId ===
-          genericState.selectedCommandPaletteNote?.id
+          commandItem.dataset.itemId ===
+          genericState.selectedCommandPaletteItem?.id
         );
       }
-    );
-
-    activeNoteSelectionMade.value = getActiveSelectionStatus(
-      <Note[]>genericState.commandPaletteMatchingNotes
     );
 
     // Find out of the selected note list item is scrolled into view
     // if not, scroll it into view
     if (activeListItem) {
-      const noteListPosition = noteList.value!.getBoundingClientRect();
+      const listContainerPosition =
+        commandPaletteLists.value!.getBoundingClientRect();
       const activeListItemPosition = activeListItem.getBoundingClientRect();
 
       const isAboveContainerViewport =
-        activeListItemPosition.top < noteListPosition.top;
+        activeListItemPosition.top < listContainerPosition.top;
       const isBelowContainerViewport =
-        activeListItemPosition.bottom > noteListPosition.bottom;
+        activeListItemPosition.bottom > listContainerPosition.bottom;
 
       const isOutsideContainerViewport =
         isAboveContainerViewport || isBelowContainerViewport;
@@ -157,6 +209,12 @@ watch(
     }
   }
 );
+
+onMounted(() => {
+  genericState.selectedCommandPaletteItem = createNoteItems(
+    notesToBeDisplayed.value
+  )[0];
+});
 </script>
 
 <template>
@@ -170,39 +228,32 @@ watch(
     </Transition>
     <Transition name="lift">
       <section class="container" v-show="uiState.commandPaletteActive">
-        <CommandPaletteInput :noteList="notesToBeDisplayed" />
-        <section class="command-palette-lists">
-          <h5 class="command-palette-list-heading">Commands</h5>
-          <ul
-            v-if="notesToBeDisplayed.length > 0"
-            class="command-list command-palette-list"
-            tabindex="0"
-            @keydown.up="navigateToPreviousNote(notesToBeDisplayed)"
-            @keydown.down="navigateToNextNote(notesToBeDisplayed)"
-            ref="noteList"
+        <CommandPaletteInput
+          :items="
+            genericState.commandPaletteCurrentQuery
+              ? commandItemsToBeDisplayed
+              : defaultCommandItems
+          "
+        />
+        <section
+          class="command-palette-lists"
+          v-if="!searchReturnedNoResults()"
+          ref="commandPaletteLists"
+        >
+          <h5
+            class="command-palette-list-heading"
+            v-if="genericState.commandPaletteCurrentQuery"
           >
-            <li
-              v-for="command in rawCommands"
-              :v-key="command.label"
-              :class="{ 'command-palette-item': true }"
-              @click="command.action()"
-              @keydown.enter="
-                {
-                  command.action();
-                  uiState.toggleCommandPaletteActive();
-                }
-              "
-            >
-              <span class="command-label-container">
-                <Icon :name="command.icon" />
-                <span class="command-palette-item-label">
-                  {{ command.label }}
-                </span>
-              </span>
-              <span class="command-palette-item-meta">Command</span>
-            </li>
-          </ul>
-          <h5 class="command-palette-list-heading">Notes</h5>
+            Results
+          </h5>
+          <h5
+            class="command-palette-list-heading"
+            v-if="!genericState.commandPaletteCurrentQuery"
+          >
+            {{
+              genericState.commandPaletteCurrentQuery ? "Notes" : "Recent notes"
+            }}
+          </h5>
           <ul
             v-if="notesToBeDisplayed.length > 0"
             class="note-list command-palette-list"
@@ -212,40 +263,92 @@ watch(
             ref="noteList"
           >
             <li
-              v-for="note in notesToBeDisplayed"
-              :v-key="note.id"
+              v-for="noteItem in genericState.commandPaletteCurrentQuery
+                ? createNoteItems(notesToBeDisplayed)
+                : createNoteItems(notesToBeDisplayed).slice(0, 3)"
+              :v-key="noteItem.id"
               :class="{
                 'active-command-palette-item':
-                  genericState.selectedCommandPaletteNote?.id === note.id,
+                  genericState.selectedCommandPaletteItem?.id === noteItem.id,
                 'command-palette-item': true,
               }"
-              :data-note-id="note.id"
-              @click="handleNoteItemClick(note.id)"
-              @keydown.enter="uiState.toggleCommandPaletteActive"
-              ref="noteListItemRefs"
+              @click="
+                () => {
+                  noteItem.action();
+                  uiState.toggleCommandPaletteActive();
+                }
+              "
+              @keydown.enter="
+                () => {
+                  noteItem.action();
+                  uiState.toggleCommandPaletteActive();
+                }
+              "
+              ref="commandItemRefs"
+              :data-item-id="noteItem.id"
             >
-              <span class="command-palette-item-label">
-                {{
-                  note.content
-                    .split(`\n`)[0]
-                    .replaceAll("#", "")
-                    .substring(0, 100)
-                }}
+              <span class="command-label-container">
+                <Icon v-if="noteItem.icon" :name="noteItem.icon" />
+                <span class="command-palette-item-label">
+                  {{ noteItem.label }}
+                </span>
                 <em
-                  v-if="note.content.length === 0"
+                  v-if="notebook.getNoteById(noteItem.id).content.length === 0"
                   class="empty-list-item-preview"
                   >Empty note</em
                 >
               </span>
-              <span class="command-palette-item-meta">{{
-                formatRelativeDate(
-                  formatRelative(note.lastModified, new Date())
-                )
-              }}</span>
+              <span class="command-palette-item-meta">{{ noteItem.meta }}</span>
+            </li>
+          </ul>
+          <h5
+            class="command-palette-list-heading"
+            v-if="!genericState.commandPaletteCurrentQuery"
+          >
+            Commands
+          </h5>
+          <ul
+            v-if="commandsToBeDisplayed().length > 0"
+            class="command-list command-palette-list"
+            tabindex="0"
+            @keydown.up="navigateToPreviousNote(notesToBeDisplayed)"
+            @keydown.down="navigateToNextNote(notesToBeDisplayed)"
+            ref="noteList"
+          >
+            <li
+              v-for="command in commandsToBeDisplayed()"
+              :v-key="command.label"
+              :class="{
+                'command-palette-item': true,
+                'active-command-palette-item':
+                  genericState.selectedCommandPaletteItem?.id === command.id,
+              }"
+              @click="
+                {
+                  command.action();
+                  uiState.toggleCommandPaletteActive();
+                }
+              "
+              @keydown.enter="
+                {
+                  command.action();
+                  uiState.toggleCommandPaletteActive();
+                }
+              "
+              ref="commandItemRefs"
+              :data-item-id="command.id"
+            >
+              <span class="command-label-container">
+                <Icon v-if="command.icon" :name="command.icon" />
+                <span class="command-palette-item-label">
+                  {{ command.label }}
+                </span>
+              </span>
+              <span class="command-palette-item-meta">Command</span>
             </li>
           </ul>
         </section>
-        <div class="empty-state" v-if="notesToBeDisplayed.length === 0">
+        <div class="empty-state" v-if="searchReturnedNoResults()">
           <p class="empty-state-description">
             <KeyboardShortcutIndicator value="↵" /> Create a new note
           </p>

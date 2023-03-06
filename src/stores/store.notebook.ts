@@ -1,5 +1,6 @@
 import { defineStore } from "pinia";
 import { Note, getIndexOfNoteById } from "../lib/utils";
+import { formatRelative } from "date-fns";
 import { useGenericStateStore } from "../stores/store.genericState";
 
 export const useNotebookStore = defineStore("notebook", {
@@ -42,6 +43,15 @@ export const useNotebookStore = defineStore("notebook", {
         .replaceAll("#", "")
         .substring(0, 50);
       return title[0] === " " ? title.substring(1) : title;
+    },
+    getNoteModifiedDate(note: Note) {
+      const relativeDate = formatRelative(note.lastModified, new Date());
+      const capitalizedFirstLetter = relativeDate[0].toUpperCase();
+      const dateWithCapitalizedFirstChar =
+        capitalizedFirstLetter + relativeDate.substring(1);
+      return dateWithCapitalizedFirstChar
+        .replace("AM", "am")
+        .replace("PM", "pm");
     },
   },
   getters: {
