@@ -7,7 +7,7 @@ import {
   navigateToNextNote,
   deleteActiveNote,
 } from "../lib/utils";
-import { signInWithGitHub, signInWithGoogle, signout } from "../lib/supabase";
+import { signInWithGitHub, signInWithGoogle } from "../lib/supabase";
 import { v4 as uuidv4 } from "uuid";
 import CommandPaletteInput from "./CommandPaletteInput.vue";
 import KeyboardShortcutIndicator from "./KeyboardShortcutIndicator.vue";
@@ -22,7 +22,6 @@ import { saveAppSettingsToLocalStorage } from "../lib/localStorage";
 const commandItemRefs = ref<HTMLElement[] | []>([]);
 const noteList = ref<HTMLUListElement | null>(null);
 const commandPaletteLists = ref<HTMLUListElement | null>(null);
-const activeNoteSelectionMade = ref(false);
 const settings = useSettingsStore();
 const genericState = useGenericStateStore();
 const notebook = useNotebookStore();
@@ -43,44 +42,6 @@ const notesToBeDisplayed = computed(() => {
     return sortingFunction(genericState.commandPaletteMatchingNotes!);
   }
 });
-
-const handleNoteItemClick = (noteId: string | null) => {
-  if (noteId) {
-    genericState.activeNoteId = noteId;
-    genericState.activeNoteContents = notebook.getNoteById(
-      genericState.activeNoteId
-    ).content;
-    uiState.toggleCommandPaletteActive();
-  }
-};
-const formatRelativeDate = (relativeDate: string) => {
-  const capitalizedFirstLetter = relativeDate[0].toUpperCase();
-  const dateWithCapitalizedFirstChar =
-    capitalizedFirstLetter + relativeDate.substring(1);
-
-  return dateWithCapitalizedFirstChar.replace("AM", "am").replace("PM", "pm");
-};
-
-const getActiveSelectionStatus = (commandPaletteMatchingNotes?: Note[]) => {
-  let selectionFoundIncommandPaletteMatchingNotes = false;
-
-  // selected item found in `commandPaletteMatchingNotes`?
-  if (commandPaletteMatchingNotes) {
-    selectionFoundIncommandPaletteMatchingNotes =
-      commandPaletteMatchingNotes.some(
-        (note: Note) => note.id === genericState.activeNoteId
-      );
-  }
-
-  // selcted item in all `notesToBeDisplayed`?
-  const selectionFoundAmongAllNotes = notesToBeDisplayed.value.some(
-    (note: Note) => note.id === genericState.activeNoteId
-  );
-
-  return (
-    selectionFoundIncommandPaletteMatchingNotes || selectionFoundAmongAllNotes
-  );
-};
 
 const createNoteItems = (notes: Note[]): CommandPaletteItem[] => {
   return notes.map((note): CommandPaletteItem => {
@@ -193,17 +154,13 @@ const commandItemsToBeDisplayed = computed(() => [
   ...createNoteItems(notesToBeDisplayed.value),
   ...commandsToBeDisplayed(),
 ]);
+
 const defaultCommandItems = computed(() => [
   ...createNoteItems(notesToBeDisplayed.value).slice(0, 5),
   ...rawCommands,
 ]);
 
-watch(
-  () => genericState.commandPaletteMatchingNotes as Note[],
-  (newValue) => {
-    activeNoteSelectionMade.value = getActiveSelectionStatus(newValue);
-  }
-);
+// When palette opens, select first item
 watch(
   () => uiState.commandPaletteActive,
   () => {
@@ -214,6 +171,7 @@ watch(
   }
 );
 
+// Ensure the list scrolls to contain the selected item
 watch(
   () => genericState.selectedCommandPaletteItem,
   () => {
@@ -255,6 +213,7 @@ watch(
 );
 
 onMounted(() => {
+  // When the component loads, set a selected item
   genericState.selectedCommandPaletteItem = createNoteItems(
     notesToBeDisplayed.value
   )[0];
