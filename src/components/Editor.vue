@@ -32,7 +32,6 @@ import {
 import { useElementRefsStore } from "../stores/store.elementRefs";
 import { useGenericStateStore } from "../stores/store.genericState";
 import { useSettingsStore } from "../stores/store.settings";
-import { useUiStateStore } from "../stores/store.ui";
 
 const emit = defineEmits(["update:modelValue"]);
 const props = defineProps(["modelValue"]);
@@ -44,7 +43,6 @@ let scrollEndTimer = setTimeout(() => {}, 0);
 const elementRefs = useElementRefsStore();
 const genericState = useGenericStateStore();
 const settings = useSettingsStore();
-const uiState = useUiStateStore();
 
 const handleOnChange = (update: ViewUpdate) => {
   const waitTime = 500; // in milliseconds

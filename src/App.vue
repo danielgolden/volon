@@ -29,14 +29,14 @@ const editorAndPreview = ref<HTMLElement | null>(null);
 
 watch(
   () => genericState.activeNoteId,
-  (newValue) => {
+  () => {
     uiState.settingsViewActive = false;
   }
 );
 
 watch(
   () => editorAndPreview.value,
-  (newValue) => {
+  () => {
     elementRefs.editorAndPreview = editorAndPreview.value;
   }
 );

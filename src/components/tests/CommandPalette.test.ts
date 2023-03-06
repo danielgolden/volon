@@ -5,15 +5,7 @@ import { createSampleDataInLocalStorage } from "../../lib/localStorage";
 import { useGenericStateStore } from "../../stores/store.genericState";
 import { useNotebookStore } from "../../stores/store.notebook";
 import { useUiStateStore } from "../../stores/store.ui";
-import {
-  describe,
-  it,
-  expect,
-  beforeEach,
-  afterEach,
-  beforeAll,
-  vi,
-} from "vitest";
+import { describe, it, expect, beforeEach, afterEach } from "vitest";
 import { createPinia } from "pinia";
 import { createApp } from "vue";
 
@@ -58,7 +50,6 @@ describe("handleNoteItemClick()", async () => {
   });
 
   it("Toggles the the value of commandPaletteActive", () => {
-    const genericState = useGenericStateStore();
     const uiState = useUiStateStore();
     const originalCommandPaletteActive = uiState.commandPaletteActive;
     //@ts-ignore

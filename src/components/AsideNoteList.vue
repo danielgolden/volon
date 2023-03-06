@@ -44,7 +44,7 @@ const notesToBeDisplayed = computed(() => {
   }
 });
 
-const handleNoteItemClick = (e: Event, noteId: string | null) => {
+const handleNoteItemClick = (noteId: string | null) => {
   if (noteId && noteId !== genericState.activeNoteId) {
     genericState.activeNoteId = noteId;
     genericState.activeNoteContents = notebook.getNoteById(
@@ -107,7 +107,7 @@ watch(
 
 watch(
   () => uiState.commandPaletteActive,
-  (oldValue, newValue) => {
+  (newValue) => {
     if (!newValue) {
       genericState.selectedCommandPaletteItem = null;
     }
@@ -116,7 +116,7 @@ watch(
 
 watch(
   () => settings.asideActive,
-  (newValue, oldValue) => {
+  (newValue) => {
     if (newValue) {
       nextTick(() => {
         noteListUl.value?.addEventListener("scroll", () => {
@@ -200,7 +200,7 @@ watch(
         <NoteListItem
           v-for="note in notesToBeDisplayed"
           :note="note"
-          @click="(e) => handleNoteItemClick(e, note.id)"
+          @click="() => handleNoteItemClick(note.id)"
         />
       </ul>
       <div class="empty-state" v-if="notebook.notes.length === 0">

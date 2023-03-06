@@ -1,19 +1,10 @@
 import { mount, VueWrapper } from "@vue/test-utils";
 import App from "../../App.vue";
 import Editor from "../Editor.vue";
-import {
-  describe,
-  it,
-  expect,
-  beforeEach,
-  afterEach,
-  beforeAll,
-  vi,
-} from "vitest";
+import { describe, it, expect, beforeEach, afterEach } from "vitest";
 import { createPinia } from "pinia";
 import { createApp } from "vue";
 import { useNotebookStore } from "../../stores/store.notebook";
-import { useSettingsStore } from "../../stores/store.settings";
 import { useGenericStateStore } from "../../stores/store.genericState";
 
 // TODO: Figure out how to test keyboard shortcuts with vue test utils or another library.
@@ -27,8 +18,6 @@ beforeEach(() => {
   app.use(pinia);
   appWrapper = mount(App);
 
-  const notebook = useNotebookStore();
-  const settings = useSettingsStore();
   const genericState = useGenericStateStore();
 
   // @ts-ignore

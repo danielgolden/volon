@@ -17,7 +17,6 @@ import { createPinia, _StoreWithState } from "pinia";
 import { useGenericStateStore } from "../../stores/store.genericState";
 import { useNotebookStore } from "../../stores/store.notebook";
 import { createApp } from "vue";
-import { mount } from "@vue/test-utils";
 
 beforeAll(() => {
   Object.defineProperty(window, "matchMedia", {
@@ -39,8 +38,6 @@ app.use(pinia);
 
 const notebook = useNotebookStore();
 const genericState = useGenericStateStore();
-
-const wrapper = mount(App);
 
 describe("getNoteById()", () => {
   beforeEach(() => {

@@ -12,7 +12,7 @@ const settings = useSettingsStore();
 const genericState = useGenericStateStore();
 const notebook = useNotebookStore();
 const uiState = useUiStateStore();
-const props = defineProps({
+defineProps({
   note: {
     required: true,
     type: Object as PropType<Note>,

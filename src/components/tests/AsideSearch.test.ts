@@ -1,17 +1,8 @@
 import { mount, VueWrapper } from "@vue/test-utils";
 import AsideSearch from "../AsideSearch.vue";
 import { Note } from "../../lib/utils";
-import {
-  describe,
-  it,
-  expect,
-  beforeEach,
-  afterEach,
-  beforeAll,
-  vi,
-} from "vitest";
+import { describe, it, expect, beforeEach, afterEach } from "vitest";
 import { useGenericStateStore } from "../../stores/store.genericState";
-import { useSettingsStore } from "../../stores/store.settings";
 import { useNotebookStore } from "../../stores/store.notebook";
 import { createPinia } from "pinia";
 import { createApp } from "vue";
@@ -20,7 +11,6 @@ const pinia = createPinia();
 const app = createApp(AsideSearch);
 app.use(pinia);
 
-const settings = useSettingsStore();
 const notebook = useNotebookStore();
 const genericState = useGenericStateStore();
 

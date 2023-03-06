@@ -43,7 +43,7 @@ const handleDeleteAllNotes = () => {
   }
 };
 
-const handleNotesSortingChange = (e: Event) => {
+const handleNotesSortingChange = () => {
   setTimeout(() => {
     saveAppSettingsToLocalStorage();
   }, 50);

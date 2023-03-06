@@ -1,4 +1,4 @@
-import { setActivePinia, createPinia, storeToRefs } from "pinia";
+import { setActivePinia, createPinia } from "pinia";
 import { useNotebookStore } from "./store.notebook";
 import { useGenericStateStore } from "./store.genericState";
 import { describe, it, expect, beforeEach } from "vitest";

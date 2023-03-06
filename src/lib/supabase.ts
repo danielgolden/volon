@@ -8,14 +8,14 @@ const supabaseKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
 const supabase = createClient(supabaseUrl, supabaseKey);
 
 export const signInWithGitHub = async () => {
-  const { data, error } = await supabase.auth.signInWithOAuth({
+  const { data } = await supabase.auth.signInWithOAuth({
     provider: "github",
   });
   return data;
 };
 
 export const signInWithGoogle = async () => {
-  const { data, error } = await supabase.auth.signInWithOAuth({
+  const { data } = await supabase.auth.signInWithOAuth({
     provider: "google",
   });
   return data;
@@ -45,13 +45,13 @@ export const getSession = async () => {
 };
 
 export const loadNotesFromDB = async () => {
-  const { data, error } = await supabase.from("notes").select();
+  const { data } = await supabase.from("notes").select();
 
   return data;
 };
 
 export const updateNoteInDB = async (noteToUpdate: Note) => {
-  const { error } = await supabase
+  await supabase
     .from("notes")
     .update({
       created_at: noteToUpdate.dateCreated,

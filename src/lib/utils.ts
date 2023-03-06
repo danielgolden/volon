@@ -83,7 +83,6 @@ export const sortNotesByCreationDate = (notes: Note[]): Note[] => {
 
 export const getIndexOfNoteById = (id: string | null, noteList?: Note[]) => {
   const notebook = useNotebookStore();
-  const genericState = useGenericStateStore();
   const defaultNoteList = notebook.notes;
 
   if (!id) return null;

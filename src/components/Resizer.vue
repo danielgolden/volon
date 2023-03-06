@@ -92,7 +92,7 @@ const handleResizerMouseMove = (e: MouseEvent) => {
 
 watch(
   () => props.leftElement,
-  (newValue) => {
+  () => {
     leftElementOriginalWidth.value = parseInt(
       getComputedStyle(props.leftElement!).width!
     );
