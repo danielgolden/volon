@@ -133,7 +133,7 @@ const sessionCommands = (): CommandPaletteItem[] => {
         id: uuidv4(),
         label: "Log out",
         icon: "exit",
-        keywords: "commands",
+        keywords: "commands, logout",
         action: () => {
           signout();
           intializeLocalStorageData();
@@ -195,7 +195,7 @@ const rawCommands = computed((): CommandPaletteItem[] => [
     icon: "height",
     keywords: "commands",
     action: () => {
-      settings.syncScroll = true;
+      settings.syncScroll = !settings.syncScroll;
       saveAppSettingsToLocalStorage();
     },
     selected: false,
