@@ -167,6 +167,26 @@ const rawCommands = computed((): CommandPaletteItem[] => [
     action: () => (uiState.settingsViewActive = true),
     selected: false,
   },
+  {
+    type: "command",
+    id: uuidv4(),
+    label: settings.markdownPreviewActive
+      ? "Hide markdown preview"
+      : "Show markdown preview",
+    icon: settings.markdownPreviewActive ? "eye-closed" : "eye-open",
+    keywords: "split, commands",
+    action: () => settings.toggleMarkdownPreviewActive(),
+    selected: false,
+  },
+  {
+    type: "command",
+    id: uuidv4(),
+    label: "Open settings",
+    icon: "settings",
+    keywords: "preferences, commands",
+    action: () => (uiState.settingsViewActive = true),
+    selected: false,
+  },
   ...sessionCommands(),
   {
     type: "command",
