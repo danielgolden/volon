@@ -109,7 +109,7 @@ watch(
   () => uiState.commandPaletteActive,
   (oldValue, newValue) => {
     if (!newValue) {
-      genericState.selectedCommandPaletteNote = null;
+      genericState.selectedCommandPaletteItem = null;
     }
   }
 );
