@@ -73,6 +73,7 @@ const currentNoteCommands = computed((): CommandPaletteItem[] => {
         id: uuidv4(),
         label: "Delete current note",
         icon: "trash",
+        keywords: "remove, commands",
         action: () => {
           deleteActiveNote();
           genericState.clearActiveNoteState();
@@ -84,6 +85,7 @@ const currentNoteCommands = computed((): CommandPaletteItem[] => {
         id: uuidv4(),
         label: "Duplicate current note",
         icon: "copy",
+        keywords: "commands, copy",
         action: () => createNewNote(genericState.activeNoteContents),
         selected: false,
       },
@@ -92,6 +94,7 @@ const currentNoteCommands = computed((): CommandPaletteItem[] => {
         id: uuidv4(),
         label: "Copy current note link",
         icon: "link-2",
+        keywords: "commands",
         action: () => copyNoteUrlToClipboard(),
         selected: false,
       },
@@ -109,6 +112,7 @@ const sessionCommands = (): CommandPaletteItem[] => {
         id: uuidv4(),
         label: "Login with GitHub",
         icon: "enter",
+        keywords: "commands",
         action: () => signInWithGitHub(),
         selected: false,
       },
@@ -117,6 +121,7 @@ const sessionCommands = (): CommandPaletteItem[] => {
         id: uuidv4(),
         label: "Login with Google",
         icon: "enter",
+        keywords: "commands",
         action: () => signInWithGoogle(),
         selected: false,
       },
@@ -128,6 +133,7 @@ const sessionCommands = (): CommandPaletteItem[] => {
         id: uuidv4(),
         label: "Log out",
         icon: "exit",
+        keywords: "commands",
         action: () => {
           signout();
           intializeLocalStorageData();
@@ -145,7 +151,7 @@ const rawCommands = computed((): CommandPaletteItem[] => [
     id: uuidv4(),
     label: "Toggle theme",
     icon: "sun",
-    keywords: "dark, light, mode",
+    keywords: "dark, light, mode, commands",
     action: () => {
       settings.theme = settings.themeResult === "dark" ? "light" : "dark";
       saveAppSettingsToLocalStorage();
@@ -157,7 +163,7 @@ const rawCommands = computed((): CommandPaletteItem[] => [
     id: uuidv4(),
     label: "Open settings",
     icon: "settings",
-    keywords: "preferences",
+    keywords: "preferences, commands",
     action: () => (uiState.settingsViewActive = true),
     selected: false,
   },
@@ -166,6 +172,7 @@ const rawCommands = computed((): CommandPaletteItem[] => [
     type: "command",
     id: uuidv4(),
     label: "Download a backup",
+    keywords: "commands",
     icon: "download",
     action: () => downloadBackupOfData(),
     selected: false,
@@ -175,6 +182,7 @@ const rawCommands = computed((): CommandPaletteItem[] => [
     id: uuidv4(),
     label: "Sync scrolling",
     icon: "height",
+    keywords: "commands",
     action: () => {
       settings.syncScroll = true;
       saveAppSettingsToLocalStorage();
