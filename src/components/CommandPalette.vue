@@ -160,6 +160,20 @@ const defaultCommandItems = computed(() => [
   ...rawCommands,
 ]);
 
+const getIndexOfSelectedCommandItem = () => {
+  const commandItems = genericState.commandPaletteCurrentQuery
+    ? commandItemsToBeDisplayed
+    : defaultCommandItems;
+  let indexOfSelectedItem = 0;
+  commandItems.value.forEach((item, index) => {
+    if (item.id === genericState.selectedCommandPaletteItem!.id) {
+      indexOfSelectedItem = index;
+    }
+  });
+
+  return indexOfSelectedItem;
+};
+
 // When palette opens, select first item
 watch(
   () => uiState.commandPaletteActive,
@@ -184,7 +198,7 @@ watch(
       }
     );
 
-    // Find out of the selected note list item is scrolled into view
+    // Find out of the selected item is scrolled into view
     // if not, scroll it into view
     if (activeListItem) {
       const listContainerPosition =
@@ -208,6 +222,14 @@ watch(
           });
         });
       }
+    }
+
+    // If the selected item is the first item, scroll the container
+    // to the top to ensure it's section label is visible
+    if (getIndexOfSelectedCommandItem() === 0) {
+      nextTick(() => {
+        commandPaletteLists.value?.scrollTo(0, 0);
+      });
     }
   }
 );
