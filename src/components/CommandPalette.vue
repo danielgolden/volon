@@ -169,6 +169,15 @@ watch(
     activeNoteSelectionMade.value = getActiveSelectionStatus(newValue);
   }
 );
+watch(
+  () => uiState.commandPaletteActive,
+  () => {
+    setTimeout(() => {
+      genericState.selectedCommandPaletteItem =
+        commandItemsToBeDisplayed.value[0];
+    }, 150);
+  }
+);
 
 watch(
   () => genericState.selectedCommandPaletteItem,

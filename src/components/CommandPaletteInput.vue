@@ -1,6 +1,6 @@
 <script lang="ts" setup>
-import { ref, onMounted, PropType } from "vue";
-import { createNewNote, getIndexOfNoteById } from "../lib/utils";
+import { ref, onMounted, PropType, watch } from "vue";
+import { createNewNote } from "../lib/utils";
 import { useElementRefsStore } from "../stores/store.elementRefs";
 import { useGenericStateStore } from "../stores/store.genericState";
 import { useNotebookStore } from "../stores/store.notebook";
@@ -21,7 +21,6 @@ const uiState = useUiStateStore();
 
 const handleInputChange = (currentContent: string) => {
   noteWasSelectedDuringSearch.value = false;
-  genericState.selectedCommandPaletteItem = props.items[0];
 
   if (currentContent === "") {
     genericState.commandPaletteMatchingNotes = null;
@@ -32,8 +31,10 @@ const handleInputChange = (currentContent: string) => {
 };
 
 const clearQuery = () => {
-  handleInputChange("");
-  genericState.commandPaletteCurrentQuery = "";
+  setTimeout(() => {
+    handleInputChange("");
+    genericState.commandPaletteCurrentQuery = "";
+  }, 100);
 };
 
 const getCommandItemById = (id: string) => {
@@ -56,7 +57,11 @@ const getIndexOfCommandItemById = (id: string) => {
 const handleSearchKeydownEnter = (e: Event) => {
   uiState.commandPaletteActive = false;
 
-  if (noteWasSelectedDuringSearch.value) {
+  if (genericState.selectedCommandPaletteItem?.type === "command") {
+    clearQuery();
+    e.preventDefault();
+    genericState.selectedCommandPaletteItem?.action();
+  } else if (noteWasSelectedDuringSearch.value) {
     clearQuery();
     e.preventDefault();
     elementRefs.codeMirror?.focus();
@@ -97,6 +102,13 @@ const handleUpArrowPress = (e: Event) => {
 onMounted(() => {
   elementRefs.commandPaletteSearchInput = searchInput.value;
 });
+
+watch(
+  () => props.items,
+  () => {
+    genericState.selectedCommandPaletteItem = props.items[0];
+  }
+);
 </script>
 
 <template>
