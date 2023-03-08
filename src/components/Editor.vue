@@ -233,8 +233,8 @@ const resetCodemirrorView = () => {
       ],
       class: "md-header",
     },
-    { tag: tags.emphasis, fontStyle: "italic", class: "md-emphasis" },
-    { tag: tags.strong, fontWeight: "600", class: "md-strong" },
+    { tag: tags.strong, class: "md-strong" },
+    { tag: tags.emphasis, class: "md-emphasis" },
     { tag: tags.monospace, class: "md-monospace" },
     { tag: tags.meta, class: "md-meta" },
     { tag: tags.link, class: "md-link" },
@@ -394,7 +394,7 @@ const handleLinkPaste = () => {
   font-style: italic;
 }
 
-.md-storng {
+.md-strong {
   font-weight: 600;
 }
 
