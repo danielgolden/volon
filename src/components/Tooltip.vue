@@ -135,7 +135,7 @@ onMounted(() => {
   backdrop-filter: blur(6px);
   -webkit-backdrop-filter: blur(6px);
   z-index: 10000;
-  color: var(--color-text-primary);
+  color: var(--color-text-inverted-primary);
   font-family: var(--font-family-primary);
   white-space: nowrap;
 
