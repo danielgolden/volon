@@ -151,7 +151,7 @@ onMounted(() => {
 /*---- github.com/sindresorhus/github-markdown-css ----*/
 /*-----------------------------------------------------*/
 
-main[data-theme="dark"] .markdown-preview {
+[data-theme="dark"] .markdown-preview {
   color-scheme: dark;
   --color-prettylights-syntax-comment: #8b949e;
   --color-prettylights-syntax-constant: #79c0ff;
@@ -197,7 +197,7 @@ main[data-theme="dark"] .markdown-preview {
   --color-danger-fg: #f85149;
 }
 
-main[data-theme="light"] .markdown-preview {
+[data-theme="light"] .markdown-preview {
   color-scheme: light;
   --color-prettylights-syntax-comment: #6e7781;
   --color-prettylights-syntax-constant: #0550ae;
