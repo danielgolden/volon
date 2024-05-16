@@ -72,7 +72,7 @@ onMounted(() => {
   font-family: var(--font-family-primary);
   font-weight: 500;
   background-color: transparent;
-  color: var(--color-text-button-primary);
+  color: var(--color-text-select);
   appearance: none;
   border: none;
   cursor: pointer;
