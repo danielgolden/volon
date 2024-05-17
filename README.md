@@ -29,6 +29,27 @@ Volon is a plain text, markdown-focused, local-first notes app with IDE like [te
 
 ---
 
+## Supabase setup
+
+Data can be synced remotely using [Supabase](https://supabase.com/). Create a new project then copy the project URL and anon key and set to the environment variables `VITE_SUPABASE_URL` and `VITE_SUPABASE_ANON_KEY` respectively.
+
+Create a table `notes` with the following columns and enable RLS 
+
+- `id: uuid: gen_random_uuid()`
+- `created_at: datetimez: now()`
+- `updated_at: datetimez: now()`
+- `created_at: datetimez: now()`
+- `content: text: NULL`
+- `user_id: uuid: NULL`
+
+### Setup table policies
+- Enable insert for authenticated users only
+- Enable read access for authenticated users
+- Enable update access for authenticated users
+- Enable delete access for authenticated users
+
+Enable auth providers i.e. Google or GitHub
+
 ## Local dev (Vue 3 + TypeScript + Vite)]
 (*Subtitute `pnpm` for your package manager of choice*)
 ```bash
