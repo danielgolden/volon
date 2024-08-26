@@ -309,6 +309,9 @@ const handleLocalNotesImportClick = async () => {
           /></a>
           by
           <a href="https://danielgolden.me/">Daniel Golden</a>
+
+          —
+          <a href="https://donate.stripe.com/9AQ01d0jg86xdm8144">Donate</a>
         </p>
       </footer>
     </article>
